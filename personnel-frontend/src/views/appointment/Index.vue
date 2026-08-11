@@ -120,7 +120,7 @@
             </el-descriptions>
             <div class="section-title">动议审批情况</div>
             <el-table :data="motionApprovalData" border size="small">
-              <el-table-column prop="role" label="审批环节" width="150" align="center" />
+              <el-table-column prop="role" label="审批环节" min-width="120" align="center" />
               <el-table-column prop="person" label="审批人" width="100" align="center" />
               <el-table-column prop="opinion" label="审批意见" align="center" />
               <el-table-column prop="time" label="审批时间" width="120" align="center" />
@@ -168,7 +168,7 @@
             </el-descriptions>
             <div class="section-title">"凡提四必"审核情况</div>
             <el-table :data="checklistData" border size="small" style="margin-bottom:12px">
-              <el-table-column prop="item" label="审核事项" width="200" align="center" />
+              <el-table-column prop="item" label="审核事项" min-width="140" align="center" />
               <el-table-column prop="result" label="审核结果" width="100" align="center">
                 <template #default="{row}">
                   <el-tag :type="row.result==='通过'?'success':'danger'" size="small">{{ row.result }}</el-tag>

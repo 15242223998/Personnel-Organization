@@ -59,8 +59,8 @@
         <el-table-column prop="birthDate" label="出生年月" width="100" align="center" sortable="custom" />
         <el-table-column prop="politicalStatus" label="政治面貌" width="90" align="center" sortable="custom" />
         <el-table-column prop="education" label="学历(全日制)" width="110" align="center" sortable="custom" />
-        <el-table-column prop="deptName" label="所属机构" width="150" show-overflow-tooltip sortable="custom" />
-        <el-table-column prop="position" label="职务" width="130" show-overflow-tooltip sortable="custom" />
+        <el-table-column prop="deptName" label="所属机构" min-width="150" show-overflow-tooltip sortable="custom" />
+        <el-table-column prop="position" label="职务" min-width="120" show-overflow-tooltip sortable="custom" />
         <el-table-column prop="positionLevel" label="职务层次" width="85" align="center" sortable="custom" />
         <el-table-column prop="rankName" label="职级" width="100" align="center" sortable="custom" />
         <el-table-column prop="positionStartDate" label="任现职时间" width="100" align="center" sortable="custom" />
@@ -114,7 +114,7 @@
         <el-table-column prop="birthDate" label="出生年月" width="100" align="center" />
         <el-table-column prop="politicalStatus" label="政治面貌" width="90" align="center" />
         <el-table-column prop="education" label="学历" width="110" align="center" />
-        <el-table-column prop="deptName" label="所属机构" width="150" show-overflow-tooltip />
+        <el-table-column prop="deptName" label="所属机构" min-width="150" show-overflow-tooltip />
         <el-table-column prop="position" label="职务" min-width="120" show-overflow-tooltip />
       </el-table>
       <div v-if="importPreviewData.length > 0" style="margin-top:12px;color:#666;text-align:center">

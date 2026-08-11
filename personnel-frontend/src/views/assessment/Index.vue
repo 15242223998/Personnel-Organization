@@ -102,8 +102,8 @@
       <el-table v-if="importPreviewData.length > 0" :data="importPreviewData" border size="small" style="margin-top:16px" max-height="350">
         <el-table-column type="index" label="序号" width="50" align="center" />
         <el-table-column prop="name" label="姓名" width="90" align="center" />
-        <el-table-column prop="department" label="部门" width="140" align="center" />
-        <el-table-column prop="position" label="职务" width="120" align="center" />
+        <el-table-column prop="department" label="部门" min-width="130" align="center" />
+        <el-table-column prop="position" label="职务" min-width="110" align="center" />
         <el-table-column prop="year" label="年度" width="70" align="center" />
         <el-table-column prop="result" label="考核结果" width="90" align="center" />
         <el-table-column prop="comment" label="评语" min-width="160" show-overflow-tooltip />

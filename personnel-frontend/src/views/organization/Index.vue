@@ -23,9 +23,9 @@
     <div class="table-wrap">
       <el-tabs v-model="activeTab">
         <el-tab-pane label="机构列表" name="tree">
-          <el-table :data="filteredTreeData" row-key="id" border size="small" v-loading="loading" :tree-props="{children:'children'}">
+          <el-table :data="filteredTreeData" row-key="id" border size="small" v-loading="loading" :tree-props="{children:'children'}" default-expand-all>
             <el-table-column prop="deptName" label="机构名称" min-width="200" />
-            <el-table-column prop="shortName" label="简称" width="120" />
+            <el-table-column prop="shortName" label="简称" min-width="110" />
             <el-table-column prop="deptLevel" label="级别" width="100" />
             <el-table-column prop="leaderQuota" label="班子职数" width="100" />
             <el-table-column prop="establishedDate" label="成立时间" width="120" />
@@ -53,6 +53,11 @@
             <el-table-column prop="leaderQuota" label="领导职数" width="100" sortable />
             <el-table-column prop="actualLeaders" label="实际配备" width="100" sortable />
             <el-table-column prop="leaderVacancy" label="空缺" width="100" sortable />
+            <el-table-column label="操作" width="80" align="center" fixed="right">
+              <template #default="{ row }">
+                <span class="link-blue" @click="openQuotaEdit(row)">编辑</span>
+              </template>
+            </el-table-column>
           </el-table>
           <el-pagination
             v-model:current-page="quotaPage.current"
@@ -106,6 +111,24 @@
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" :loading="submitLoading" @click="handleSubmit">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="编辑编制" v-model="quotaDialogVisible" width="500px" @close="resetQuotaForm">
+      <el-form ref="quotaFormRef" :model="quotaForm" :rules="quotaRules" label-width="100px">
+        <el-form-item label="机构名称">
+          <el-input :model-value="quotaForm.deptName" disabled />
+        </el-form-item>
+        <el-form-item label="核定编制" prop="approvedQuota">
+          <el-input-number v-model="quotaForm.approvedQuota" :min="0" style="width:100%" />
+        </el-form-item>
+        <el-form-item label="领导职数" prop="leaderQuota">
+          <el-input-number v-model="quotaForm.leaderQuota" :min="0" style="width:100%" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="quotaDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="quotaSubmitLoading" @click="handleQuotaSubmit">确定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -432,6 +455,56 @@ function handleDelete(row) {
   ElMessageBox.confirm('确定删除该机构吗？', '提示', { type: 'warning' }).then(() => {
     ElMessage.success('删除成功')
   }).catch(() => {})
+}
+
+const quotaDialogVisible = ref(false)
+const quotaSubmitLoading = ref(false)
+const quotaFormRef = ref(null)
+const quotaEditId = ref(null)
+
+const quotaForm = reactive({
+  deptName: '',
+  approvedQuota: 0,
+  leaderQuota: 0
+})
+
+const quotaRules = {
+  approvedQuota: [{ required: true, message: '请输入核定编制', trigger: 'blur' }],
+  leaderQuota: [{ required: true, message: '请输入领导职数', trigger: 'blur' }]
+}
+
+function resetQuotaForm() {
+  quotaFormRef.value?.resetFields()
+  quotaEditId.value = null
+  Object.assign(quotaForm, { deptName: '', approvedQuota: 0, leaderQuota: 0 })
+}
+
+function openQuotaEdit(row) {
+  quotaEditId.value = row.id
+  quotaForm.deptName = row.deptName
+  quotaForm.approvedQuota = row.approvedQuota
+  quotaForm.leaderQuota = row.leaderQuota
+  quotaDialogVisible.value = true
+}
+
+function handleQuotaSubmit() {
+  quotaFormRef.value.validate((valid) => {
+    if (!valid) return
+    quotaSubmitLoading.value = true
+    setTimeout(() => {
+      const item = allQuotaList.value.find(q => q.id === quotaEditId.value)
+      if (item) {
+        item.approvedQuota = quotaForm.approvedQuota
+        item.leaderQuota = quotaForm.leaderQuota
+        item.vacantCount = Math.max(0, item.approvedQuota - item.actualCount)
+        item.leaderVacancy = Math.max(0, item.leaderQuota - item.actualLeaders)
+        fetchQuota()
+      }
+      ElMessage.success('编制更新成功')
+      quotaDialogVisible.value = false
+      quotaSubmitLoading.value = false
+    }, 300)
+  })
 }
 
 function handleExport() {

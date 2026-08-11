@@ -179,6 +179,12 @@ const notifications = ref([
   { id: 5, title: '休假审批通过', desc: '您提交的年休假申请已审批通过', time: '2天前', read: true, icon: CircleCheck, color: '#9C27B0', path: '/daily' }
 ])
 
+// 从 localStorage 恢复已读状态
+const readIds = JSON.parse(localStorage.getItem('msg_read_ids') || '[]')
+notifications.value.forEach(n => {
+  if (readIds.includes(n.id)) n.read = true
+})
+
 const unreadCount = computed(() => notifications.value.filter(n => !n.read).length)
 
 const tabs = ref([
@@ -211,10 +217,12 @@ function closeTab(tab) {
 
 function markAllRead() {
   notifications.value.forEach(n => n.read = true)
+  localStorage.setItem('msg_read_ids', JSON.stringify(notifications.value.map(n => n.id)))
 }
 
 function handleMsgClick(item) {
   item.read = true
+  localStorage.setItem('msg_read_ids', JSON.stringify(notifications.value.filter(n => n.read).map(n => n.id)))
   if (item.path) {
     router.push(item.path)
   }

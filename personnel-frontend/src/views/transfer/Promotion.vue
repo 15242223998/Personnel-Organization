@@ -36,8 +36,8 @@
         <el-table-column prop="name" label="姓名" width="80" align="center" sortable />
         <el-table-column prop="gender" label="性别" width="60" align="center" sortable />
         <el-table-column prop="deptName" label="现机构" min-width="160" show-overflow-tooltip sortable />
-        <el-table-column prop="origRank" label="原职级" width="130" align="center" sortable />
-        <el-table-column prop="newRank" label="新职级" width="130" align="center" sortable>
+        <el-table-column prop="origRank" label="原职级" min-width="110" align="center" sortable />
+        <el-table-column prop="newRank" label="新职级" min-width="110" align="center" sortable>
           <template #default="{row}">
             <el-tag type="primary" size="small">{{ row.newRank }}</el-tag>
           </template>
