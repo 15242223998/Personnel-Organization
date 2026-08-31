@@ -311,7 +311,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, RefreshLeft, Plus, Upload, Download, Printer, DataAnalysis, Operation, CircleCheck, CircleCheckFilled, Warning, Camera, Document, FolderOpened, ArrowDown } from '@element-plus/icons-vue'
@@ -594,12 +594,22 @@ function handleExport() {
 
 function handlePrint() { ElMessage.info('打印名册功能') }
 
-// 根据路由设置 cadreStatus 筛选
-switch (cadreTab.value) {
-  case 'former': queryForm.cadreStatus = 'TRANSFERRED'; break
-  case 'retired': queryForm.cadreStatus = 'RETIRED'; break
-  default: queryForm.cadreStatus = ''
+// 根据路由同步当前干部库标签及状态筛选
+function syncTabFromRoute() {
+  cadreTab.value = tabRouteMap[route.path] || 'onJob'
+  switch (cadreTab.value) {
+    case 'former': queryForm.cadreStatus = 'TRANSFERRED'; break
+    case 'retired': queryForm.cadreStatus = 'RETIRED'; break
+    default: queryForm.cadreStatus = ''
+  }
 }
+
+// 路由切换时同步并刷新
+watch(() => route.path, () => {
+  syncTabFromRoute()
+  page.current = 1
+  fetchData()
+})
 
 function handleVerify() {
   const issues = []
@@ -754,7 +764,10 @@ const labelMap = {
   rankName: '职级', positionStartDate: '任现职时间', cadreStatus: '状态'
 }
 
-onMounted(fetchData)
+onMounted(() => {
+  syncTabFromRoute()
+  fetchData()
+})
 </script>
 
 <style scoped>
