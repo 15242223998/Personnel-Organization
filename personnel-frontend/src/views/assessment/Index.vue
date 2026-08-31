@@ -59,7 +59,7 @@
 
       <el-tab-pane label="民主测评" name="democracy">
         <div class="toolbar" style="border-top:1px solid #e0e0e0">
-          <el-button type="primary" size="small" @click="schemeDialog = true"><el-icon><Plus /></el-icon> 新建方案</el-button>
+          <el-button type="primary" size="small" @click="openSchemeDialog(null)"><el-icon><Plus /></el-icon> 新建方案</el-button>
           <el-button size="small" @click="exportScheme"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
@@ -85,12 +85,74 @@
                   <span class="link-blue" @click="openResult(row)">查看结果</span>
                 </template>
                 <el-divider direction="vertical" />
-                <span class="link-blue">编辑</span>
+                <span class="link-blue" @click="openSchemeDialog(row)">编辑</span>
                 <el-divider direction="vertical" />
-                <span class="link-blue" style="color:#E53935">删除</span>
+                <span class="link-blue" style="color:#E53935" @click="handleSchemeDelete(row)">删除</span>
               </template>
             </el-table-column>
           </el-table>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="成果输出" name="output">
+        <div class="search-bar">
+          <span class="label">年度：</span>
+          <el-select v-model="search.outputYear" placeholder="请选择" size="default" style="width:120px" clearable>
+            <el-option label="2025" value="2025" />
+            <el-option label="2024" value="2024" />
+            <el-option label="2023" value="2023" />
+          </el-select>
+          <span class="label">考核类型：</span>
+          <el-select v-model="search.outputType" placeholder="请选择" size="default" style="width:120px" clearable>
+            <el-option label="年度考核" value="年度考核" />
+            <el-option label="民主测评" value="民主测评" />
+          </el-select>
+          <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
+          <el-button @click="resetOutputSearch">重置</el-button>
+        </div>
+        <div class="toolbar">
+          <el-button type="primary" size="small" @click="generateReport"><el-icon><Document /></el-icon> 生成年度报告</el-button>
+          <el-button size="small" @click="exportOutput"><el-icon><Download /></el-icon> 导出</el-button>
+        </div>
+        <div class="table-wrap">
+          <el-table :data="outputData" border size="small">
+            <el-table-column type="index" label="序号" width="55" align="center" />
+            <el-table-column prop="reportName" label="报告名称" min-width="280" show-overflow-tooltip sortable />
+            <el-table-column prop="year" label="年度" width="80" align="center" sortable />
+            <el-table-column prop="reportType" label="报告类型" width="110" align="center" sortable>
+              <template #default="{ row }">
+                <el-tag :type="row.reportType === '年度考核' ? '' : 'success'" size="small">{{ row.reportType }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="totalCadre" label="考核人数" width="90" align="center" sortable />
+            <el-table-column prop="excellentCount" label="优秀" width="70" align="center" sortable />
+            <el-table-column prop="qualifiedCount" label="称职" width="70" align="center" sortable />
+            <el-table-column prop="basicCount" label="基本称职" width="80" align="center" sortable />
+            <el-table-column prop="unqualifiedCount" label="不称职" width="70" align="center" sortable />
+            <el-table-column prop="generateTime" label="生成时间" width="150" align="center" sortable />
+            <el-table-column label="操作" width="180" align="center" fixed="right">
+              <template #default="{ row }">
+                <span class="link-blue" @click="viewReport(row)">查看</span>
+                <el-divider direction="vertical" />
+                <span class="link-blue" @click="downloadReport(row)">下载</span>
+                <el-divider direction="vertical" />
+                <span class="link-blue" style="color:#E53935" @click="deleteReport(row)">删除</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="pagination-wrap">
+          <el-pagination
+            v-model:current-page="outputPage.current"
+            v-model:page-size="outputPage.size"
+            :page-sizes="[10,20,50]"
+            :total="outputPage.total"
+            layout="total,sizes,prev,pager,next,jumper"
+            background
+            small
+            @size-change="outputPage.current = 1; loadOutputData()"
+            @current-change="loadOutputData"
+          />
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -117,7 +179,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog title="新建民主测评方案" v-model="schemeDialog" width="600px">
+    <el-dialog :title="schemeDialogTitle" v-model="schemeDialog" width="600px" @closed="schemeEditId = null">
       <el-form :model="schemeForm" label-width="90px">
         <el-form-item label="方案名称">
           <el-input v-model="schemeForm.name" placeholder="请输入方案名称" />
@@ -137,7 +199,7 @@
       </el-form>
       <template #footer>
         <el-button @click="schemeDialog = false">取消</el-button>
-        <el-button type="primary" @click="schemeDialog = false">确定</el-button>
+        <el-button type="primary" @click="handleSchemeSubmit">确定</el-button>
       </template>
     </el-dialog>
 
@@ -162,22 +224,29 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Plus, Upload, Download } from '@element-plus/icons-vue'
+import { Search, Plus, Upload, Download, Document } from '@element-plus/icons-vue'
 import { importExcel, mapImportData } from '@/utils/excel'
 import { showExportDialog } from '@/utils/export-store'
 
 const activeTab = ref('annual')
+
+onMounted(() => {
+  if (window.innerWidth <= 768) activeTab.value = 'democracy'
+})
 const schemeDialog = ref(false)
 const resultDialog = ref(false)
 const currentScheme = ref(null)
+const schemeEditId = ref(null)
 const importDialogVisible = ref(false)
 const importPreviewData = ref([])
 const importing = ref(false)
 
 const search = reactive({
-  annual: { year: '', name: '', result: '' }
+  annual: { year: '', name: '', result: '' },
+  outputYear: '',
+  outputType: ''
 })
 
 const annualPool = ref([
@@ -198,11 +267,13 @@ const annualData = computed(() => {
   return data
 })
 
-const schemeData = [
+const schemeData = ref([
   { name: '2025年度中层干部民主测评', year: '2025', startDate: '2026-01-10', endDate: '2026-01-20', targetCount: 45, voterCount: 128, status: '已结束' },
   { name: '2025年度机关作风民主测评', year: '2025', startDate: '2026-02-01', endDate: '2026-02-10', targetCount: 20, voterCount: 200, status: '进行中' },
   { name: '2026年新任干部试用期满测评', year: '2026', startDate: '2026-08-15', endDate: '2026-08-25', targetCount: 8, voterCount: 0, status: '草稿' }
-]
+])
+
+const schemeDialogTitle = computed(() => schemeEditId.value ? '编辑民主测评方案' : '新建民主测评方案')
 
 const schemeForm = reactive({
   name: '', year: '', dateRange: [], remark: ''
@@ -251,6 +322,62 @@ function handleDeleteAnnual(row) {
   ElMessage.success(`已删除 ${row.name} 的年度考核记录`)
 }
 
+function openSchemeDialog(row) {
+  if (row) {
+    schemeEditId.value = row.name
+    schemeForm.name = row.name
+    schemeForm.year = row.year
+    schemeForm.dateRange = [row.startDate, row.endDate]
+    schemeForm.remark = row.remark || ''
+  } else {
+    schemeEditId.value = null
+    schemeForm.name = ''
+    schemeForm.year = ''
+    schemeForm.dateRange = []
+    schemeForm.remark = ''
+  }
+  schemeDialog.value = true
+}
+
+function handleSchemeSubmit() {
+  if (!schemeForm.name || !schemeForm.year) {
+    ElMessage.warning('请填写方案名称和测评年度')
+    return
+  }
+  const payload = {
+    name: schemeForm.name,
+    year: schemeForm.year,
+    startDate: schemeForm.dateRange?.[0] || '',
+    endDate: schemeForm.dateRange?.[1] || '',
+    targetCount: 0,
+    voterCount: 0,
+    status: '草稿',
+    remark: schemeForm.remark
+  }
+  if (schemeEditId.value) {
+    const idx = schemeData.value.findIndex(d => d.name === schemeEditId.value)
+    if (idx > -1) {
+      payload.targetCount = schemeData.value[idx].targetCount
+      payload.voterCount = schemeData.value[idx].voterCount
+      payload.status = schemeData.value[idx].status
+      schemeData.value[idx] = payload
+    }
+    ElMessage.success('方案更新成功')
+  } else {
+    schemeData.value.push(payload)
+    ElMessage.success('方案创建成功')
+  }
+  schemeDialog.value = false
+  schemeEditId.value = null
+}
+
+function handleSchemeDelete(row) {
+  ElMessageBox.confirm('确定删除该测评方案吗？', '提示', { type: 'warning' }).then(() => {
+    schemeData.value = schemeData.value.filter(d => d.name !== row.name)
+    ElMessage.success('删除成功')
+  }).catch(() => {})
+}
+
 function openResult(row) {
   currentScheme.value = row
   resultDialog.value = true
@@ -268,7 +395,7 @@ function exportAnnual() {
 }
 
 function exportScheme() {
-  showExportDialog(schemeData, [
+  showExportDialog(schemeData.value, [
     { prop: 'name', label: '方案名称' },
     { prop: 'year', label: '年度' },
     { prop: 'startDate', label: '开始时间' },
@@ -302,6 +429,38 @@ function confirmImport() {
   }, 400)
 }
 function handleCancelImport() { importDialogVisible.value = false; importPreviewData.value = [] }
+
+const outputPage = reactive({ current: 1, size: 10, total: 0 })
+const outputData = ref([
+  { id: 1, reportName: '2025年度干部考核综合分析报告', year: '2025', reportType: '年度考核', totalCadre: 328, excellentCount: 65, qualifiedCount: 248, basicCount: 12, unqualifiedCount: 3, generateTime: '2026-01-15 14:30' },
+  { id: 2, reportName: '2025年度中层干部民主测评结果报告', year: '2025', reportType: '民主测评', totalCadre: 86, excellentCount: 18, qualifiedCount: 62, basicCount: 5, unqualifiedCount: 1, generateTime: '2026-01-20 10:00' },
+  { id: 3, reportName: '2024年度干部考核综合分析报告', year: '2024', reportType: '年度考核', totalCadre: 312, excellentCount: 58, qualifiedCount: 238, basicCount: 14, unqualifiedCount: 2, generateTime: '2025-01-12 15:20' },
+  { id: 4, reportName: '2024年度中层干部民主测评结果报告', year: '2024', reportType: '民主测评', totalCadre: 82, excellentCount: 15, qualifiedCount: 60, basicCount: 6, unqualifiedCount: 1, generateTime: '2025-01-18 09:45' },
+  { id: 5, reportName: '2023年度干部考核综合分析报告', year: '2023', reportType: '年度考核', totalCadre: 298, excellentCount: 52, qualifiedCount: 228, basicCount: 15, unqualifiedCount: 3, generateTime: '2024-01-08 11:00' },
+])
+
+function loadOutputData() { outputPage.total = outputData.value.length }
+function resetOutputSearch() { search.outputYear = ''; search.outputType = ''; outputPage.current = 1; loadOutputData() }
+function generateReport() { ElMessage.success('报告生成任务已提交，请稍后刷新查看') }
+function viewReport(row) { ElMessage.info(`查看报告：${row.reportName}`) }
+function downloadReport(row) { ElMessage.success(`正在下载：${row.reportName}`) }
+function deleteReport(row) {
+  ElMessageBox.confirm('确定删除该报告吗？', '提示', { type: 'warning' }).then(() => {
+    outputData.value = outputData.value.filter(d => d.id !== row.id)
+    ElMessage.success('删除成功')
+    loadOutputData()
+  }).catch(() => {})
+}
+
+function exportOutput() {
+  showExportDialog(outputData.value, [
+    { prop: 'reportName', label: '报告名称' }, { prop: 'year', label: '年度' }, { prop: 'reportType', label: '报告类型' },
+    { prop: 'totalCadre', label: '考核人数' }, { prop: 'excellentCount', label: '优秀' }, { prop: 'qualifiedCount', label: '称职' },
+    { prop: 'basicCount', label: '基本称职' }, { prop: 'unqualifiedCount', label: '不称职' }, { prop: 'generateTime', label: '生成时间' }
+  ], '考核成果输出')
+}
+
+loadOutputData()
 </script>
 
 <style scoped>
@@ -317,5 +476,26 @@ function handleCancelImport() { importDialogVisible.value = false; importPreview
 }
 .gov-tabs :deep(.el-tabs__content) {
   padding-top: 0;
+}
+
+@media (max-width: 768px) {
+  .gov-tabs :deep(.el-tabs__header) {
+    padding: 0 4px;
+  }
+  .gov-tabs :deep(.el-tabs__item) {
+    font-size: 13px;
+    padding: 0 10px;
+  }
+  .search-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .toolbar .el-button {
+    margin-left: 0;
+  }
 }
 </style>

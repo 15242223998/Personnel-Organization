@@ -3,12 +3,13 @@
     <!-- 顶部蓝色导航栏 -->
     <el-header class="top-header">
       <div class="header-left">
+        <el-icon class="hamburger-btn" @click="mobileMenuVisible = !mobileMenuVisible"><Expand /></el-icon>
         <div class="logo-icon">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="white">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
         </div>
-        <span class="sys-name">组织人事档案系统</span>
+        <span class="sys-name">辽宁工业大学 - 组织人事档案管理系统</span>
       </div>
       <div class="header-right">
         <el-popover
@@ -57,6 +58,7 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
+              <el-dropdown-item @click="goProfile">个人信息</el-dropdown-item>
               <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -66,7 +68,8 @@
 
     <el-container class="main-container">
       <!-- 左侧菜单 -->
-      <el-aside width="200px" class="left-aside">
+      <div class="mobile-overlay" :class="{ show: mobileMenuVisible }" @click.self="mobileMenuVisible = false">
+        <el-aside width="200px" class="left-aside">
         <el-menu
           :default-active="$route.path"
           :default-openeds="openedGroups"
@@ -79,20 +82,30 @@
           <el-menu-item index="/dashboard">
             <el-icon><HomeFilled /></el-icon><span>首页</span>
           </el-menu-item>
+          <el-menu-item index="/statistics">
+            <el-icon><PieChart /></el-icon><span>统计分析</span>
+          </el-menu-item>
+          <el-menu-item index="/cadre/declaration">
+            <el-icon><UserFilled /></el-icon><span>个人信息申报</span>
+          </el-menu-item>
           <el-sub-menu index="org">
             <template #title>
               <el-icon><OfficeBuilding /></el-icon><span>组织机构管理</span>
             </template>
-            <el-menu-item index="/organization">机构管理</el-menu-item>
-            <el-menu-item index="/position-level">职务层次</el-menu-item>
-            <el-menu-item index="/rank">职级管理</el-menu-item>
+            <el-menu-item index="/organization"><el-icon><OfficeBuilding /></el-icon>机构管理</el-menu-item>
+            <el-menu-item index="/organization/leadership"><el-icon><UserFilled /></el-icon>班子管理</el-menu-item>
+            <el-menu-item index="/position-level"><el-icon><Grid /></el-icon>职务层次</el-menu-item>
+            <el-menu-item index="/rank"><el-icon><Medal /></el-icon>职级管理</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="cadre">
             <template #title>
               <el-icon><UserFilled /></el-icon><span>干部信息管理</span>
             </template>
-            <el-menu-item index="/cadre">干部信息</el-menu-item>
-            <el-menu-item index="/cadre-reserve">后备干部库</el-menu-item>
+            <el-menu-item index="/cadre/onjob"><el-icon><UserFilled /></el-icon>在职干部库</el-menu-item>
+            <el-menu-item index="/cadre/former"><el-icon><Switch /></el-icon>原任干部库</el-menu-item>
+            <el-menu-item index="/cadre/retired"><el-icon><Timer /></el-icon>离退休干部库</el-menu-item>
+            <el-menu-item index="/cadre/reserve"><el-icon><Star /></el-icon>后备干部库</el-menu-item>
+            <el-menu-item index="/cadre/young"><el-icon><Sunny /></el-icon>年轻干部库</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="/transfer">
             <el-icon><Switch /></el-icon><span>干部调配管理</span>
@@ -103,29 +116,42 @@
           <el-menu-item index="/appointment">
             <el-icon><Stamp /></el-icon><span>干部任免管理</span>
           </el-menu-item>
-          <el-menu-item index="/supervision">
-            <el-icon><WarningFilled /></el-icon><span>干部监督管理</span>
+          <el-menu-item index="/evaluation">
+            <el-icon><EditPen /></el-icon><span>干部考察评价管理</span>
           </el-menu-item>
+          <el-sub-menu index="supervision">
+            <template #title>
+              <el-icon><WarningFilled /></el-icon><span>干部监督管理</span>
+            </template>
+            <el-menu-item index="/supervision/integrity"><el-icon><DocumentChecked /></el-icon>廉政意见</el-menu-item>
+            <el-menu-item index="/supervision/complaint"><el-icon><Message /></el-icon>信访举报</el-menu-item>
+            <el-menu-item index="/supervision/personal"><el-icon><Notebook /></el-icon>个人事项报告</el-menu-item>
+            <el-menu-item index="/supervision/alert"><el-icon><Warning /></el-icon>智能预警分析</el-menu-item>
+            <el-menu-item index="/supervision/admonish"><el-icon><ChatDotRound /></el-icon>提醒函询诫勉</el-menu-item>
+            <el-menu-item index="/supervision/audit"><el-icon><Coin /></el-icon>经济责任审计</el-menu-item>
+          </el-sub-menu>
           <el-menu-item index="/assessment">
             <el-icon><DataAnalysis /></el-icon><span>干部考核管理</span>
           </el-menu-item>
           <el-menu-item index="/daily">
             <el-icon><Calendar /></el-icon><span>日常事务管理</span>
           </el-menu-item>
-          <el-menu-item index="/statistics">
-            <el-icon><PieChart /></el-icon><span>统计分析</span>
-          </el-menu-item>
           <el-sub-menu index="sys">
             <template #title>
               <el-icon><Setting /></el-icon><span>系统管理</span>
             </template>
-            <el-menu-item index="/system/user">用户管理</el-menu-item>
-            <el-menu-item index="/system/role">角色管理</el-menu-item>
-            <el-menu-item index="/system/dict">字典管理</el-menu-item>
-            <el-menu-item index="/system/log">系统日志</el-menu-item>
+            <el-menu-item index="/system/user"><el-icon><User /></el-icon>用户管理</el-menu-item>
+            <el-menu-item index="/system/role"><el-icon><Avatar /></el-icon>角色管理</el-menu-item>
+            <el-menu-item index="/system/dict"><el-icon><Collection /></el-icon>字典管理</el-menu-item>
+            <el-menu-item index="/system/approval"><el-icon><Finished /></el-icon>审批事项管理</el-menu-item>
+            <el-menu-item index="/system/policy"><el-icon><Files /></el-icon>政策法规管理</el-menu-item>
+            <el-menu-item index="/system/alert-rule"><el-icon><Bell /></el-icon>预警规则管理</el-menu-item>
+            <el-menu-item index="/system/declaration-approval"><el-icon><DocumentChecked /></el-icon>信息申报审批</el-menu-item>
+            <el-menu-item index="/system/log"><el-icon><Tickets /></el-icon>系统日志</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-aside>
+      </div>
 
       <el-container class="content-container">
         <!-- 标签页栏 -->
@@ -163,13 +189,14 @@ import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import ExportDialog from '../components/ExportDialog.vue'
-import { Bell, UserFilled, ArrowDown, Close, HomeFilled, OfficeBuilding, Switch, Top, Stamp, WarningFilled, DataAnalysis, Calendar, PieChart, Setting, Document, User, CircleCheck, Warning } from '@element-plus/icons-vue'
+import { Bell, UserFilled, ArrowDown, Close, HomeFilled, OfficeBuilding, Switch, Top, Stamp, WarningFilled, DataAnalysis, Calendar, PieChart, Setting, Document, User, CircleCheck, Warning, EditPen, Expand, Grid, Medal, Timer, Star, Sunny, DocumentChecked, Message, Notebook, ChatDotRound, Coin, Avatar, Collection, Finished, Files, Tickets } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 
-const openedGroups = ['org', 'cadre', 'sys']
+const openedGroups = ['cadre']
+const mobileMenuVisible = ref(false)
 
 const notifications = ref([
   { id: 1, title: '任免流程待审批', desc: '机械工程学院副院长任免流程进入讨论决定环节，需您审批', time: '10分钟前', read: false, icon: Stamp, color: '#1976D2', path: '/appointment' },
@@ -231,6 +258,10 @@ function handleMsgClick(item) {
 function viewAllMessages() {
   // 可跳转到消息中心页面，目前跳转到dashboard
   router.push('/dashboard')
+}
+
+function goProfile() {
+  router.push('/profile')
 }
 
 function logout() {
@@ -472,6 +503,12 @@ body {
   line-height: 38px;
   padding: 0 16px !important;
 }
+.side-menu :deep(.el-menu-item .el-icon),
+.side-menu :deep(.el-sub-menu__title .el-icon) {
+  margin-right: 6px;
+  font-size: 16px;
+  vertical-align: -2px;
+}
 .side-menu :deep(.el-menu-item.is-active) {
   background-color: #1976D2 !important;
   color: #fff !important;
@@ -483,9 +520,13 @@ body {
   color: #1976D2 !important;
 }
 .side-menu :deep(.el-sub-menu .el-menu-item) {
-  padding-left: 42px !important;
+  padding-left: 48px !important;
   background-color: #fafcff;
   min-width: auto;
+}
+.side-menu :deep(.el-sub-menu .el-menu-item .el-icon) {
+  font-size: 14px;
+  margin-right: 8px;
 }
 .side-menu :deep(.el-sub-menu .el-menu-item.is-active) {
   background-color: #1976D2 !important;
@@ -556,5 +597,77 @@ body {
 }
 .content-main > div {
   min-width: 0;
+}
+
+/* ====== 移动端适配 ====== */
+@media (max-width: 768px) {
+  .top-header {
+    padding: 0 10px;
+  }
+  .sys-name {
+    font-size: 15px;
+  }
+  .hamburger-btn {
+    display: inline-flex !important;
+    font-size: 22px;
+    cursor: pointer;
+    color: #fff;
+    margin-right: 6px;
+  }
+  .header-right {
+    gap: 10px;
+  }
+  .header-link {
+    font-size: 12px;
+  }
+  /* 消息弹窗全宽 */
+  .msg-popover {
+    min-width: 100vw !important;
+    width: 100vw !important;
+    left: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .main-container {
+    position: relative;
+  }
+  .mobile-overlay {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+    pointer-events: none;
+    background: transparent;
+    transition: background 0.25s;
+  }
+  .mobile-overlay.show {
+    pointer-events: auto;
+    background: rgba(0,0,0,0.35);
+  }
+  .left-aside {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 201;
+    transform: translateX(-100%);
+    transition: transform 0.25s;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+  .mobile-overlay.show .left-aside {
+    transform: translateX(0);
+  }
+  .tabs-bar {
+    display: none;
+  }
+  .content-main {
+    padding: 8px !important;
+  }
+}
+.hamburger-btn {
+  display: none;
 }
 </style>

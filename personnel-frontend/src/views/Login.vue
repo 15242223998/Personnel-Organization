@@ -8,7 +8,7 @@
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
           </div>
-          <h1>组织人事档案系统</h1>
+          <h1>辽宁工业大学 - 组织人事档案管理系统</h1>
           <p>辽宁工业大学 · 智慧组织人事管理平台</p>
         </div>
         <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form">
@@ -18,7 +18,7 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="loginForm.password" type="password" placeholder="密码" size="large" @keyup.enter="handleLogin" show-password>
+            <el-input v-model="loginForm.password" type="password" placeholder="密码（任意）" size="large" @keyup.enter="handleLogin" show-password>
               <template #prefix><el-icon><Lock /></el-icon></template>
             </el-input>
           </el-form-item>
@@ -26,7 +26,16 @@
             <el-button type="primary" size="large" style="width:100%" :loading="loading" @click="handleLogin">登 录</el-button>
           </el-form-item>
         </el-form>
-        <div class="login-footer">© 2026 组织人事档案系统 版权所有</div>
+        <div class="demo-accounts">
+          <span style="color:#999;font-size:12px">演示账号：</span>
+          <span class="demo-tag" @click="loginForm.username='admin'" :style="{background: loginForm.username==='admin'?'#1976D2':'#e8e8e8', color: loginForm.username==='admin'?'#fff':'#666'}">admin</span>
+          <span class="demo-tag" @click="loginForm.username='zhangjg'" :style="{background: loginForm.username==='zhangjg'?'#1976D2':'#e8e8e8', color: loginForm.username==='zhangjg'?'#fff':'#666'}">张建国</span>
+          <span class="demo-tag" @click="loginForm.username='lixiuying'" :style="{background: loginForm.username==='lixiuying'?'#1976D2':'#e8e8e8', color: loginForm.username==='lixiuying'?'#fff':'#666'}">李秀英</span>
+          <span class="demo-tag" @click="loginForm.username='wangzq'" :style="{background: loginForm.username==='wangzq'?'#1976D2':'#e8e8e8', color: loginForm.username==='wangzq'?'#fff':'#666'}">王志强</span>
+          <span class="demo-tag" @click="loginForm.username='liudeming'" :style="{background: loginForm.username==='liudeming'?'#1976D2':'#e8e8e8', color: loginForm.username==='liudeming'?'#fff':'#666'}">刘德明</span>
+          <span class="demo-tag" @click="loginForm.username='chenlh'" :style="{background: loginForm.username==='chenlh'?'#1976D2':'#e8e8e8', color: loginForm.username==='chenlh'?'#fff':'#666'}">陈丽华</span>
+        </div>
+        <div class="login-footer">© 2026 辽宁工业大学 - 组织人事档案管理系统 版权所有</div>
       </div>
     </div>
   </div>
@@ -59,10 +68,19 @@ function handleLogin() {
     if (!valid) return
     loading.value = true
     setTimeout(() => {
-      if (loginForm.username === 'admin') {
-        localStorage.setItem('token', 'mock-token-admin')
-        userStore.setUser('系统管理员', '1')
-        ElMessage.success('登录成功')
+      const accounts = {
+        'admin':     { token: 'mock-token-admin',     name: '系统管理员', id: '1',   real: '系统管理员', type: 'admin' },
+        'zhangjg':   { token: 'mock-token-zhangjg',   name: '张建国',     id: '100', real: '张建国',     type: 'cadre' },
+        'lixiuying': { token: 'mock-token-lixiuying', name: '李秀英',     id: '101', real: '李秀英',     type: 'cadre' },
+        'wangzq':    { token: 'mock-token-wangzq',    name: '王志强',     id: '102', real: '王志强',     type: 'cadre' },
+        'liudeming': { token: 'mock-token-liudeming', name: '刘德明',     id: '103', real: '刘德明',     type: 'cadre' },
+        'chenlh':    { token: 'mock-token-chenlh',    name: '陈丽华',     id: '104', real: '陈丽华',     type: 'cadre' }
+      }
+      const acc = accounts[loginForm.username]
+      if (acc) {
+        localStorage.setItem('token', acc.token)
+        userStore.setUser(acc.name, acc.id, acc.real, acc.type)
+        ElMessage.success(`欢迎，${acc.real}`)
         router.push('/')
       } else {
         ElMessage.error('用户名或密码错误')
@@ -128,10 +146,11 @@ function handleLogin() {
   margin-bottom: 12px;
 }
 .login-title h1 {
-  font-size: 22px;
+  font-size: 18px;
   color: #1976D2;
   margin: 0 0 8px 0;
   font-weight: bold;
+  line-height: 1.4;
 }
 .login-title p {
   font-size: 13px;
@@ -147,4 +166,7 @@ function handleLogin() {
   color: #bbb;
   margin-top: 16px;
 }
+.demo-accounts { text-align: center; margin-top: 8px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+.demo-tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; cursor: pointer; transition: all 0.2s; user-select: none; }
+.demo-tag:hover { opacity: 0.85; }
 </style>

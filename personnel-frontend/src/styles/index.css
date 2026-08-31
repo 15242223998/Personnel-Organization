@@ -210,3 +210,42 @@
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
+
+/* ====== 移动端全局样式 ====== */
+@media (max-width: 768px) {
+  .page-header {
+    font-size: 15px;
+    padding: 8px 10px;
+  }
+  .search-bar .label {
+    font-size: 12px;
+  }
+  .search-bar .el-input,
+  .search-bar .el-select {
+    width: 110px !important;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pagination-wrap {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .el-dialog {
+    width: 95% !important;
+    margin: 0 auto;
+  }
+  .el-dialog__body {
+    padding: 12px !important;
+  }
+  .el-form-item {
+    margin-bottom: 12px;
+  }
+  .el-descriptions {
+    --el-descriptions-item-bordered-label-background: #f5f7fa;
+  }
+  .el-descriptions__body .el-descriptions__table {
+    display: block;
+  }
+}

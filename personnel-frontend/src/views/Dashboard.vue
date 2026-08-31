@@ -3,7 +3,7 @@
     <!-- 统计卡片 -->
     <el-row :gutter="10" style="margin-bottom:12px">
       <el-col :span="6" v-for="card in statCards" :key="card.label">
-        <div class="stat-card" :style="{ borderLeftColor: card.color }">
+        <div class="stat-card" :style="{ borderLeftColor: card.color }" @click="$router.push(card.path)">
           <div class="stat-info">
             <div class="stat-value" :style="{ color: card.color }">{{ card.value }}</div>
             <div class="stat-label">{{ card.label }}</div>
@@ -33,7 +33,7 @@
             <el-table-column prop="time" label="时间" width="120" align="center" />
             <el-table-column label="操作" width="80" align="center">
               <template #default>
-                <span class="link-blue">处理</span>
+                <span class="link-blue" @click="$router.push('/supervision/alert')">处理</span>
               </template>
             </el-table-column>
           </el-table>
@@ -62,27 +62,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted, markRaw } from 'vue'
+import { ref, computed, onMounted, markRaw } from 'vue'
 import * as echarts from 'echarts'
+import { generateAlerts } from '@/utils/alert-service'
 import {
   UserFilled, User, OfficeBuilding, Medal, WarningFilled,
   Bell, DataAnalysis, Switch, Stamp, Grid, PieChart, Calendar, Top
 } from '@element-plus/icons-vue'
 
 const statCards = [
-  { label: '在职干部总数', value: '328', color: '#1976D2', icon: markRaw(UserFilled) },
-  { label: '机构数量', value: '46', color: '#43A047', icon: markRaw(OfficeBuilding) },
-  { label: '后备干部', value: '35', color: '#FB8C00', icon: markRaw(Medal) },
-  { label: '待办事项', value: '12', color: '#E53935', icon: markRaw(WarningFilled) }
+  { label: '在职干部总数', value: '328', color: '#1976D2', icon: markRaw(UserFilled), path: '/cadre/onjob' },
+  { label: '机构数量', value: '46', color: '#43A047', icon: markRaw(OfficeBuilding), path: '/organization' },
+  { label: '后备干部', value: '35', color: '#FB8C00', icon: markRaw(Medal), path: '/cadre/reserve' },
+  { label: '待办事项', value: '12', color: '#E53935', icon: markRaw(WarningFilled), path: '/supervision/alert' }
 ]
 
-const alertList = [
-  { type: '红色预警', tagType: 'danger', title: '张某某将于3个月内达到退休年龄', time: '2026-08-08' },
-  { type: '黄色预警', tagType: 'warning', title: '机械工程学院领导职数空缺1个', time: '2026-08-07' },
-  { type: '蓝色提醒', tagType: '', title: '李某某试用期将于2026-09-01到期', time: '2026-08-06' },
-  { type: '黄色预警', tagType: 'warning', title: '王某某出国证件逾期未归还', time: '2026-08-05' },
-  { type: '红色预警', tagType: 'danger', title: '3名干部处分影响期内，不得提拔', time: '2026-08-04' }
-]
+// 待办预警：按事件结束时间(deadline)最临近排序，取前7项
+const alertList = computed(() => generateAlerts().slice(0, 7).map(a => ({
+  type: a.category,
+  tagType: a.level === '红色' ? 'danger' : a.level === '黄色' ? 'warning' : '',
+  title: a.title,
+  time: a.deadline || '—'
+})))
 
 const quickMenus = [
   { name: '干部信息', path: '/cadre', color: '#1976D2', icon: markRaw(User) },
@@ -129,6 +130,12 @@ onMounted(() => {
   justify-content: space-between;
   border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
 }
 .stat-value {
   font-size: 28px;
