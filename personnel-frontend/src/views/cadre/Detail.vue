@@ -27,7 +27,7 @@
                 :http-request="handlePhotoUpload"
                 accept="image/*"
               >
-                <el-button size="small" type="primary" plain>上传照片</el-button>
+                <el-button type="primary" plain>上传照片</el-button>
               </el-upload>
             </div>
             <div class="form-area">
@@ -254,7 +254,7 @@
         <el-tab-pane label="家庭成员" name="family">
           <div class="sub-table-bar">
             <span class="sub-title">家庭成员列表</span>
-            <el-button v-if="isEditMode" type="primary" size="small" @click="openFamilyAdd"><el-icon><Plus /></el-icon> 新增</el-button>
+            <el-button v-if="isEditMode" type="primary" @click="openFamilyAdd"><el-icon><Plus /></el-icon> 新增</el-button>
           </div>
           <el-table :data="familyList" border size="small">
             <el-table-column type="index" label="序号" width="60" align="center" />
@@ -279,7 +279,7 @@
               :http-request="handleUpload"
               :show-file-list="false"
             >
-              <el-button type="primary" size="small"><el-icon><Upload /></el-icon> 上传材料</el-button>
+              <el-button type="primary" ><el-icon><Upload /></el-icon> 上传材料</el-button>
             </el-upload>
           </div>
           <el-table :data="evidenceFiles" border size="small">

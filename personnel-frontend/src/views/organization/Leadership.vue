@@ -16,8 +16,8 @@
     </div>
 
     <div class="toolbar">
-      <el-button type="primary" size="small" @click="handleAdd"><el-icon><Plus /></el-icon> 新增班子</el-button>
-      <el-button size="small" @click="handleExport"><el-icon><Download /></el-icon> 导出</el-button>
+      <el-button type="primary" @click="handleAdd"><el-icon><Plus /></el-icon> 新增班子</el-button>
+      <el-button @click="handleExport"><el-icon><Download /></el-icon> 导出</el-button>
     </div>
 
     <div class="table-wrap">
@@ -25,8 +25,8 @@
         <el-table-column type="index" label="序号" width="55" align="center" />
         <el-table-column prop="deptName" label="机构名称" min-width="180" show-overflow-tooltip sortable />
         <el-table-column prop="term" label="班子届次" width="100" align="center" sortable />
-        <el-table-column prop="leaderName" label="主要负责人" width="90" align="center" sortable />
-        <el-table-column prop="memberCount" label="班子人数" width="90" align="center" sortable />
+        <el-table-column prop="leaderName" label="主要负责人" width="120" align="center" sortable />
+        <el-table-column prop="memberCount" label="班子人数" width="110" align="center" sortable />
         <el-table-column prop="memberList" label="班子成员" min-width="300" show-overflow-tooltip />
         <el-table-column prop="startDate" label="任期起始" width="110" align="center" sortable />
         <el-table-column prop="endDate" label="任期届满" width="110" align="center" sortable />

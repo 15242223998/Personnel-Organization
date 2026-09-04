@@ -2,8 +2,6 @@ package com.personnel.common;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -33,22 +31,5 @@ public class ExcelService {
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .sheet(sheetName)
                 .doWrite(data);
-    }
-
-    /**
-     * 导出Excel到HttpServletResponse (多Sheet)
-     */
-    public static <T> void exportMultiSheet(HttpServletResponse response, String fileName,
-                                             List<WriteSheet> writeSheets) throws IOException {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
-        response.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + encodedFileName + ".xlsx");
-
-        ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).build();
-        for (WriteSheet writeSheet : writeSheets) {
-            excelWriter.write(writeSheet.getData(), writeSheet);
-        }
-        excelWriter.finish();
     }
 }

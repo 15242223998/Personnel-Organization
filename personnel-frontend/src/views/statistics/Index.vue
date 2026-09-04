@@ -41,7 +41,7 @@
     <div class="chart-card">
       <div class="chart-title">
         机构干部统计表
-        <el-button size="small" type="primary" style="float:right;margin-top:-2px" @click="handleExportStats"><el-icon><Download /></el-icon> 导出</el-button>
+        <el-button type="primary" style="float:right;margin-top:-2px" @click="handleExportStats"><el-icon><Download /></el-icon> 导出</el-button>
       </div>
       <el-table :data="orgTableData" border size="small">
         <el-table-column prop="orgName" label="机构名称" min-width="200" align="center" />

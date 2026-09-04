@@ -10,12 +10,12 @@
         <el-option label="管理岗" value="管理岗" />
         <el-option label="专业技术岗" value="专业技术岗" />
       </el-select>
-      <el-button type="primary" @click="handleSearch">查询</el-button>
+      <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
       <el-button @click="handleReset">重置</el-button>
     </div>
 
     <div class="toolbar">
-      <el-button type="primary" @click="openAdd">新增</el-button>
+      <el-button type="primary" @click="openAdd"><el-icon><Plus /></el-icon> 新增职级</el-button>
     </div>
 
     <div class="table-wrap">
@@ -83,6 +83,7 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
+import { Search, Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { showExportDialog } from '@/utils/export-store'
 

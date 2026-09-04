@@ -253,7 +253,7 @@
             </el-upload>
             <div v-if="lrmxPreview.length > 0" style="margin-top:12px;background:#f0f9eb;padding:10px;border-radius:4px;font-size:12px;color:#43A047;text-align:left">
               <el-icon><CircleCheckFilled /></el-icon> 智能解析完成：已提取 {{ lrmxPreview.length }} 条任免记录
-              <el-button size="small" type="primary" style="margin-left:12px" @click="confirmLrmxImport">确认导入</el-button>
+              <el-button type="primary" style="margin-left:12px" @click="confirmLrmxImport">确认导入</el-button>
             </div>
           </div>
         </el-tab-pane>
@@ -272,7 +272,7 @@
             </el-upload>
             <div v-if="wordPreview.length > 0" style="margin-top:12px;background:#f0f9eb;padding:10px;border-radius:4px;font-size:12px;color:#43A047;text-align:left">
               <el-icon><CircleCheckFilled /></el-icon> 智能提取完成：已识别 {{ wordPreview.length }} 项字段
-              <el-button size="small" type="primary" style="margin-left:12px" @click="confirmWordImport">确认导入</el-button>
+              <el-button type="primary" style="margin-left:12px" @click="confirmWordImport">确认导入</el-button>
             </div>
           </div>
         </el-tab-pane>
@@ -291,7 +291,7 @@
             </el-upload>
             <div v-if="photoPreview.length > 0" style="margin-top:12px;background:#f0f9eb;padding:10px;border-radius:4px;font-size:12px;color:#43A047;text-align:left">
               <el-icon><CircleCheckFilled /></el-icon> 照片匹配完成：成功关联 {{ photoPreview.length }} 人
-              <el-button size="small" type="primary" style="margin-left:12px" @click="confirmPhotoImport">确认导入</el-button>
+              <el-button type="primary" style="margin-left:12px" @click="confirmPhotoImport">确认导入</el-button>
             </div>
           </div>
         </el-tab-pane>

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.Resource;
-import java.time.LocalDate;
 
 @Service
 public class RankPromotionRecordServiceImpl extends ServiceImpl<RankPromotionRecordMapper, RankPromotionRecord> implements RankPromotionRecordService {
@@ -24,11 +23,12 @@ public class RankPromotionRecordServiceImpl extends ServiceImpl<RankPromotionRec
     public boolean save(RankPromotionRecord record) {
         boolean result = super.save(record);
         CadreInfo cadre = cadreInfoService.getById(record.getCadreId());
-        if (cadre != null) {
-            if (record.getToRankId() != null) {
-                cadre.setRankId(record.getToRankId());
-            }
-            cadre.setPositionStartDate(LocalDate.now());
+        if (cadre == null) {
+            throw new BusinessException("晋升对象不存在，请刷新后重试");
+        }
+        // 职级晋升只更新职级ID（职务与职务层次由任免/调配维护，避免覆盖）
+        if (record.getToRankId() != null) {
+            cadre.setRankId(record.getToRankId());
             cadreInfoService.updateById(cadre);
         }
         return result;

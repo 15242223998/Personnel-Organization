@@ -15,7 +15,7 @@
     </div>
 
     <div class="toolbar">
-      <el-button type="primary" size="small" @click="handleAddRole"><el-icon><Plus /></el-icon> 新增角色</el-button>
+      <el-button type="primary" @click="handleAddRole"><el-icon><Plus /></el-icon> 新增角色</el-button>
     </div>
 
     <div class="table-wrap">

@@ -133,9 +133,9 @@
             </el-table>
             <div style="margin-top:12px;display:flex;align-items:center;gap:6px">
               <span style="font-size:12px;color:#666">选任材料生成：</span>
-              <el-button size="small" @click="generateMaterial('motion_plan')"><el-icon><Document /></el-icon> 工作方案记录表</el-button>
-              <el-button size="small" @click="generateMaterial('motion_competition')"><el-icon><Document /></el-icon> 公开竞聘方案</el-button>
-              <el-button size="small" @click="generateMaterial('motion_discipline')"><el-icon><Document /></el-icon> 征求纪委意见文档</el-button>
+              <el-button @click="generateMaterial('motion_plan')"><el-icon><Document /></el-icon> 工作方案记录表</el-button>
+              <el-button @click="generateMaterial('motion_competition')"><el-icon><Document /></el-icon> 公开竞聘方案</el-button>
+              <el-button @click="generateMaterial('motion_discipline')"><el-icon><Document /></el-icon> 征求纪委意见文档</el-button>
             </div>
           </div>
 
@@ -169,9 +169,9 @@
             <p style="color:#666;font-size:12px;line-height:1.8">个别谈话推荐共45人，谈话对象包括学院领导班子成员、系主任、教授代表、骨干教师代表等。谈话推荐得票集中情况与会议推荐一致。</p>
             <div style="margin-top:12px;display:flex;align-items:center;gap:6px">
               <span style="font-size:12px;color:#666">选任材料生成：</span>
-              <el-button size="small" @click="generateMaterial('recommend_list')"><el-icon><Document /></el-icon> 推荐人员名单</el-button>
-              <el-button size="small" @click="generateMaterial('recommend_result')"><el-icon><Document /></el-icon> 会议推荐结果</el-button>
-              <el-button size="small" @click="generateMaterial('recommend_talk')"><el-icon><Document /></el-icon> 谈话推荐结果</el-button>
+              <el-button @click="generateMaterial('recommend_list')"><el-icon><Document /></el-icon> 推荐人员名单</el-button>
+              <el-button @click="generateMaterial('recommend_result')"><el-icon><Document /></el-icon> 会议推荐结果</el-button>
+              <el-button @click="generateMaterial('recommend_talk')"><el-icon><Document /></el-icon> 谈话推荐结果</el-button>
             </div>
           </div>
 
@@ -212,9 +212,9 @@
             <p style="color:#666;font-size:12px;line-height:1.8">校纪委对考察对象出具了廉政鉴定意见，均未发现影响提拔使用的问题。</p>
             <div style="margin-top:12px;display:flex;align-items:center;gap:6px">
               <span style="font-size:12px;color:#666">选任材料生成：</span>
-              <el-button size="small" @click="generateMaterial('inspect_plan')"><el-icon><Document /></el-icon> 考察工作方案</el-button>
-              <el-button size="small" @click="generateMaterial('inspect_result')"><el-icon><Document /></el-icon> 考察结果文件</el-button>
-              <el-button size="small" @click="generateMaterial('inspect_supervision')"><el-icon><Document /></el-icon> 干部监督信息表单</el-button>
+              <el-button @click="generateMaterial('inspect_plan')"><el-icon><Document /></el-icon> 考察工作方案</el-button>
+              <el-button @click="generateMaterial('inspect_result')"><el-icon><Document /></el-icon> 考察结果文件</el-button>
+              <el-button @click="generateMaterial('inspect_supervision')"><el-icon><Document /></el-icon> 干部监督信息表单</el-button>
             </div>
           </div>
 
@@ -246,10 +246,10 @@
             <p style="color:#666;font-size:12px;line-height:1.8">会议听取了党委组织部关于机械工程学院院长选拔任用工作情况的汇报，到会常委经过充分讨论，以无记名投票方式进行表决，同意孙梅同志担任机械工程学院院长。</p>
             <div style="margin-top:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <span style="font-size:12px;color:#666">选任材料生成：</span>
-              <el-button size="small" @click="generateMaterial('discuss_list')"><el-icon><Document /></el-icon> 上会名单</el-button>
-              <el-button size="small" @click="generateMaterial('discuss_basic')"><el-icon><Document /></el-icon> 干部基础材料</el-button>
-              <el-button size="small" type="warning" @click="generateMaterial('discuss_ppt')"><el-icon><DataAnalysis /></el-icon> 表决结果PPT</el-button>
-              <el-button size="small" @click="generateMaterial('discuss_support')"><el-icon><Document /></el-icon> 配套资料</el-button>
+              <el-button @click="generateMaterial('discuss_list')"><el-icon><Document /></el-icon> 上会名单</el-button>
+              <el-button @click="generateMaterial('discuss_basic')"><el-icon><Document /></el-icon> 干部基础材料</el-button>
+              <el-button type="warning" @click="generateMaterial('discuss_ppt')"><el-icon><DataAnalysis /></el-icon> 表决结果PPT</el-button>
+              <el-button @click="generateMaterial('discuss_support')"><el-icon><Document /></el-icon> 配套资料</el-button>
             </div>
           </div>
 
@@ -270,7 +270,7 @@
             <p style="color:#666;font-size:12px;line-height:1.8">公示期满，未收到任何单位或个人对孙梅同志任职的异议。经研究，决定予以任职。</p>
             <div style="margin-top:12px;display:flex;align-items:center;gap:6px">
               <span style="font-size:12px;color:#666">选任材料生成：</span>
-              <el-button size="small" @click="generateMaterial('publicity_notice')"><el-icon><Document /></el-icon> 公示公告</el-button>
+              <el-button @click="generateMaterial('publicity_notice')"><el-icon><Document /></el-icon> 公示公告</el-button>
             </div>
           </div>
 
@@ -291,8 +291,8 @@
             <p style="color:#666;font-size:12px;line-height:1.8">2024年7月10日下午，在机械工程学院全体教职工大会上，党委组织部部长李芳同志宣布了校党委关于孙梅同志任职的决定。</p>
             <div style="margin-top:12px;display:flex;align-items:center;gap:6px">
               <span style="font-size:12px;color:#666">选任材料生成：</span>
-              <el-button size="small" @click="generateMaterial('appoint_talk')"><el-icon><Document /></el-icon> 任职谈话记录</el-button>
-              <el-button size="small" @click="generateMaterial('appoint_doc')"><el-icon><Document /></el-icon> 任免发文</el-button>
+              <el-button @click="generateMaterial('appoint_talk')"><el-icon><Document /></el-icon> 任职谈话记录</el-button>
+              <el-button @click="generateMaterial('appoint_doc')"><el-icon><Document /></el-icon> 任免发文</el-button>
             </div>
           </div>
 
@@ -310,7 +310,7 @@
             </el-descriptions>
             <div style="margin-top:12px;display:flex;align-items:center;gap:6px">
               <span style="font-size:12px;color:#666">选任材料生成：</span>
-              <el-button size="small" @click="generateMaterial('appoint_doc')"><el-icon><Document /></el-icon> 任免发文</el-button>
+              <el-button @click="generateMaterial('appoint_doc')"><el-icon><Document /></el-icon> 任免发文</el-button>
             </div>
           </div>
         </div>
@@ -330,7 +330,7 @@
       <div style="border:1px solid #e0e0e0;padding:20px;min-height:200px;max-height:500px;overflow-y:auto;background:#fff;font-size:14px;line-height:2" v-html="materialContent"></div>
       <template #footer>
         <el-button @click="materialVisible=false">关闭</el-button>
-        <el-button type="primary" size="small" @click="handleExportMaterial"><el-icon><Download /></el-icon> 导出Word</el-button>
+        <el-button type="primary" @click="handleExportMaterial"><el-icon><Download /></el-icon> 导出Word</el-button>
       </template>
     </el-dialog>
 

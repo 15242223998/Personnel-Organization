@@ -7,7 +7,7 @@
         <div class="dict-type-panel">
           <div class="dict-header">
             <span>字典类型</span>
-            <el-button type="primary" size="small" text @click="handleAddDictType"><el-icon><Plus /></el-icon> 新增</el-button>
+            <el-button type="primary" text @click="handleAddDictType"><el-icon><Plus /></el-icon> 新增</el-button>
           </div>
           <div class="dict-type-list">
             <div
@@ -29,7 +29,7 @@
           <div class="dict-header">
             <span>字典数据 - {{ currentTypeName }}</span>
             <div>
-              <el-button type="primary" size="small" @click="handleAddDictItem"><el-icon><Plus /></el-icon> 新增字典项</el-button>
+              <el-button type="primary" @click="handleAddDictItem"><el-icon><Plus /></el-icon> 新增字典项</el-button>
             </div>
           </div>
           <el-table :data="dictDataMap[activeType]" border size="small">

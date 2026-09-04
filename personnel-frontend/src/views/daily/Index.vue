@@ -22,8 +22,8 @@
           <el-button @click="handleReset('cert')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddCert"><el-icon><Plus /></el-icon> 新增登记</el-button>
-          <el-button size="small" @click="exportCert"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddCert"><el-icon><Plus /></el-icon> 新增登记</el-button>
+          <el-button @click="exportCert"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="certData" border size="small">
@@ -67,8 +67,8 @@
           <el-button @click="handleReset('overseas')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddOverseas"><el-icon><Plus /></el-icon> 新增记录</el-button>
-          <el-button size="small" @click="exportOverseas"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddOverseas"><el-icon><Plus /></el-icon> 新增记录</el-button>
+          <el-button @click="exportOverseas"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="overseasData" border size="small">
@@ -117,8 +117,8 @@
           <el-button @click="handleReset('leave')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddLeave"><el-icon><Plus /></el-icon> 申请休假</el-button>
-          <el-button size="small" @click="exportLeave"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddLeave"><el-icon><Plus /></el-icon> 申请休假</el-button>
+          <el-button @click="exportLeave"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="leaveData" border size="small">
@@ -161,8 +161,8 @@
           <el-button @click="handleReset('training')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddTraining"><el-icon><Plus /></el-icon> 新增培训</el-button>
-          <el-button size="small" @click="exportTraining"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddTraining"><el-icon><Plus /></el-icon> 新增培训</el-button>
+          <el-button @click="exportTraining"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="trainingData" border size="small">
@@ -205,8 +205,8 @@
           <el-button @click="handleReset('secondment')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddSecondment"><el-icon><Plus /></el-icon> 新增挂职</el-button>
-          <el-button size="small" @click="exportSecondment"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddSecondment"><el-icon><Plus /></el-icon> 新增挂职</el-button>
+          <el-button @click="exportSecondment"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="secondmentData" border size="small">
@@ -231,8 +231,8 @@
 
       <el-tab-pane label="自助申报" name="declare">
         <div class="toolbar" style="border-top:1px solid #e0e0e0">
-          <el-button type="primary" size="small" @click="handleAddDeclare"><el-icon><Plus /></el-icon> 新增申报</el-button>
-          <el-button size="small" @click="exportDeclare"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddDeclare"><el-icon><Plus /></el-icon> 新增申报</el-button>
+          <el-button @click="exportDeclare"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="declareData" border size="small">
@@ -276,7 +276,7 @@
 
     <el-dialog :title="currentTraining?.name + ' - 学员管理'" v-model="studentDialog" width="650px">
       <div style="margin-bottom:10px">
-        <el-button type="primary" size="small" @click="handleAddStudent"><el-icon><Plus /></el-icon> 添加学员</el-button>
+        <el-button type="primary" @click="handleAddStudent"><el-icon><Plus /></el-icon> 添加学员</el-button>
       </div>
       <el-table :data="studentList" border size="small">
         <el-table-column type="index" label="序号" width="55" align="center" />

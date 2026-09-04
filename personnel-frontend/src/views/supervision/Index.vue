@@ -18,8 +18,8 @@
           <el-button @click="resetSearch('integrity')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddIntegrity"><el-icon><Plus /></el-icon> 新增廉政意见</el-button>
-          <el-button size="small" @click="exportIntegrity"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddIntegrity"><el-icon><Plus /></el-icon> 新增廉政意见</el-button>
+          <el-button @click="exportIntegrity"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="integrityData" border size="small">
@@ -60,8 +60,8 @@
           <el-button @click="resetSearch('complaint')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddComplaint"><el-icon><Plus /></el-icon> 登记举报</el-button>
-          <el-button size="small" @click="exportComplaint"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddComplaint"><el-icon><Plus /></el-icon> 登记举报</el-button>
+          <el-button @click="exportComplaint"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="complaintData" border size="small">
@@ -103,8 +103,8 @@
           <el-button @click="resetSearch('personal')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddPersonal"><el-icon><Plus /></el-icon> 新增报告</el-button>
-          <el-button size="small" @click="exportPersonal"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddPersonal"><el-icon><Plus /></el-icon> 新增报告</el-button>
+          <el-button @click="exportPersonal"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="personalData" border size="small">
@@ -152,8 +152,8 @@
           </el-select>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="regenerateAlerts"><el-icon><Bell /></el-icon> 重新扫描</el-button>
-          <el-button size="small" @click="exportAlert"><el-icon><Download /></el-icon> 导出预警清单</el-button>
+          <el-button type="primary" @click="regenerateAlerts"><el-icon><Bell /></el-icon> 重新扫描</el-button>
+          <el-button @click="exportAlert"><el-icon><Download /></el-icon> 导出预警清单</el-button>
           <span style="margin-left:12px;font-size:12px;color:#888">
             最后扫描: {{ lastScanTime }}
           </span>
@@ -217,8 +217,8 @@
           <el-button @click="resetSearch('admonish')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddAdmonish"><el-icon><Plus /></el-icon> 新增提醒函询诫勉</el-button>
-          <el-button size="small" @click="exportAdmonish"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddAdmonish"><el-icon><Plus /></el-icon> 新增提醒函询诫勉</el-button>
+          <el-button @click="exportAdmonish"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="admonishData" border size="small">
@@ -271,8 +271,8 @@
           <el-button @click="resetSearch('audit')">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddAudit"><el-icon><Plus /></el-icon> 新增审计项目</el-button>
-          <el-button size="small" @click="exportAudit"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddAudit"><el-icon><Plus /></el-icon> 新增审计项目</el-button>
+          <el-button @click="exportAudit"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="auditData" border size="small">

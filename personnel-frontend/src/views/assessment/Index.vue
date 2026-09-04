@@ -24,9 +24,9 @@
           <el-button @click="resetSearch">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="handleAddAnnual"><el-icon><Plus /></el-icon> 新增考核</el-button>
-          <el-button size="small" @click="handleImport"><el-icon><Upload /></el-icon> 批量导入</el-button>
-          <el-button size="small" @click="exportAnnual"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="handleAddAnnual"><el-icon><Plus /></el-icon> 新增考核</el-button>
+          <el-button @click="handleImport"><el-icon><Upload /></el-icon> 批量导入</el-button>
+          <el-button @click="exportAnnual"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="annualData" border size="small">
@@ -59,8 +59,8 @@
 
       <el-tab-pane label="民主测评" name="democracy">
         <div class="toolbar" style="border-top:1px solid #e0e0e0">
-          <el-button type="primary" size="small" @click="openSchemeDialog(null)"><el-icon><Plus /></el-icon> 新建方案</el-button>
-          <el-button size="small" @click="exportScheme"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="openSchemeDialog(null)"><el-icon><Plus /></el-icon> 新建方案</el-button>
+          <el-button @click="exportScheme"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="schemeData" border size="small">
@@ -111,8 +111,8 @@
           <el-button @click="resetOutputSearch">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" size="small" @click="generateReport"><el-icon><Document /></el-icon> 生成年度报告</el-button>
-          <el-button size="small" @click="exportOutput"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button type="primary" @click="generateReport"><el-icon><Document /></el-icon> 生成年度报告</el-button>
+          <el-button @click="exportOutput"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="outputData" border size="small">

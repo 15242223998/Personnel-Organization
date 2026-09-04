@@ -90,7 +90,7 @@ function handleLogin() {
       .then(res => {
         const user = res.data
         const isAdmin = user.userType === 1
-        localStorage.setItem('token', 'token-' + user.id)
+        localStorage.setItem('token', user.token)
         userStore.setUser(user.username, String(user.id), user.realName, isAdmin ? 'admin' : 'cadre')
         ElMessage.success(`欢迎，${user.realName || user.username}`)
         router.push('/')

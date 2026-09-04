@@ -3,7 +3,7 @@
     <div class="page-header">预警规则管理</div>
 
     <div class="toolbar">
-      <el-button type="primary" size="small" @click="handleResetDefault"><el-icon><RefreshLeft /></el-icon> 恢复默认配置</el-button>
+      <el-button type="primary" @click="handleResetDefault"><el-icon><RefreshLeft /></el-icon> 恢复默认配置</el-button>
     </div>
 
     <div class="table-wrap">

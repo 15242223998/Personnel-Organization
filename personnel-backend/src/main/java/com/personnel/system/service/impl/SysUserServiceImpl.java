@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.personnel.common.BusinessException;
+import com.personnel.framework.security.JwtUtil;
 import com.personnel.system.entity.SysUser;
 import com.personnel.system.mapper.SysUserMapper;
 import com.personnel.system.service.SysUserService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -14,6 +16,9 @@ import java.time.LocalDateTime;
 
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+
+    @Resource
+    private JwtUtil jwtUtil;
 
     @Override
     public SysUser login(String username, String password) {
@@ -37,6 +42,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         user.setLastLoginTime(LocalDateTime.now());
         updateById(user);
+        // 登录成功签发 JWT
+        user.setToken(jwtUtil.generateToken(user.getId(), user.getUsername()));
+        // 不回传密码
+        user.setPassword(null);
         return user;
     }
 

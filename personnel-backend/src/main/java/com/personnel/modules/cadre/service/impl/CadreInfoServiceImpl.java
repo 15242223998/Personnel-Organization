@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.personnel.common.BusinessException;
+import com.personnel.framework.security.DataScopeHelper;
 import com.personnel.modules.cadre.entity.CadreFamilyMember;
 import com.personnel.modules.cadre.entity.CadreInfo;
 import com.personnel.modules.cadre.mapper.CadreInfoMapper;
@@ -13,13 +14,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import jakarta.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CadreInfoServiceImpl extends ServiceImpl<CadreInfoMapper, CadreInfo> implements CadreInfoService {
 
     @Resource
     private CadreFamilyMemberService cadreFamilyMemberService;
+
+    @Resource
+    private DataScopeHelper dataScopeHelper;
 
     @Override
     public Page<CadreInfo> pageQuery(Page<CadreInfo> page, CadreInfo query) {
@@ -44,6 +50,15 @@ public class CadreInfoServiceImpl extends ServiceImpl<CadreInfoMapper, CadreInfo
                 wrapper.eq(CadreInfo::getPoliticalStatus, query.getPoliticalStatus());
             }
         }
+        Set<Long> allowedDeptIds = dataScopeHelper.allowedDeptIds();
+        if (allowedDeptIds != null) {
+            if (allowedDeptIds.isEmpty()) {
+                page.setRecords(Collections.emptyList());
+                page.setTotal(0);
+                return page;
+            }
+            wrapper.in(CadreInfo::getDeptId, allowedDeptIds);
+        }
         wrapper.orderByDesc(CadreInfo::getCreateTime);
         return page(page, wrapper);
     }
@@ -53,6 +68,10 @@ public class CadreInfoServiceImpl extends ServiceImpl<CadreInfoMapper, CadreInfo
         CadreInfo cadreInfo = getById(id);
         if (cadreInfo == null) {
             throw new BusinessException("干部信息不存在");
+        }
+        Set<Long> allowedDeptIds = dataScopeHelper.allowedDeptIds();
+        if (allowedDeptIds != null && (cadreInfo.getDeptId() == null || !allowedDeptIds.contains(cadreInfo.getDeptId()))) {
+            throw new BusinessException("无权查看该干部信息");
         }
         List<CadreFamilyMember> members = cadreFamilyMemberService.list(
                 new LambdaQueryWrapper<CadreFamilyMember>().eq(CadreFamilyMember::getCadreId, id));
@@ -79,6 +98,13 @@ public class CadreInfoServiceImpl extends ServiceImpl<CadreInfoMapper, CadreInfo
             if (query.getGender() != null) {
                 wrapper.eq(CadreInfo::getGender, query.getGender());
             }
+        }
+        Set<Long> allowedDeptIds = dataScopeHelper.allowedDeptIds();
+        if (allowedDeptIds != null) {
+            if (allowedDeptIds.isEmpty()) {
+                return Collections.emptyList();
+            }
+            wrapper.in(CadreInfo::getDeptId, allowedDeptIds);
         }
         wrapper.orderByDesc(CadreInfo::getCreateTime);
         return list(wrapper);

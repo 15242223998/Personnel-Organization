@@ -133,7 +133,7 @@
     <div style="margin-top:16px" v-if="searchResults.length > 0">
       <div style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
         <span>查询结果：共 <b>{{ searchResults.length }}</b> 人</span>
-        <el-button size="small" @click="handleRefresh">刷新</el-button>
+        <el-button @click="handleRefresh">刷新</el-button>
       </div>
       <el-table :data="searchResults" border size="small" max-height="350">
         <el-table-column type="index" label="序号" width="50" align="center" />

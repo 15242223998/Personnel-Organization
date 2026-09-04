@@ -22,8 +22,8 @@
           <el-button @click="resetOperSearch">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button size="small" @click="handleCleanOper"><el-icon><Delete /></el-icon> 清空日志</el-button>
-          <el-button size="small" @click="exportOperLog"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button @click="handleCleanOper"><el-icon><Delete /></el-icon> 清空日志</el-button>
+          <el-button @click="exportOperLog"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="operData" border size="small" v-loading="operLoading">
@@ -82,8 +82,8 @@
           <el-button @click="resetLoginSearch">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button size="small" @click="handleCleanLogin"><el-icon><Delete /></el-icon> 清空日志</el-button>
-          <el-button size="small" @click="exportLoginLog"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-button @click="handleCleanLogin"><el-icon><Delete /></el-icon> 清空日志</el-button>
+          <el-button @click="exportLoginLog"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
           <el-table :data="loginData" border size="small" v-loading="loginLoading">

@@ -58,7 +58,7 @@
         <template #header><div class="section-title"><el-icon><Tickets /></el-icon> 履历信息</div></template>
         <el-tabs v-model="resumeTab" class="gov-tabs">
           <el-tab-pane label="任职经历" name="work">
-            <el-button size="small" type="primary" style="margin-bottom:10px" @click="addResume('work')"><el-icon><Plus /></el-icon> 添加任职经历</el-button>
+            <el-button type="primary" style="margin-bottom:10px" @click="addResume('work')"><el-icon><Plus /></el-icon> 添加任职经历</el-button>
             <el-table :data="resumes.work" border size="small">
               <el-table-column type="index" label="序号" width="55" align="center" />
               <el-table-column prop="startDate" label="起止时间" width="200" align="center">
@@ -73,7 +73,7 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="求学履历" name="edu">
-            <el-button size="small" type="primary" style="margin-bottom:10px" @click="addResume('edu')"><el-icon><Plus /></el-icon> 添加求学经历</el-button>
+            <el-button type="primary" style="margin-bottom:10px" @click="addResume('edu')"><el-icon><Plus /></el-icon> 添加求学经历</el-button>
             <el-table :data="resumes.edu" border size="small">
               <el-table-column type="index" label="序号" width="55" align="center" />
               <el-table-column prop="startDate" label="起止时间" width="200" align="center">
@@ -93,7 +93,7 @@
       <!-- 三、奖惩 -->
       <el-card class="section-card">
         <template #header><div class="section-title"><el-icon><Medal /></el-icon> 奖惩相关资料</div></template>
-        <div class="toolbar"><el-button type="primary" size="small" @click="addReward"><el-icon><Plus /></el-icon> 添加奖惩记录</el-button></div>
+        <div class="toolbar"><el-button type="primary" @click="addReward"><el-icon><Plus /></el-icon> 添加奖惩记录</el-button></div>
         <el-table :data="rewards" border size="small">
           <el-table-column type="index" label="序号" width="55" align="center" />
           <el-table-column prop="type" label="类型" width="80" align="center"><template #default="{ row }"><el-tag :type="row.type==='奖励'?'success':'danger'" size="small">{{ row.type }}</el-tag></template></el-table-column>
@@ -108,7 +108,7 @@
       <!-- 四、家庭成员 -->
       <el-card class="section-card">
         <template #header><div class="section-title"><el-icon><UserFilled /></el-icon> 家庭成员档案信息</div></template>
-        <div class="toolbar"><el-button type="primary" size="small" @click="addFamily"><el-icon><Plus /></el-icon> 添加家庭成员</el-button></div>
+        <div class="toolbar"><el-button type="primary" @click="addFamily"><el-icon><Plus /></el-icon> 添加家庭成员</el-button></div>
         <el-table :data="family" border size="small">
           <el-table-column type="index" label="序号" width="55" align="center" />
           <el-table-column prop="relation" label="关系" width="80" align="center" />

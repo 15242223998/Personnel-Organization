@@ -801,3 +801,32 @@ CREATE TABLE sys_print_template (
 -- 初始系统管理员账号（密码 123456，status=1 已批准可登录）
 INSERT INTO sys_user (username, password, real_name, user_type, status, create_time, update_time)
 VALUES ('admin', '123456', '系统管理员', 1, 1, NOW(), NOW());
+
+-- 初始角色（配合 JWT + Spring Security 权限识别）
+INSERT INTO sys_role (role_name, role_code, data_scope, status, create_time, update_time)
+VALUES ('系统管理员', 'admin', 1, 1, NOW(), NOW());
+
+-- 初始管理员绑定角色（admin 用户为 sys_user 首条记录，自增 id=1）
+INSERT INTO sys_user_role (user_id, role_id)
+SELECT u.id, r.id FROM sys_user u, sys_role r WHERE u.username = 'admin' AND r.role_code = 'admin';
+
+-- =================== 兼容修复 ====================
+-- 以下实体继承 BaseEntity（含 create_by/create_time/update_by/update_time/deleted 字段），
+-- 早期建表缺少 update_by/update_time，会导致新增/更新报"Unknown column 'update_time'"。
+-- 本段为统一补齐（在脚本全量 DROP+CREATE 之后执行，不会重复添加）。
+ALTER TABLE appoint_decision      ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE appoint_investigation ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE appoint_publicity     ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE appoint_recommend     ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE appoint_record        ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE assessment_annual     ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE cadre_attachment      ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE daily_abroad_record   ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE daily_secondment      ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE daily_training        ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE rank_promotion_record ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE supervise_integrity   ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE supervise_personal_report ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE transfer_record       ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+
+

@@ -5,12 +5,12 @@
     <div class="search-bar">
       <span class="label">职务层次名称：</span>
       <el-input v-model="searchForm.levelName" placeholder="请输入职务层次名称" clearable style="width:200px" />
-      <el-button type="primary" @click="handleSearch">查询</el-button>
+      <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
       <el-button @click="handleReset">重置</el-button>
     </div>
 
     <div class="toolbar">
-      <el-button type="primary" @click="openAdd">新增</el-button>
+      <el-button type="primary" @click="openAdd"><el-icon><Plus /></el-icon> 新增层次</el-button>
     </div>
 
     <div class="table-wrap">
@@ -74,6 +74,7 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
+import { Search, Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { showExportDialog } from '@/utils/export-store'
 

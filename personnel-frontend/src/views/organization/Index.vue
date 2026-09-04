@@ -11,13 +11,13 @@
         <el-option label="处级" value="处级" />
         <el-option label="科级" value="科级" />
       </el-select>
-      <el-button type="primary" @click="handleSearch">查询</el-button>
+      <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
       <el-button @click="handleReset">重置</el-button>
     </div>
 
     <div class="toolbar">
-      <el-button type="primary" @click="openAdd(null)">新增机构</el-button>
-      <el-button @click="handleExport">导出</el-button>
+      <el-button type="primary" @click="openAdd(null)"><el-icon><Plus /></el-icon> 新增机构</el-button>
+      <el-button @click="handleExport"><el-icon><Download /></el-icon> 导出</el-button>
     </div>
 
     <div class="table-wrap">
@@ -136,6 +136,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
+import { Search, Plus, Download } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { showExportDialog } from '@/utils/export-store'
 

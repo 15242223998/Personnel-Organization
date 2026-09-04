@@ -21,8 +21,8 @@
     </div>
 
     <div class="toolbar">
-      <el-button type="primary" size="small" @click="openAdd"><el-icon><Plus /></el-icon> 新增用户</el-button>
-      <el-button size="small" @click="handleExportUsers"><el-icon><Download /></el-icon> 导出</el-button>
+      <el-button type="primary" @click="openAdd"><el-icon><Plus /></el-icon> 新增用户</el-button>
+      <el-button @click="handleExportUsers"><el-icon><Download /></el-icon> 导出</el-button>
     </div>
 
     <div class="table-wrap">
