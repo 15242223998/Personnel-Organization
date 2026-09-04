@@ -21,6 +21,24 @@ public class SysUserController {
         return Result.success(sysUserService.login(user.getUsername(), user.getPassword()));
     }
 
+    @PostMapping("/register")
+    public Result<Void> register(@RequestBody SysUser user) {
+        sysUserService.register(user);
+        return Result.success();
+    }
+
+    @PutMapping("/register/{id}/approve")
+    public Result<Void> approve(@PathVariable Long id) {
+        sysUserService.approve(id);
+        return Result.success();
+    }
+
+    @PutMapping("/register/{id}/reject")
+    public Result<Void> reject(@PathVariable Long id) {
+        sysUserService.reject(id);
+        return Result.success();
+    }
+
     @GetMapping("/page")
     public Result<PageResult<SysUser>> page(
             @RequestParam(defaultValue = "1") Long current,

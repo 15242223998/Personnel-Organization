@@ -147,6 +147,7 @@
             <el-menu-item index="/system/policy"><el-icon><Files /></el-icon>政策法规管理</el-menu-item>
             <el-menu-item index="/system/alert-rule"><el-icon><Bell /></el-icon>预警规则管理</el-menu-item>
             <el-menu-item index="/system/declaration-approval"><el-icon><DocumentChecked /></el-icon>信息申报审批</el-menu-item>
+            <el-menu-item v-if="isAdmin" index="/system/register-approval"><el-icon><CircleCheck /></el-icon>注册审批</el-menu-item>
             <el-menu-item index="/system/log"><el-icon><Tickets /></el-icon>系统日志</el-menu-item>
           </el-sub-menu>
         </el-menu>
@@ -194,6 +195,8 @@ import { Bell, UserFilled, ArrowDown, Close, HomeFilled, OfficeBuilding, Switch,
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+
+const isAdmin = computed(() => userStore.userType === 'admin')
 
 const openedGroups = ['cadre']
 const mobileMenuVisible = ref(false)

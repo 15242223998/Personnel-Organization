@@ -2,8 +2,8 @@
 -- 组织人事档案系统 - 数据库初始化脚本
 -- ====================================================
 
-CREATE DATABASE IF NOT EXISTS personnel_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE personnel_db;
+CREATE DATABASE IF NOT EXISTS POP DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE POP;
 
 -- =================== 系统管理 ====================
 
@@ -19,7 +19,7 @@ CREATE TABLE sys_user (
     phone VARCHAR(20) COMMENT '手机号',
     gender TINYINT DEFAULT 0 COMMENT '性别 0未知 1男 2女',
     user_type TINYINT NOT NULL COMMENT '用户类型 1系统管理员 2校级领导 3组织部部长 4组织员 5二级学院领导 6普通干部',
-    status TINYINT DEFAULT 1 COMMENT '状态 0停用 1启用',
+    status TINYINT DEFAULT 1 COMMENT '状态 0待审核 1正常(已批准) 2已拒绝 3停用',
     dept_id BIGINT COMMENT '所属部门/学院ID',
     ip_bound VARCHAR(128) COMMENT 'IP绑定',
     login_fail_count INT DEFAULT 0 COMMENT '登录失败次数',
@@ -794,3 +794,10 @@ CREATE TABLE sys_print_template (
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted TINYINT DEFAULT 0
 ) ENGINE=InnoDB COMMENT='打印模板表';
+
+
+-- =================== 初始数据 ====================
+
+-- 初始系统管理员账号（密码 123456，status=1 已批准可登录）
+INSERT INTO sys_user (username, password, real_name, user_type, status, create_time, update_time)
+VALUES ('admin', '123456', '系统管理员', 1, 1, NOW(), NOW());

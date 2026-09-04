@@ -18,8 +18,13 @@ request.interceptors.response.use(
   response => {
     const data = response.data
     if (data.code !== 200) {
-      ElMessage.error(data.message || '请求失败')
-      return Promise.reject(new Error(data.message))
+      const err = new Error(data.message || '请求失败')
+      err.code = data.code
+      err.data = data.data
+      if (response.config.showError !== false) {
+        ElMessage.error(data.message || '请求失败')
+      }
+      return Promise.reject(err)
     }
     return data
   },

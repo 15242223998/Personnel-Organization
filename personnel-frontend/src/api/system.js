@@ -1,7 +1,20 @@
 import request from '../utils/request'
 
 export function getUserList(params) {
-  return request({ url: '/sys/user/list', method: 'get', params })
+  return request({ url: '/user/page', method: 'get', params })
+}
+
+// 注册审批：待审核账号分页
+export function getPendingRegistrations(params) {
+  return request({ url: '/user/page', method: 'get', params })
+}
+
+export function approveRegistration(id) {
+  return request({ url: `/user/register/${id}/approve`, method: 'put' })
+}
+
+export function rejectRegistration(id) {
+  return request({ url: `/user/register/${id}/reject`, method: 'put' })
 }
 
 export function addUser(data) {

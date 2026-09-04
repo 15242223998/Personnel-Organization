@@ -48,7 +48,8 @@ const routes = [
       { path: 'system/approval', name: 'SysApproval', component: () => import('../views/system/Approval.vue'), meta: { title: '审批事项管理' } },
       { path: 'system/policy', name: 'SysPolicy', component: () => import('../views/system/Policy.vue'), meta: { title: '政策法规管理' } },
       { path: 'system/alert-rule', name: 'SysAlertRule', component: () => import('../views/system/AlertRule.vue'), meta: { title: '预警规则管理' } },
-      { path: 'system/declaration-approval', name: 'DeclarationApproval', component: () => import('../views/system/DeclarationApproval.vue'), meta: { title: '信息申报审批' } }
+      { path: 'system/declaration-approval', name: 'DeclarationApproval', component: () => import('../views/system/DeclarationApproval.vue'), meta: { title: '信息申报审批' } },
+      { path: 'system/register-approval', name: 'RegisterApproval', component: () => import('../views/system/RegisterApproval.vue'), meta: { title: '注册审批' } }
     ]
   }
 ]

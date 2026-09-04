@@ -11,4 +11,10 @@ public interface SysUserService extends IService<SysUser> {
     Page<SysUser> pageQuery(Page<SysUser> page, String username, Integer status);
 
     void resetPassword(Long id);
+
+    void register(SysUser user);
+
+    void approve(Long id);
+
+    void reject(Long id);
 }

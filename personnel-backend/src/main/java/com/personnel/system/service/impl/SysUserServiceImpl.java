@@ -24,12 +24,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (!user.getPassword().equals(password)) {
             throw new BusinessException("用户名或密码错误");
         }
-        if (user.getStatus() != null && user.getStatus() == 0) {
-            throw new BusinessException("账号已被禁用");
+        Integer status = user.getStatus();
+        String info = buildUserInfo(user);
+        if (status != null && status == 0) {
+            throw new BusinessException(4001, info + "该账户还未审核，请联系系统管理员");
+        }
+        if (status != null && status == 2) {
+            throw new BusinessException(4002, info + "该账号的申请已经被回绝");
+        }
+        if (status != null && status == 3) {
+            throw new BusinessException(4003, info + "该账号已被禁用");
         }
         user.setLastLoginTime(LocalDateTime.now());
         updateById(user);
         return user;
+    }
+
+    private String buildUserInfo(SysUser user) {
+        return "账号：" + user.getUsername()
+                + "，姓名：" + (user.getRealName() == null ? "" : user.getRealName())
+                + "，手机号：" + (user.getPhone() == null ? "" : user.getPhone())
+                + "。";
     }
 
     @Override
@@ -52,6 +67,43 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new BusinessException("用户不存在");
         }
         user.setPassword("123456");
+        updateById(user);
+    }
+
+    @Override
+    public void register(SysUser user) {
+        if (!StringUtils.hasText(user.getUsername()) || !StringUtils.hasText(user.getPassword())) {
+            throw new BusinessException("用户名和密码不能为空");
+        }
+        long count = count(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, user.getUsername()));
+        if (count > 0) {
+            throw new BusinessException("用户名已存在");
+        }
+        user.setId(null);
+        user.setStatus(0);
+        if (user.getUserType() == null) {
+            user.setUserType(6);
+        }
+        save(user);
+    }
+
+    @Override
+    public void approve(Long id) {
+        SysUser user = getById(id);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        user.setStatus(1);
+        updateById(user);
+    }
+
+    @Override
+    public void reject(Long id) {
+        SysUser user = getById(id);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        user.setStatus(2);
         updateById(user);
     }
 }
