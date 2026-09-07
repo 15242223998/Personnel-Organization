@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <div class="page-header">干部队伍统计分析</div>
 
     <el-row :gutter="12" style="margin-bottom:12px">
@@ -44,27 +44,19 @@
         <el-button type="primary" style="float:right;margin-top:-2px" @click="handleExportStats"><el-icon><Download /></el-icon> 导出</el-button>
       </div>
       <el-table :data="orgTableData" border size="small">
-        <el-table-column prop="orgName" label="机构名称" min-width="200" align="center" />
-        <el-table-column prop="bianzhi" label="编制数" width="90" align="center" />
-        <el-table-column prop="shiyou" label="实有人数" width="90" align="center" />
-        <el-table-column prop="kongbian" label="空编数" width="90" align="center">
+        <el-table-column prop="orgName" label="机构名称" min-width="220" align="center" />
+        <el-table-column prop="cadreCount" label="在册干部数" width="110" align="center" />
+        <el-table-column prop="approvedQuota" label="核定编制" width="100" align="center" />
+        <el-table-column prop="leaderQuota" label="领导职数" width="100" align="center" />
+        <el-table-column prop="vacant" label="空编数" width="100" align="center">
           <template #default="{ row }">
-            <span :style="{ color: row.kongbian > 0 ? '#E53935' : '#43A047', fontWeight: 'bold' }">{{ row.kongbian }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="leaderPos" label="领导职数" width="100" align="center" />
-        <el-table-column prop="equipped" label="已配备" width="90" align="center" />
-        <el-table-column prop="vacant" label="空缺" width="90" align="center">
-          <template #default="{ row }">
-            <span :style="{ color: row.vacant > 0 ? '#FB8C00' : '#43A047', fontWeight: 'bold' }">{{ row.vacant }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="fillRate" label="配备率" width="100" align="center">
-          <template #default="{ row }">
-            <span style="font-weight:bold;color:#1976D2">{{ row.fillRate }}%</span>
+            <span :style="{ color: row.vacant > 0 ? '#E53935' : '#43A047', fontWeight: 'bold' }">{{ row.vacant }}</span>
           </template>
         </el-table-column>
       </el-table>
+      <div style="padding:8px 0 0;font-size:12px;color:#909399">
+        注：数据来自干部档案实时统计；编制数为各机构核定编制，空编数 = 核定编制 − 在册干部数（结果不小于 0）。
+      </div>
     </div>
   </div>
 </template>
@@ -75,14 +67,17 @@ import * as echarts from 'echarts'
 import { Download } from '@element-plus/icons-vue'
 import { showExportDialog } from '@/utils/export-store'
 import { ElMessage } from 'element-plus'
+import request from '@/utils/request'
+import {
+  getAgeDistribution,
+  getGenderDistribution,
+  getEducationDistribution,
+  getPoliticalDistribution,
+  getPositionLevelDistribution,
+  getDeptSummary
+} from '@/api/statistics'
 
-const BLUE = '#1976D2'
-const BLUE_LIGHT = '#42A5F5'
-const BLUE_LIGHTER = '#64B5F6'
-const BLUE_PALE = '#90CAF9'
-const ORANGE = '#FB8C00'
-const GREEN = '#43A047'
-const RED = '#E53935'
+const loading = ref(false)
 
 const ageChart = ref(null)
 const genderChart = ref(null)
@@ -91,19 +86,13 @@ const partyChart = ref(null)
 const positionChart = ref(null)
 
 let charts = []
+const orgTableData = ref([])
 
-const orgTableData = [
-  { orgName: '党委办公室、校长办公室', bianzhi: 28, shiyou: 26, kongbian: 2, leaderPos: 5, equipped: 4, vacant: 1, fillRate: 80 },
-  { orgName: '组织部（党校）', bianzhi: 18, shiyou: 18, kongbian: 0, leaderPos: 4, equipped: 4, vacant: 0, fillRate: 100 },
-  { orgName: '宣传部（新闻中心）', bianzhi: 15, shiyou: 14, kongbian: 1, leaderPos: 3, equipped: 3, vacant: 0, fillRate: 100 },
-  { orgName: '人事处（教师工作部）', bianzhi: 25, shiyou: 24, kongbian: 1, leaderPos: 5, equipped: 5, vacant: 0, fillRate: 100 },
-  { orgName: '教务处', bianzhi: 32, shiyou: 30, kongbian: 2, leaderPos: 5, equipped: 4, vacant: 1, fillRate: 80 },
-  { orgName: '科研处', bianzhi: 20, shiyou: 19, kongbian: 1, leaderPos: 4, equipped: 4, vacant: 0, fillRate: 100 },
-  { orgName: '财务处', bianzhi: 22, shiyou: 22, kongbian: 0, leaderPos: 4, equipped: 4, vacant: 0, fillRate: 100 },
-  { orgName: '机械工程学院', bianzhi: 45, shiyou: 43, kongbian: 2, leaderPos: 7, equipped: 6, vacant: 1, fillRate: 86 },
-  { orgName: '电子信息学院', bianzhi: 52, shiyou: 50, kongbian: 2, leaderPos: 7, equipped: 7, vacant: 0, fillRate: 100 },
-  { orgName: '经济管理学院', bianzhi: 48, shiyou: 45, kongbian: 3, leaderPos: 7, equipped: 5, vacant: 2, fillRate: 71 }
-]
+const COLORS = ['#1976D2', '#42A5F5', '#64B5F6', '#90CAF9', '#BBDEFB', '#FB8C00', '#43A047', '#E53935', '#7E57C2', '#26A69A']
+const BLUE = '#1976D2'
+const BLUE_LIGHT = '#42A5F5'
+const BLUE_LIGHTER = '#64B5F6'
+const BLUE_PALE = '#90CAF9'
 
 function createChart(el, option) {
   const chart = echarts.init(el.value)
@@ -112,139 +101,132 @@ function createChart(el, option) {
   return chart
 }
 
-const pieBaseOption = {
-  tooltip: { trigger: 'item', formatter: '{b}: {c}人 ({d}%)' },
-  legend: {
-    bottom: 0,
-    itemWidth: 10,
-    itemHeight: 10,
-    textStyle: { fontSize: 12 },
-    itemGap: 12
-  },
-  series: [{
-    type: 'pie',
-    radius: ['40%', '65%'],
-    center: ['50%', '45%'],
-    label: { fontSize: 11, formatter: '{b}\n{d}%' },
-    labelLine: { length: 8, length2: 6 }
-  }]
+function pieOption(rows) {
+  const colors = ['#1976D2', '#FB8C00', '#43A047', '#7E57C2', '#26A69A', '#E53935']
+  return {
+    tooltip: { trigger: 'item', formatter: '{b}: {c}人 ({d}%)' },
+    legend: { bottom: 0, itemWidth: 10, itemHeight: 10, textStyle: { fontSize: 12 }, itemGap: 12 },
+    series: [{
+      type: 'pie',
+      radius: ['40%', '65%'],
+      center: ['50%', '45%'],
+      label: { fontSize: 11, formatter: '{b}\n{d}%' },
+      labelLine: { length: 8, length2: 6 },
+      data: (rows || []).map((it, i) => ({
+        name: it.name,
+        value: it.value,
+        itemStyle: { color: colors[i % colors.length] }
+      }))
+    }]
+  }
 }
 
-onMounted(() => {
-  createChart(ageChart, {
+function barOption(names, values) {
+  const colors = [BLUE_PALE, BLUE_LIGHTER, BLUE_LIGHT, BLUE]
+  return {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: 50, right: 20, top: 20, bottom: 35 },
     xAxis: {
       type: 'category',
-      data: ['35岁以下', '36-45岁', '46-55岁', '56岁以上'],
-      axisLabel: { fontSize: 12 }
+      data: names,
+      axisLabel: { fontSize: 12, interval: 0 }
     },
-    yAxis: { type: 'value', axisLabel: { fontSize: 11 } },
+    yAxis: { type: 'value', axisLabel: { fontSize: 11 }, minInterval: 1 },
     series: [{
       type: 'bar',
       barWidth: '45%',
-      data: [
-        { value: 68, itemStyle: { color: BLUE_PALE } },
-        { value: 125, itemStyle: { color: BLUE_LIGHTER } },
-        { value: 98, itemStyle: { color: BLUE_LIGHT } },
-        { value: 37, itemStyle: { color: BLUE } }
-      ],
+      data: (values || []).map((v, i) => ({ value: v, itemStyle: { color: colors[i % colors.length] } })),
       label: { show: true, position: 'top', fontSize: 12, fontWeight: 'bold', color: '#333' }
     }]
-  })
+  }
+}
 
-  createChart(genderChart, {
-    ...pieBaseOption,
-    series: [{
-      ...pieBaseOption.series[0],
-      data: [
-        { value: 212, name: '男', itemStyle: { color: BLUE } },
-        { value: 116, name: '女', itemStyle: { color: ORANGE } }
-      ]
-    }]
-  })
+function distToRows(list) {
+  return (list || []).filter(it => it && it.value != null)
+}
 
-  createChart(eduChart, {
-    ...pieBaseOption,
-    series: [{
-      ...pieBaseOption.series[0],
-      data: [
-        { value: 48, name: '博士', itemStyle: { color: BLUE } },
-        { value: 152, name: '硕士', itemStyle: { color: BLUE_LIGHT } },
-        { value: 108, name: '本科', itemStyle: { color: BLUE_LIGHTER } },
-        { value: 20, name: '大专及以下', itemStyle: { color: BLUE_PALE } }
-      ]
-    }]
-  })
+async function loadData() {
+  loading.value = true
+  try {
+    const [ageRes, genderRes, eduRes, partyRes, posRes, deptRes] = await Promise.all([
+      getAgeDistribution(), getGenderDistribution(), getEducationDistribution(),
+      getPoliticalDistribution(), getPositionLevelDistribution(), getDeptSummary()
+    ])
+    const ageRows = distToRows(ageRes.data)
+    createChart(ageChart, barOption(ageRows.map(r => r.name), ageRows.map(r => r.value)))
+    createChart(genderChart, pieOption(distToRows(genderRes.data)))
+    createChart(eduChart, pieOption(distToRows(eduRes.data)))
+    createChart(partyChart, pieOption(distToRows(partyRes.data)))
+    createChart(positionChart, pieOption(distToRows(posRes.data)))
 
-  createChart(partyChart, {
-    ...pieBaseOption,
-    series: [{
-      ...pieBaseOption.series[0],
-      radius: ['35%', '62%'],
-      center: ['50%', '45%'],
-      data: [
-        { value: 258, name: '中共党员', itemStyle: { color: RED } },
-        { value: 28, name: '民主党派', itemStyle: { color: BLUE } },
-        { value: 42, name: '群众', itemStyle: { color: BLUE_LIGHTER } }
-      ]
-    }]
-  })
-
-  createChart(positionChart, {
-    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-    legend: { data: ['编制数', '实有数'], top: 0, right: 10, itemWidth: 12, itemHeight: 10, textStyle: { fontSize: 12 } },
-    grid: { left: 80, right: 20, top: 35, bottom: 25 },
-    xAxis: { type: 'value', axisLabel: { fontSize: 11 } },
-    yAxis: {
-      type: 'category',
-      data: ['校级领导', '处级正职', '处级副职', '科级正职', '科级副职', '一般干部'],
-      axisLabel: { fontSize: 12 }
-    },
-    series: [
-      {
-        name: '编制数',
-        type: 'bar',
-        barWidth: '30%',
-        data: [12, 45, 78, 95, 65, 80],
-        itemStyle: { color: BLUE_LIGHTER },
-        label: { show: true, position: 'right', fontSize: 11 }
-      },
-      {
-        name: '实有数',
-        type: 'bar',
-        barWidth: '30%',
-        data: [11, 42, 72, 88, 60, 75],
-        itemStyle: { color: BLUE },
-        label: { show: true, position: 'right', fontSize: 11 }
+    // 机构干部统计：树取名称 + 编制合并
+    const treeRes = await request.get('/organization/tree').catch(() => null)
+    const quotaRes = await request.get('/staffing-quota/list').catch(() => null)
+    const nameMap = {}
+    if (treeRes && Array.isArray(treeRes.data)) {
+      const walk = list => {
+        if (!list) return
+        list.forEach(o => {
+          if (o && o.id != null) nameMap[o.id] = o.deptName || o.dept_name || ''
+          walk(o.children)
+        })
       }
-    ]
-  })
+      walk(treeRes.data)
+    }
+    const quotaMap = {}
+    if (quotaRes && Array.isArray(quotaRes.data)) {
+      quotaRes.data.forEach(q => {
+        if (q && q.deptId != null) {
+          quotaMap[q.deptId] = { approved: q.approvedQuota ?? 0, leader: q.leaderQuota ?? 0 }
+        }
+      })
+    }
+    const summary = (deptRes && Array.isArray(deptRes.data)) ? deptRes.data : []
+    orgTableData.value = summary
+      .map(it => {
+        const quota = quotaMap[it.deptId] || { approved: 0, leader: 0 }
+        const count = Number(it.count) || 0
+        return {
+          deptId: it.deptId,
+          orgName: nameMap[it.deptId] || ('机构#' + it.deptId),
+          cadreCount: count,
+          approvedQuota: quota.approved,
+          leaderQuota: quota.leader,
+          vacant: Math.max(0, quota.approved - count)
+        }
+      })
+      .sort((a, b) => b.cadreCount - a.cadreCount)
+  } catch (e) {
+    ElMessage.error('统计数据加载失败，请确认后端服务已启动')
+    console.error('statistics load error', e)
+  } finally {
+    loading.value = false
+  }
+}
 
-  window.addEventListener('resize', handleResize)
-})
+function handleExportStats() {
+  showExportDialog(orgTableData.value, [
+    { prop: 'orgName', label: '机构名称' },
+    { prop: 'cadreCount', label: '在册干部数' },
+    { prop: 'approvedQuota', label: '核定编制' },
+    { prop: 'leaderQuota', label: '领导职数' },
+    { prop: 'vacant', label: '空编数' }
+  ], '机构干部统计表')
+}
 
 function handleResize() {
   charts.forEach(c => c.resize())
 }
 
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+  loadData()
+})
+
 onUnmounted(() => {
   charts.forEach(c => c.dispose())
   window.removeEventListener('resize', handleResize)
 })
-
-function handleExportStats() {
-  showExportDialog(orgTableData, [
-    { prop: 'orgName', label: '机构名称' },
-    { prop: 'bianzhi', label: '编制数' },
-    { prop: 'shiyou', label: '实有人数' },
-    { prop: 'kongbian', label: '空编数' },
-    { prop: 'leaderPos', label: '领导职数' },
-    { prop: 'equipped', label: '已配备' },
-    { prop: 'vacant', label: '空缺' },
-    { prop: 'fillRate', label: '配备率' }
-  ], '机构干部统计表')
-}
 </script>
 
 <style scoped>

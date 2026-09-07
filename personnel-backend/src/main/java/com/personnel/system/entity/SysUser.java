@@ -36,6 +36,9 @@ public class SysUser {
 
     private Long deptId;
 
+    /** 关联干部档案ID（干部自助申报归属） */
+    private Long cadreId;
+
     private String ipBound;
 
     private Integer loginFailCount;

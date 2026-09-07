@@ -11,6 +11,8 @@ public class AssessmentTarget {
 
     private Long schemeId;
     private Long cadreId;
+    private String materialTitle;
+    private String materialText;
 
     @TableLogic
     private Integer deleted;

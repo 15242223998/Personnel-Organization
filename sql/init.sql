@@ -21,6 +21,7 @@ CREATE TABLE sys_user (
     user_type TINYINT NOT NULL COMMENT '用户类型 1系统管理员 2校级领导 3组织部部长 4组织员 5二级学院领导 6普通干部',
     status TINYINT DEFAULT 1 COMMENT '状态 0待审核 1正常(已批准) 2已拒绝 3停用',
     dept_id BIGINT COMMENT '所属部门/学院ID',
+    cadre_id BIGINT COMMENT '关联干部档案ID（干部自助申报归属）',
     ip_bound VARCHAR(128) COMMENT 'IP绑定',
     login_fail_count INT DEFAULT 0 COMMENT '登录失败次数',
     lock_until DATETIME COMMENT '锁定截止时间',
@@ -32,7 +33,8 @@ CREATE TABLE sys_user (
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted TINYINT DEFAULT 0 COMMENT '逻辑删除 0未删 1已删',
     INDEX idx_status (status),
-    INDEX idx_dept (dept_id)
+    INDEX idx_dept (dept_id),
+    INDEX idx_cadre (cadre_id)
 ) ENGINE=InnoDB COMMENT='系统用户表';
 
 -- 角色表
@@ -579,6 +581,8 @@ CREATE TABLE assessment_scheme (
     allow_anonymous TINYINT DEFAULT 1 COMMENT '允许匿名投票',
     excellent_max_ratio DECIMAL(5,2) COMMENT '优秀占比上限',
     forbid_all_excellent TINYINT DEFAULT 1 COMMENT '禁止全优评价',
+    vote_mode VARCHAR(16) DEFAULT 'SCORE' COMMENT '投票方式 SCORE评分式 BALLOT表决式',
+    need_sign TINYINT DEFAULT 1 COMMENT '是否需要签字确认 0否 1是',
     status VARCHAR(32) COMMENT '状态 DRAFT草稿 ACTIVE进行中 FINISHED已结束',
     create_by BIGINT,
     update_by BIGINT,
@@ -617,6 +621,8 @@ CREATE TABLE assessment_target (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     scheme_id BIGINT NOT NULL COMMENT '方案ID',
     cadre_id BIGINT NOT NULL COMMENT '被评干部ID',
+    material_title VARCHAR(200) COMMENT '测评材料标题',
+    material_text TEXT COMMENT '测评材料正文',
     deleted TINYINT DEFAULT 0,
     INDEX idx_scheme (scheme_id)
 ) ENGINE=InnoDB COMMENT='测评被评对象';
@@ -634,6 +640,39 @@ CREATE TABLE assessment_vote (
     INDEX idx_scheme_voter (scheme_id, voter_id),
     INDEX idx_target (target_cadre_id)
 ) ENGINE=InnoDB COMMENT='测评投票记录';
+
+-- 表决式投票记录（平板表决 APPROVE赞成/DISAPPROVE反对/ABSTAIN弃权）
+DROP TABLE IF EXISTS assessment_ballot;
+CREATE TABLE assessment_ballot (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    scheme_id BIGINT NOT NULL COMMENT '方案ID',
+    voter_id BIGINT NOT NULL COMMENT '投票人ID',
+    target_cadre_id BIGINT NOT NULL COMMENT '被表决干部ID',
+    choice VARCHAR(16) NOT NULL COMMENT '表决意见 APPROVE赞成/DISAPPROVE反对/ABSTAIN弃权',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除 0未删 1已删',
+    INDEX idx_scheme (scheme_id),
+    INDEX idx_scheme_voter (scheme_id, voter_id)
+) ENGINE=InnoDB COMMENT='表决式投票记录表';
+
+-- 投票签字留证表
+DROP TABLE IF EXISTS assessment_signature;
+CREATE TABLE assessment_signature (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    scheme_id BIGINT NOT NULL COMMENT '方案ID',
+    voter_id BIGINT NOT NULL COMMENT '签字人ID',
+    sign_image LONGBLOB COMMENT '签字图片(PNG)',
+    sign_md5 VARCHAR(64) COMMENT '签字图片MD5',
+    device_ip VARCHAR(64) COMMENT '设备IP',
+    sign_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '签字时间',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除 0未删 1已删',
+    INDEX idx_scheme (scheme_id),
+    INDEX idx_scheme_voter (scheme_id, voter_id)
+) ENGINE=InnoDB COMMENT='投票签字留证表';
 
 
 -- =================== 干部日常事务管理 ====================

@@ -72,4 +72,30 @@ public class SysUserController {
         sysUserService.resetPassword(id);
         return Result.success();
     }
+
+    @PutMapping("/{id}/bind-cadre/{cadreId}")
+    public Result<Void> bindCadre(@PathVariable Long id, @PathVariable Long cadreId) {
+        sysUserService.bindCadre(id, cadreId);
+        return Result.success();
+    }
+
+    @PutMapping("/{id}/unbind-cadre")
+    public Result<Void> unbindCadre(@PathVariable Long id) {
+        sysUserService.unbindCadre(id);
+        return Result.success();
+    }
+
+    @GetMapping("/profile")
+    public Result<SysUser> profile() {
+        com.personnel.framework.security.LoginUser loginUser =
+                com.personnel.framework.security.SecurityUtils.getLoginUser();
+        if (loginUser == null) {
+            return Result.error(401, "未登录");
+        }
+        SysUser user = sysUserService.getById(loginUser.getUserId());
+        if (user != null) {
+            user.setPassword(null);
+        }
+        return Result.success(user);
+    }
 }

@@ -17,4 +17,8 @@ public interface SysUserService extends IService<SysUser> {
     void approve(Long id);
 
     void reject(Long id);
+
+    void bindCadre(Long userId, Long cadreId);
+
+    void unbindCadre(Long userId);
 }

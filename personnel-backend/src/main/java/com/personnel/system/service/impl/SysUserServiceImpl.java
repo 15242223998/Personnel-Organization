@@ -115,4 +115,30 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         user.setStatus(2);
         updateById(user);
     }
+
+    @Override
+    public void bindCadre(Long userId, Long cadreId) {
+        SysUser user = getById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        long bound = count(new LambdaQueryWrapper<SysUser>()
+                .eq(SysUser::getCadreId, cadreId)
+                .ne(userId != null, SysUser::getId, userId));
+        if (bound > 0) {
+            throw new BusinessException("该干部档案已绑定其他用户");
+        }
+        user.setCadreId(cadreId);
+        updateById(user);
+    }
+
+    @Override
+    public void unbindCadre(Long userId) {
+        SysUser user = getById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        user.setCadreId(null);
+        updateById(user);
+    }
 }

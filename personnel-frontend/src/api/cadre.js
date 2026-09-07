@@ -4,6 +4,10 @@ export function getCadreList(params) {
   return request({ url: '/cadre/list', method: 'get', params })
 }
 
+export function getCadrePage(data) {
+  return request({ url: '/cadre/page', method: 'post', data })
+}
+
 export function getCadreDetail(id) {
   return request({ url: `/cadre/${id}`, method: 'get' })
 }

@@ -24,5 +24,7 @@ public class AssessmentScheme extends BaseEntity {
     private Integer allowAnonymous;
     private BigDecimal excellentMaxRatio;
     private Integer forbidAllExcellent;
+    private String voteMode;
+    private Integer needSign;
     private String status;
 }

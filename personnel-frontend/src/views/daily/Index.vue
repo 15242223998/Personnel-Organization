@@ -13,37 +13,36 @@
             <el-option label="港澳通行证" value="港澳通行证" />
             <el-option label="台湾通行证" value="台湾通行证" />
           </el-select>
-          <span class="label">状态：</span>
-          <el-select v-model="search.cert.status" placeholder="请选择" size="default" style="width:110px" clearable>
-            <el-option label="已归还" value="已归还" />
-            <el-option label="借出中" value="借出中" />
-          </el-select>
-          <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
-          <el-button @click="handleReset('cert')">重置</el-button>
+          <el-button type="primary" @click="() => {}"><el-icon><Search /></el-icon> 查询</el-button>
+          <el-button @click="search.cert = { name: '', type: '' }">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" @click="handleAddCert"><el-icon><Plus /></el-icon> 新增登记</el-button>
+          <el-button type="primary" @click="openCertDialog(null)"><el-icon><Plus /></el-icon> 新增登记</el-button>
           <el-button @click="exportCert"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
-          <el-table :data="certData" border size="small">
+          <el-table :data="filteredCertData" border size="small" v-loading="certLoading">
             <el-table-column type="index" label="序号" width="55" align="center" />
-            <el-table-column prop="name" label="持证人" width="80" align="center" sortable />
+            <el-table-column label="持证人" width="90" align="center">
+              <template #default="{ row }">{{ cadreName(row.cadreId) }}</template>
+            </el-table-column>
             <el-table-column prop="certType" label="证照类型" width="110" align="center" sortable />
-            <el-table-column prop="certNo" label="证照号码" min-width="140" align="center" sortable />
-            <el-table-column prop="issueDate" label="签发日期" width="110" align="center" sortable />
-            <el-table-column prop="expireDate" label="有效期至" width="110" align="center" sortable />
-            <el-table-column prop="status" label="状态" width="90" align="center" sortable>
+            <el-table-column prop="certNumber" label="证照号码" min-width="140" align="center" sortable />
+            <el-table-column prop="certStatus" label="状态" width="90" align="center" sortable>
               <template #default="{ row }">
-                <el-tag :type="row.status === '已归还' ? 'success' : 'warning'" size="small">{{ row.status }}</el-tag>
+                <el-tag :type="row.certStatus === '已归还' ? 'success' : row.certStatus === '在借' ? 'warning' : 'info'" size="small">{{ row.certStatus || '在库' }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" min-width="140" show-overflow-tooltip sortable />
-            <el-table-column label="操作" width="160" align="center" fixed="right">
+            <el-table-column prop="borrowDate" label="借出日期" width="110" align="center" sortable />
+            <el-table-column prop="expectedReturnDate" label="应还日期" width="110" align="center" sortable />
+            <el-table-column prop="returnDate" label="归还日期" width="110" align="center" sortable />
+            <el-table-column prop="remark" label="备注" min-width="140" show-overflow-tooltip />
+            <el-table-column label="操作" width="180" align="center" fixed="right">
               <template #default="{ row }">
-                <span class="link-blue" @click="handleCertLend(row)">借出</span>
+                <span class="link-blue" v-if="row.certStatus !== '在借'" @click="handleCertLend(row)">借出</span>
+                <span class="link-blue" v-else @click="handleCertReturn(row)">归还</span>
                 <el-divider direction="vertical" />
-                <span class="link-blue" @click="handleCertReturn(row)">归还</span>
+                <span class="link-blue" @click="openCertDialog(row)">编辑</span>
                 <el-divider direction="vertical" />
                 <span class="link-blue" style="color:#E53935" @click="handleCertDelete(row)">删除</span>
               </template>
@@ -56,39 +55,35 @@
         <div class="search-bar">
           <span class="label">姓名：</span>
           <el-input v-model="search.overseas.name" placeholder="请输入姓名" size="default" style="width:140px" clearable />
-          <span class="label">出境事由：</span>
-          <el-select v-model="search.overseas.reason" placeholder="请选择" size="default" style="width:120px" clearable>
-            <el-option label="公务出访" value="公务出访" />
-            <el-option label="探亲" value="探亲" />
-            <el-option label="旅游" value="旅游" />
-            <el-option label="学术交流" value="学术交流" />
-          </el-select>
-          <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
-          <el-button @click="handleReset('overseas')">重置</el-button>
+          <el-button type="primary"><el-icon><Search /></el-icon> 查询</el-button>
+          <el-button @click="search.overseas = { name: '' }">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" @click="handleAddOverseas"><el-icon><Plus /></el-icon> 新增记录</el-button>
+          <el-button type="primary" @click="openAbroadDialog(null)"><el-icon><Plus /></el-icon> 新增记录</el-button>
           <el-button @click="exportOverseas"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
-          <el-table :data="overseasData" border size="small">
+          <el-table :data="filteredAbroadData" border size="small" v-loading="abroadLoading">
             <el-table-column type="index" label="序号" width="55" align="center" />
-            <el-table-column prop="name" label="姓名" width="80" align="center" sortable />
+            <el-table-column label="姓名" width="90" align="center">
+              <template #default="{ row }">{{ cadreName(row.cadreId) }}</template>
+            </el-table-column>
             <el-table-column prop="destination" label="目的地" min-width="110" align="center" sortable />
-            <el-table-column prop="reason" label="出境事由" min-width="100" align="center" sortable />
+            <el-table-column prop="purpose" label="出境事由" min-width="110" align="center" sortable />
             <el-table-column prop="departDate" label="出境日期" width="110" align="center" sortable />
             <el-table-column prop="returnDate" label="回国日期" width="110" align="center" sortable />
-            <el-table-column prop="approveStatus" label="审批状态" width="100" align="center" sortable>
+            <el-table-column prop="approvedDays" label="批准天数" width="90" align="center" sortable />
+            <el-table-column prop="actualDays" label="实际天数" width="90" align="center" sortable />
+            <el-table-column prop="isOverdue" label="是否超期" width="90" align="center" sortable>
               <template #default="{ row }">
-                <el-tag :type="row.approveStatus === '已批准' ? 'success' : row.approveStatus === '待审批' ? 'warning' : 'danger'" size="small">{{ row.approveStatus }}</el-tag>
+                <el-tag :type="row.isOverdue === 1 ? 'danger' : 'success'" size="small">{{ row.isOverdue === 1 ? '超期' : '正常' }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" min-width="140" show-overflow-tooltip sortable />
             <el-table-column label="操作" width="120" align="center" fixed="right">
               <template #default="{ row }">
-                <span class="link-blue" @click="handleOverseasView(row)">查看</span>
+                <span class="link-blue" @click="openAbroadDialog(row)">编辑</span>
                 <el-divider direction="vertical" />
-                <span class="link-blue" style="color:#E53935" @click="handleOverseasDelete(row)">删除</span>
+                <span class="link-blue" style="color:#E53935" @click="handleAbroadDelete(row)">删除</span>
               </template>
             </el-table-column>
           </el-table>
@@ -99,45 +94,39 @@
         <div class="search-bar">
           <span class="label">申请人：</span>
           <el-input v-model="search.leave.name" placeholder="请输入姓名" size="default" style="width:140px" clearable />
-          <span class="label">休假类型：</span>
-          <el-select v-model="search.leave.type" placeholder="请选择" size="default" style="width:120px" clearable>
-            <el-option label="年休假" value="年休假" />
-            <el-option label="病假" value="病假" />
-            <el-option label="事假" value="事假" />
-            <el-option label="婚假" value="婚假" />
-            <el-option label="产假" value="产假" />
-          </el-select>
           <span class="label">状态：</span>
           <el-select v-model="search.leave.status" placeholder="请选择" size="default" style="width:110px" clearable>
             <el-option label="待审批" value="待审批" />
             <el-option label="已批准" value="已批准" />
             <el-option label="已驳回" value="已驳回" />
           </el-select>
-          <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
-          <el-button @click="handleReset('leave')">重置</el-button>
+          <el-button type="primary"><el-icon><Search /></el-icon> 查询</el-button>
+          <el-button @click="search.leave = { name: '', status: '' }">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" @click="handleAddLeave"><el-icon><Plus /></el-icon> 申请休假</el-button>
+          <el-button type="primary" @click="openLeaveDialog(null)"><el-icon><Plus /></el-icon> 申请休假</el-button>
           <el-button @click="exportLeave"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
-          <el-table :data="leaveData" border size="small">
+          <el-table :data="filteredLeaveData" border size="small" v-loading="leaveLoading">
             <el-table-column type="index" label="序号" width="55" align="center" />
-            <el-table-column prop="name" label="申请人" width="80" align="center" sortable />
-            <el-table-column prop="dept" label="部门" min-width="130" show-overflow-tooltip sortable />
+            <el-table-column label="申请人" width="90" align="center">
+              <template #default="{ row }">{{ cadreName(row.cadreId) }}</template>
+            </el-table-column>
             <el-table-column prop="leaveType" label="休假类型" width="100" align="center" sortable />
             <el-table-column prop="startDate" label="开始日期" width="110" align="center" sortable />
             <el-table-column prop="endDate" label="结束日期" width="110" align="center" sortable />
-            <el-table-column prop="days" label="天数" width="60" align="center" sortable />
-            <el-table-column prop="status" label="状态" width="90" align="center" sortable>
+            <el-table-column prop="leaveDays" label="天数" width="70" align="center" sortable />
+            <el-table-column prop="reason" label="事由" min-width="150" show-overflow-tooltip />
+            <el-table-column prop="approveStatus" label="状态" width="90" align="center" sortable>
               <template #default="{ row }">
-                <el-tag :type="row.status === '已批准' ? 'success' : row.status === '待审批' ? 'warning' : 'danger'" size="small">{{ row.status }}</el-tag>
+                <el-tag :type="row.approveStatus === '已批准' ? 'success' : row.approveStatus === '待审批' ? 'warning' : 'danger'" size="small">{{ row.approveStatus }}</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="160" align="center" fixed="right">
               <template #default="{ row }">
-                <span class="link-blue" v-if="row.status === '待审批'" @click="openApprove(row, 'leave')">审批</span>
-                <span class="link-blue" v-else @click="handleLeaveView(row)">查看</span>
+                <span class="link-blue" v-if="row.approveStatus === '待审批'" @click="openApprove(row, 'leave')">审批</span>
+                <span class="link-blue" @click="openLeaveDialog(row)">编辑</span>
                 <el-divider direction="vertical" />
                 <span class="link-blue" style="color:#E53935" @click="handleLeaveDelete(row)">删除</span>
               </template>
@@ -157,22 +146,24 @@
             <el-option label="在线学习" value="在线学习" />
             <el-option label="外出进修" value="外出进修" />
           </el-select>
-          <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
-          <el-button @click="handleReset('training')">重置</el-button>
+          <el-button type="primary"><el-icon><Search /></el-icon> 查询</el-button>
+          <el-button @click="search.training = { name: '', type: '' }">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" @click="handleAddTraining"><el-icon><Plus /></el-icon> 新增培训</el-button>
+          <el-button type="primary" @click="openTrainingDialog(null)"><el-icon><Plus /></el-icon> 新增培训</el-button>
           <el-button @click="exportTraining"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
-          <el-table :data="trainingData" border size="small">
+          <el-table :data="filteredTrainingData" border size="small" v-loading="trainingLoading">
             <el-table-column type="index" label="序号" width="55" align="center" />
-            <el-table-column prop="name" label="培训名称" min-width="180" show-overflow-tooltip sortable />
-            <el-table-column prop="type" label="培训类型" width="100" align="center" sortable />
+            <el-table-column prop="trainingName" label="培训名称" min-width="180" show-overflow-tooltip sortable />
+            <el-table-column prop="trainingType" label="培训类型" width="100" align="center" sortable />
             <el-table-column prop="organizer" label="主办单位" min-width="130" show-overflow-tooltip sortable />
             <el-table-column prop="startDate" label="开始日期" width="110" align="center" sortable />
             <el-table-column prop="endDate" label="结束日期" width="110" align="center" sortable />
-            <el-table-column prop="studentCount" label="参训人数" width="90" align="center" sortable />
+            <el-table-column label="参训人数" width="90" align="center">
+              <template #default="{ row }">{{ (trainingCadreCounts[row.id] ?? '-') }}</template>
+            </el-table-column>
             <el-table-column prop="status" label="状态" width="90" align="center" sortable>
               <template #default="{ row }">
                 <el-tag :type="row.status === '已完成' ? 'success' : row.status === '进行中' ? '' : 'warning'" size="small">{{ row.status }}</el-tag>
@@ -182,7 +173,7 @@
               <template #default="{ row }">
                 <span class="link-blue" @click="openStudents(row)">学员管理</span>
                 <el-divider direction="vertical" />
-                <span class="link-blue" @click="handleTrainingEdit(row)">编辑</span>
+                <span class="link-blue" @click="openTrainingDialog(row)">编辑</span>
                 <el-divider direction="vertical" />
                 <span class="link-blue" style="color:#E53935" @click="handleTrainingDelete(row)">删除</span>
               </template>
@@ -195,32 +186,32 @@
         <div class="search-bar">
           <span class="label">姓名：</span>
           <el-input v-model="search.secondment.name" placeholder="请输入姓名" size="default" style="width:140px" clearable />
-          <span class="label">挂职类型：</span>
-          <el-select v-model="search.secondment.type" placeholder="请选择" size="default" style="width:120px" clearable>
-            <el-option label="上挂" value="上挂" />
-            <el-option label="下挂" value="下挂" />
-            <el-option label="横向挂" value="横向挂" />
-          </el-select>
-          <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
-          <el-button @click="handleReset('secondment')">重置</el-button>
+          <el-button type="primary"><el-icon><Search /></el-icon> 查询</el-button>
+          <el-button @click="search.secondment = { name: '' }">重置</el-button>
         </div>
         <div class="toolbar">
-          <el-button type="primary" @click="handleAddSecondment"><el-icon><Plus /></el-icon> 新增挂职</el-button>
+          <el-button type="primary" @click="openSecondmentDialog(null)"><el-icon><Plus /></el-icon> 新增挂职</el-button>
           <el-button @click="exportSecondment"><el-icon><Download /></el-icon> 导出</el-button>
         </div>
         <div class="table-wrap">
-          <el-table :data="secondmentData" border size="small">
+          <el-table :data="filteredSecondmentData" border size="small" v-loading="secondmentLoading">
             <el-table-column type="index" label="序号" width="55" align="center" />
-            <el-table-column prop="name" label="姓名" width="80" align="center" sortable />
-            <el-table-column prop="originalDept" label="原单位/部门" min-width="150" show-overflow-tooltip sortable />
-            <el-table-column prop="targetDept" label="挂职单位" min-width="150" show-overflow-tooltip sortable />
-            <el-table-column prop="position" label="挂任职务" min-width="130" show-overflow-tooltip sortable />
-            <el-table-column prop="type" label="挂职类型" width="90" align="center" sortable />
+            <el-table-column label="姓名" width="90" align="center">
+              <template #default="{ row }">{{ cadreName(row.cadreId) }}</template>
+            </el-table-column>
+            <el-table-column prop="secondmentUnit" label="挂职单位" min-width="160" show-overflow-tooltip sortable />
+            <el-table-column prop="secondmentPosition" label="挂任职务" min-width="130" show-overflow-tooltip sortable />
             <el-table-column prop="startDate" label="开始日期" width="110" align="center" sortable />
             <el-table-column prop="endDate" label="结束日期" width="110" align="center" sortable />
+            <el-table-column prop="status" label="状态" width="90" align="center" sortable>
+              <template #default="{ row }">
+                <el-tag :type="row.status === '挂职中' ? 'success' : row.status === '未开始' ? 'warning' : 'info'" size="small">{{ row.status }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="remark" label="备注" min-width="120" show-overflow-tooltip />
             <el-table-column label="操作" width="120" align="center" fixed="right">
               <template #default="{ row }">
-                <span class="link-blue" @click="handleSecondmentView(row)">查看</span>
+                <span class="link-blue" @click="openSecondmentDialog(row)">编辑</span>
                 <el-divider direction="vertical" />
                 <span class="link-blue" style="color:#E53935" @click="handleSecondmentDelete(row)">删除</span>
               </template>
@@ -231,25 +222,34 @@
 
       <el-tab-pane label="自助申报" name="declare">
         <div class="toolbar" style="border-top:1px solid #e0e0e0">
-          <el-button type="primary" @click="handleAddDeclare"><el-icon><Plus /></el-icon> 新增申报</el-button>
+          <el-button type="primary" @click="openDeclareDialog"><el-icon><Plus /></el-icon> 新增申报</el-button>
           <el-button @click="exportDeclare"><el-icon><Download /></el-icon> 导出</el-button>
+          <el-alert v-if="profile && !profile.cadreId" type="warning" :closable="false" show-icon
+            title="当前账号未绑定干部档案，无法自助申报，请联系管理员在【系统管理-用户管理】中绑定" style="flex:1;margin-left:12px;padding:4px 8px" />
         </div>
         <div class="table-wrap">
-          <el-table :data="declareData" border size="small">
+          <el-table :data="declareData" border size="small" v-loading="declareLoading">
             <el-table-column type="index" label="序号" width="55" align="center" />
-            <el-table-column prop="name" label="申报人" width="90" align="center" sortable />
-            <el-table-column prop="type" label="申报事项" width="110" align="center" sortable />
-            <el-table-column prop="title" label="申报标题" min-width="200" show-overflow-tooltip sortable />
-            <el-table-column prop="submitDate" label="提交时间" width="150" align="center" sortable />
-            <el-table-column prop="status" label="状态" width="90" align="center" sortable>
+            <el-table-column label="申报人" width="100" align="center">
+              <template #default="{ row }">{{ userName(row.applicantId) }}</template>
+            </el-table-column>
+            <el-table-column prop="applicationType" label="申报类型" width="110" align="center" sortable />
+            <el-table-column prop="applicationTitle" label="申报标题" min-width="200" show-overflow-tooltip sortable />
+            <el-table-column prop="createTime" label="提交时间" width="150" align="center" sortable>
+              <template #default="{ row }">{{ (row.createTime || '').replace('T', ' ').slice(0, 16) }}</template>
+            </el-table-column>
+            <el-table-column prop="applyStatus" label="状态" width="90" align="center" sortable>
               <template #default="{ row }">
-                <el-tag :type="row.status === '已通过' ? 'success' : row.status === '待审批' ? 'warning' : 'danger'" size="small">{{ row.status }}</el-tag>
+                <el-tag :type="row.applyStatus === 'APPROVED' ? 'success' : row.applyStatus === 'SUBMITTED' ? 'warning' : row.applyStatus === 'REJECTED' ? 'danger' : 'info'" size="small">
+                  {{ applyStatusText(row.applyStatus) }}
+                </el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="160" align="center" fixed="right">
+            <el-table-column label="操作" width="220" align="center" fixed="right">
               <template #default="{ row }">
-                <span class="link-blue" v-if="row.status === '待审批'" @click="openApprove(row, 'declare')">审批</span>
-                <span class="link-blue" v-else @click="handleDeclareView(row)">查看</span>
+                <span class="link-blue" v-if="row.applyStatus === 'DRAFT'" @click="handleDeclareSubmit(row)">提交</span>
+                <span class="link-blue" v-if="row.applyStatus === 'SUBMITTED'" @click="openApprove(row, 'declare')">审批</span>
+                <span class="link-blue" @click="handleDeclareView(row)">查看</span>
                 <el-divider direction="vertical" />
                 <span class="link-blue" style="color:#E53935" @click="handleDeclareDelete(row)">删除</span>
               </template>
@@ -259,8 +259,197 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-dialog title="审批" v-model="approveDialog" width="500px">
-      <el-form :model="approveForm" label-width="80px">
+    <!-- 证照 -->
+    <el-dialog :title="editId.cert ? '编辑证照登记' : '新增证照登记'" v-model="certDialog" width="560px" destroy-on-close>
+      <el-form :model="certForm" label-width="90px">
+        <el-form-item label="持证人" required>
+          <el-select v-model="certForm.cadreId" filterable style="width:100%" placeholder="请选择干部">
+            <el-option v-for="c in cadreOptions" :key="c.id" :label="c.name" :value="c.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="证照类型" required>
+          <el-select v-model="certForm.certType" style="width:100%" placeholder="请选择">
+            <el-option label="护照" value="护照" />
+            <el-option label="港澳通行证" value="港澳通行证" />
+            <el-option label="台湾通行证" value="台湾通行证" />
+            <el-option label="其他" value="其他" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="证照号码" required>
+          <el-input v-model="certForm.certNumber" placeholder="请输入证照号码" />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="certForm.remark" type="textarea" :rows="2" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="certDialog = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="handleCertSubmit">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 出境 -->
+    <el-dialog :title="editId.abroad ? '编辑出境记录' : '新增出境记录'" v-model="abroadDialog" width="560px" destroy-on-close>
+      <el-form :model="abroadForm" label-width="90px">
+        <el-form-item label="干部" required>
+          <el-select v-model="abroadForm.cadreId" filterable style="width:100%" placeholder="请选择干部">
+            <el-option v-for="c in cadreOptions" :key="c.id" :label="c.name" :value="c.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="目的地" required>
+          <el-input v-model="abroadForm.destination" placeholder="请输入国家/地区" />
+        </el-form-item>
+        <el-form-item label="出境事由">
+          <el-select v-model="abroadForm.purpose" style="width:100%">
+            <el-option label="公务出访" value="公务出访" />
+            <el-option label="探亲" value="探亲" />
+            <el-option label="旅游" value="旅游" />
+            <el-option label="学术交流" value="学术交流" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="起止日期" required>
+          <el-date-picker v-model="abroadForm.dateRange" type="daterange" range-separator="至" start-placeholder="出境" end-placeholder="回国" value-format="YYYY-MM-DD" style="width:100%" />
+        </el-form-item>
+        <el-form-item label="批准天数" required>
+          <el-input-number v-model="abroadForm.approvedDays" :min="1" :max="365" style="width:100%" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="abroadDialog = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="handleAbroadSubmit">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 休假 -->
+    <el-dialog :title="editId.leave ? '编辑休假申请' : '申请休假'" v-model="leaveDialog" width="560px" destroy-on-close>
+      <el-form :model="leaveForm" label-width="90px">
+        <el-form-item label="申请人" required>
+          <el-select v-model="leaveForm.cadreId" filterable style="width:100%" placeholder="请选择干部">
+            <el-option v-for="c in cadreOptions" :key="c.id" :label="c.name" :value="c.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="休假类型" required>
+          <el-select v-model="leaveForm.leaveType" style="width:100%">
+            <el-option label="年休假" value="年休假" />
+            <el-option label="病假" value="病假" />
+            <el-option label="事假" value="事假" />
+            <el-option label="婚假" value="婚假" />
+            <el-option label="产假" value="产假" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="起止日期" required>
+          <el-date-picker v-model="leaveForm.dateRange" type="daterange" range-separator="至" start-placeholder="开始" end-placeholder="结束" value-format="YYYY-MM-DD" style="width:100%" />
+        </el-form-item>
+        <el-form-item label="事由" required>
+          <el-input v-model="leaveForm.reason" type="textarea" :rows="2" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="leaveDialog = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="handleLeaveSubmit">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 培训 -->
+    <el-dialog :title="editId.training ? '编辑培训' : '新增培训'" v-model="trainingDialog" width="600px" destroy-on-close>
+      <el-form :model="trainingForm" label-width="90px">
+        <el-form-item label="培训名称" required>
+          <el-input v-model="trainingForm.trainingName" />
+        </el-form-item>
+        <el-form-item label="培训类型" required>
+          <el-select v-model="trainingForm.trainingType" style="width:100%">
+            <el-option label="党校培训" value="党校培训" />
+            <el-option label="业务培训" value="业务培训" />
+            <el-option label="在线学习" value="在线学习" />
+            <el-option label="外出进修" value="外出进修" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="主办单位" required>
+          <el-input v-model="trainingForm.organizer" />
+        </el-form-item>
+        <el-form-item label="培训地点">
+          <el-input v-model="trainingForm.trainingLocation" />
+        </el-form-item>
+        <el-form-item label="起止日期" required>
+          <el-date-picker v-model="trainingForm.dateRange" type="daterange" range-separator="至" start-placeholder="开始" end-placeholder="结束" value-format="YYYY-MM-DD" style="width:100%" />
+        </el-form-item>
+        <el-form-item label="说明">
+          <el-input v-model="trainingForm.description" type="textarea" :rows="2" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="trainingDialog = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="handleTrainingSubmit">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 挂职 -->
+    <el-dialog :title="editId.secondment ? '编辑挂职记录' : '新增挂职记录'" v-model="secondmentDialog" width="560px" destroy-on-close>
+      <el-form :model="secondmentForm" label-width="90px">
+        <el-form-item label="挂职干部" required>
+          <el-select v-model="secondmentForm.cadreId" filterable style="width:100%" placeholder="请选择干部">
+            <el-option v-for="c in cadreOptions" :key="c.id" :label="c.name" :value="c.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="挂职单位" required>
+          <el-input v-model="secondmentForm.secondmentUnit" />
+        </el-form-item>
+        <el-form-item label="挂任职务" required>
+          <el-input v-model="secondmentForm.secondmentPosition" />
+        </el-form-item>
+        <el-form-item label="起止日期" required>
+          <el-date-picker v-model="secondmentForm.dateRange" type="daterange" range-separator="至" start-placeholder="开始" end-placeholder="结束" value-format="YYYY-MM-DD" style="width:100%" />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="secondmentForm.remark" type="textarea" :rows="2" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="secondmentDialog = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="handleSecondmentSubmit">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 自助申报 -->
+    <el-dialog title="新增自助申报" v-model="declareDialog" width="600px" destroy-on-close>
+      <el-form :model="declareForm" label-width="90px">
+        <el-form-item label="申报类型" required>
+          <el-select v-model="declareForm.applicationType" style="width:100%">
+            <el-option label="信息修改" value="INFO_UPDATE" />
+            <el-option label="请假" value="LEAVE" />
+            <el-option label="兼职" value="PART_TIME" />
+            <el-option label="培训" value="TRAINING" />
+            <el-option label="出国(境)" value="ABROAD" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="申报标题" required>
+          <el-input v-model="declareForm.applicationTitle" placeholder="请输入标题" />
+        </el-form-item>
+        <el-form-item label="申报内容" required>
+          <el-input v-model="declareForm.applicationContent" type="textarea" :rows="4" placeholder="请输入具体申报事项说明" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="declareDialog = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="handleDeclareSubmitNew">保存并提交</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 申报详情 -->
+    <el-dialog title="申报详情" v-model="declareViewDialog" width="600px">
+      <el-descriptions :column="1" border>
+        <el-descriptions-item label="申报人">{{ declareViewRow ? userName(declareViewRow.applicantId) : '' }}</el-descriptions-item>
+        <el-descriptions-item label="申报类型">{{ declareViewRow?.applicationType }}</el-descriptions-item>
+        <el-descriptions-item label="申报标题">{{ declareViewRow?.applicationTitle }}</el-descriptions-item>
+        <el-descriptions-item label="申报内容">{{ declareViewRow?.applicationContent }}</el-descriptions-item>
+        <el-descriptions-item label="状态">{{ applyStatusText(declareViewRow?.applyStatus) }}</el-descriptions-item>
+        <el-descriptions-item label="审批意见">{{ declareViewRow?.approveComment || '-' }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
+    <!-- 审批 -->
+    <el-dialog title="审批" v-model="approveDialog" width="520px">
+      <el-form :model="approveForm" label-width="90px">
         <el-form-item label="申请人">{{ approveForm.name }}</el-form-item>
         <el-form-item label="事项">{{ approveForm.item }}</el-form-item>
         <el-form-item label="审批意见">
@@ -269,21 +458,29 @@
       </el-form>
       <template #footer>
         <el-button @click="approveDialog = false">取消</el-button>
-        <el-button type="danger" @click="handleReject">驳回</el-button>
-        <el-button type="primary" @click="handleApprove">通过</el-button>
+        <el-button type="danger" :loading="saving" @click="handleReject">驳回</el-button>
+        <el-button type="primary" :loading="saving" @click="handleApprove">通过</el-button>
       </template>
     </el-dialog>
 
-    <el-dialog :title="currentTraining?.name + ' - 学员管理'" v-model="studentDialog" width="650px">
+    <!-- 学员管理 -->
+    <el-dialog :title="(currentTraining?.trainingName || '') + ' - 学员管理'" v-model="studentDialog" width="680px">
       <div style="margin-bottom:10px">
-        <el-button type="primary" @click="handleAddStudent"><el-icon><Plus /></el-icon> 添加学员</el-button>
+        <el-select v-model="studentForm.cadreId" filterable placeholder="选择干部添加为学员" style="width:280px">
+          <el-option v-for="c in cadreOptions" :key="c.id" :label="c.name" :value="c.id" />
+        </el-select>
+        <el-button type="primary" style="margin-left:8px" :loading="saving" @click="handleAddStudent"><el-icon><Plus /></el-icon> 添加学员</el-button>
       </div>
-      <el-table :data="studentList" border size="small">
+      <el-table :data="studentList" border size="small" v-loading="studentLoading">
         <el-table-column type="index" label="序号" width="55" align="center" />
-        <el-table-column prop="name" label="姓名" width="100" align="center" sortable />
-        <el-table-column prop="dept" label="部门" min-width="140" align="center" show-overflow-tooltip sortable />
-        <el-table-column prop="position" label="职务" min-width="120" align="center" show-overflow-tooltip sortable />
-        <el-table-column prop="score" label="考核成绩" width="100" align="center" sortable />
+        <el-table-column label="姓名" width="100" align="center">
+          <template #default="{ row }">{{ cadreName(row.cadreId) }}</template>
+        </el-table-column>
+        <el-table-column label="是否完成" width="100" align="center">
+          <template #default="{ row }">
+            <el-tag :type="row.isCompleted === 1 ? 'success' : 'info'" size="small">{{ row.isCompleted === 1 ? '已完成' : '未完成' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="80" align="center">
           <template #default="{ row }">
             <span class="link-blue" style="color:#E53935" @click="handleStudentRemove(row)">移除</span>
@@ -295,207 +492,590 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { Search, Plus, Download } from '@element-plus/icons-vue'
 import { showExportDialog } from '@/utils/export-store'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { getCadrePage } from '@/api/cadre'
+import {
+  getCertificatePage, addCertificate, updateCertificate, deleteCertificate,
+  getAbroadPage, addAbroad, updateAbroad, deleteAbroad,
+  getLeavePage, addLeave, updateLeave, deleteLeave,
+  getTrainingPage, addTraining, updateTraining, deleteTraining,
+  getTrainingCadreList, addTrainingCadre, deleteTrainingCadre,
+  getSecondmentPage, addSecondment, updateSecondment, deleteSecondment,
+  getSelfApplicationPage, addSelfApplication, deleteSelfApplication,
+  submitSelfApplication, approveSelfApplication, rejectSelfApplication,
+  getUserProfile
+} from '@/api/daily'
 
 const activeTab = ref('certificate')
-const approveDialog = ref(false)
-const studentDialog = ref(false)
-const currentTraining = ref(null)
+const saving = ref(false)
+
+// ================= 公共数据 =================
+const cadreOptions = ref([])
+const userOptions = ref([])
+const profile = ref(null)
+const cadreMap = computed(() => Object.fromEntries(cadreOptions.value.map(c => [c.id, c.name])))
+const userMap = computed(() => Object.fromEntries(userOptions.value.map(u => [u.id, u.realName])))
+function cadreName(id) { return cadreMap.value[id] || `#${id}` }
+function userName(id) { return userMap.value[id] || `#${id}` }
+function applyStatusText(s) {
+  return { DRAFT: '草稿', SUBMITTED: '待审批', APPROVED: '已通过', REJECTED: '已驳回' }[s] || s
+}
+
+const editId = reactive({ cert: null, abroad: null, leave: null, training: null, secondment: null })
 
 const search = reactive({
-  cert: { name: '', type: '', status: '' },
-  overseas: { name: '', reason: '' },
-  leave: { name: '', type: '', status: '' },
+  cert: { name: '', type: '' },
+  overseas: { name: '' },
+  leave: { name: '', status: '' },
   training: { name: '', type: '' },
-  secondment: { name: '', type: '' }
+  secondment: { name: '' }
 })
 
-const approveForm = reactive({ name: '', item: '', opinion: '' })
+// ================= 证照管理 =================
+const certLoading = ref(false)
+const certData = ref([])
+const certDialog = ref(false)
+const certForm = reactive({ cadreId: null, certType: '', certNumber: '', remark: '' })
 
-const certData = [
-  { name: '张建国', certType: '护照', certNo: 'E12345678', issueDate: '2022-03-15', expireDate: '2032-03-14', status: '已归还', remark: '因私护照' },
-  { name: '李秀英', certType: '港澳通行证', certNo: 'C87654321', issueDate: '2023-06-20', expireDate: '2033-06-19', status: '借出中', remark: '赴港学术交流' },
-  { name: '王志强', certType: '护照', certNo: 'E23456789', issueDate: '2021-09-10', expireDate: '2031-09-09', status: '已归还', remark: '公务护照' },
-  { name: '刘德明', certType: '台湾通行证', certNo: 'T34567890', issueDate: '2024-01-05', expireDate: '2029-01-04', status: '已归还', remark: '' },
-  { name: '陈丽华', certType: '护照', certNo: 'E45678901', issueDate: '2020-11-20', expireDate: '2030-11-19', status: '借出中', remark: '出国探亲' }
-]
-
-const overseasData = [
-  { name: '李秀英', destination: '中国香港', reason: '学术交流', departDate: '2026-07-20', returnDate: '2026-07-25', approveStatus: '已批准', remark: '参加国际学术会议' },
-  { name: '张建国', destination: '新加坡', reason: '公务出访', departDate: '2026-08-15', returnDate: '2026-08-22', approveStatus: '已批准', remark: '校际交流访问' },
-  { name: '赵国栋', destination: '日本', reason: '旅游', departDate: '2026-09-01', returnDate: '2026-09-07', approveStatus: '待审批', remark: '个人旅游' },
-  { name: '孙红梅', destination: '德国', reason: '学术交流', departDate: '2026-06-10', returnDate: '2026-06-20', approveStatus: '已批准', remark: '访问学者' },
-  { name: '周伟民', destination: '泰国', reason: '探亲', departDate: '2026-05-01', returnDate: '2026-05-08', approveStatus: '已驳回', remark: '出境时间与工作冲突' }
-]
-
-const leaveData = [
-  { name: '张建国', dept: '机械工程学院', leaveType: '年休假', startDate: '2026-08-01', endDate: '2026-08-10', days: 10, status: '已批准' },
-  { name: '李秀英', dept: '电子信息学院', leaveType: '病假', startDate: '2026-08-05', endDate: '2026-08-07', days: 3, status: '已批准' },
-  { name: '王志强', dept: '教务处', leaveType: '事假', startDate: '2026-08-12', endDate: '2026-08-13', days: 2, status: '待审批' },
-  { name: '刘德明', dept: '人事处', leaveType: '年休假', startDate: '2026-08-20', endDate: '2026-08-29', days: 10, status: '待审批' },
-  { name: '吴玉芬', dept: '财务处', leaveType: '婚假', startDate: '2026-09-01', endDate: '2026-09-10', days: 10, status: '已驳回' }
-]
-
-const trainingData = [
-  { name: '2026年春季处级干部进修班', type: '党校培训', organizer: '省委党校', startDate: '2026-03-01', endDate: '2026-04-30', studentCount: 45, status: '已完成' },
-  { name: '中青年干部能力提升培训班', type: '业务培训', organizer: '组织部', startDate: '2026-06-15', endDate: '2026-06-25', studentCount: 60, status: '已完成' },
-  { name: '学习贯彻党的二十届三中全会精神专题研讨', type: '党校培训', organizer: '校党校', startDate: '2026-08-10', endDate: '2026-08-14', studentCount: 80, status: '进行中' },
-  { name: '2026年秋季学期在线学习', type: '在线学习', organizer: '国家教育行政学院', startDate: '2026-09-01', endDate: '2026-12-31', studentCount: 200, status: '未开始' }
-]
-
-const secondmentData = [
-  { name: '陈丽华', originalDept: '财务处', targetDept: '教育部财务司', position: '副处长（挂职）', type: '上挂', startDate: '2025-09-01', endDate: '2026-08-31' },
-  { name: '郑海涛', originalDept: '学校办公室', targetDept: 'XX县人民政府', position: '副县长（挂职）', type: '下挂', startDate: '2025-03-01', endDate: '2027-02-28' },
-  { name: '钱淑华', originalDept: '科研处', targetDept: '科技厅高新处', position: '副处长（挂职）', type: '上挂', startDate: '2026-01-15', endDate: '2027-01-14' },
-  { name: '马晓东', originalDept: '学生处', targetDept: '清华大学学工部', position: '部长助理（挂职）', type: '横向挂', startDate: '2026-03-01', endDate: '2026-12-31' }
-]
-
-const declareData = [
-  { name: '张建国', type: '出差报销', title: '赴新加坡出访差旅费报销', submitDate: '2026-08-01 10:30', status: '待审批' },
-  { name: '李秀英', type: '用车申请', title: '8月15日机场接送用车', submitDate: '2026-08-05 14:20', status: '已通过' },
-  { name: '王志强', type: '印章使用', title: '教务处文件盖章申请', submitDate: '2026-08-08 09:15', status: '已通过' },
-  { name: '赵国栋', type: '会议室预约', title: '8月20日学术报告厅使用申请', submitDate: '2026-08-10 16:40', status: '待审批' },
-  { name: '孙红梅', type: '出差报销', title: '赴德国访问学者差旅费报销', submitDate: '2026-07-01 11:00', status: '已驳回' }
-]
-
-const studentList = ref([])
-
-const defaultStudents = [
-  { name: '张建国', dept: '机械工程学院', position: '院长', score: '优秀' },
-  { name: '李秀英', dept: '电子信息学院', position: '党委书记', score: '优秀' },
-  { name: '王志强', dept: '教务处', position: '处长', score: '良好' },
-  { name: '刘德明', dept: '人事处', position: '副处长', score: '良好' },
-  { name: '赵国栋', dept: '后勤管理处', position: '处长', score: '合格' }
-]
-
-function openApprove(row, type) {
-  approveForm.name = row.name
-  approveForm.item = type === 'leave' ? row.leaveType + '申请' : row.type + ' - ' + row.title
-  approveForm.opinion = ''
-  approveDialog.value = true
+async function loadCert() {
+  certLoading.value = true
+  try {
+    const res = await getCertificatePage({ current: 1, size: 500 })
+    certData.value = res.data.records || []
+  } finally { certLoading.value = false }
 }
 
-function handleApprove() {
-  ElMessage.success('审批通过')
-  approveDialog.value = false
+const filteredCertData = computed(() => certData.value.filter(d =>
+  (!search.cert.name || (cadreName(d.cadreId) || '').includes(search.cert.name)) &&
+  (!search.cert.type || d.certType === search.cert.type)))
+
+function openCertDialog(row) {
+  editId.cert = row ? row.id : null
+  certForm.cadreId = row?.cadreId ?? null
+  certForm.certType = row?.certType || ''
+  certForm.certNumber = row?.certNumber || ''
+  certForm.remark = row?.remark || ''
+  certDialog.value = true
 }
 
-function handleReject() {
-  ElMessage.success('已驳回')
-  approveDialog.value = false
+async function handleCertSubmit() {
+  saving.value = true
+  try {
+    if (editId.cert) {
+      await updateCertificate({ id: editId.cert, ...certForm })
+      ElMessage.success('证照登记已更新')
+    } else {
+      await addCertificate({ ...certForm, certStatus: '在库' })
+      ElMessage.success('证照登记成功')
+    }
+    certDialog.value = false
+    loadCert()
+  } finally { saving.value = false }
 }
 
-function openStudents(row) {
-  currentTraining.value = row
-  studentList.value = defaultStudents
-  studentDialog.value = true
+async function handleCertLend(row) {
+  await updateCertificate({ ...row, certStatus: '在借', borrowDate: today() })
+  ElMessage.success('已登记借出')
+  loadCert()
+}
+
+async function handleCertReturn(row) {
+  await updateCertificate({ ...row, certStatus: '已归还', returnDate: today() })
+  ElMessage.success('已登记归还')
+  loadCert()
+}
+
+function handleCertDelete(row) {
+  ElMessageBox.confirm('确定删除该证照记录吗？', '提示', { type: 'warning' }).then(async () => {
+    await deleteCertificate(row.id)
+    ElMessage.success('删除成功')
+    loadCert()
+  }).catch(() => {})
 }
 
 function exportCert() {
-  showExportDialog(certData, [
-    { prop: 'name', label: '持证人' },
-    { prop: 'certType', label: '证照类型' },
-    { prop: 'certNo', label: '证照号码' },
-    { prop: 'issueDate', label: '签发日期' },
-    { prop: 'expireDate', label: '有效期至' },
-    { prop: 'status', label: '状态' },
-    { prop: 'remark', label: '备注' }
+  showExportDialog(filteredCertData.value, [
+    { prop: 'cadreName', label: '持证人' }, { prop: 'certType', label: '证照类型' },
+    { prop: 'certNumber', label: '证照号码' }, { prop: 'certStatus', label: '状态' },
+    { prop: 'borrowDate', label: '借出日期' }, { prop: 'expectedReturnDate', label: '应还日期' },
+    { prop: 'returnDate', label: '归还日期' }, { prop: 'remark', label: '备注' }
   ], '证照管理')
 }
+
+// ================= 出境记录 =================
+const abroadLoading = ref(false)
+const abroadData = ref([])
+const abroadDialog = ref(false)
+const abroadForm = reactive({ cadreId: null, destination: '', purpose: '', dateRange: [], approvedDays: 7 })
+
+async function loadAbroad() {
+  abroadLoading.value = true
+  try {
+    const res = await getAbroadPage({ current: 1, size: 500 })
+    abroadData.value = res.data.records || []
+  } finally { abroadLoading.value = false }
+}
+
+const filteredAbroadData = computed(() => abroadData.value.filter(d =>
+  !search.overseas.name || (cadreName(d.cadreId) || '').includes(search.overseas.name)))
+
+function openAbroadDialog(row) {
+  editId.abroad = row ? row.id : null
+  abroadForm.cadreId = row?.cadreId ?? null
+  abroadForm.destination = row?.destination || ''
+  abroadForm.purpose = row?.purpose || ''
+  abroadForm.dateRange = row ? [row.departDate, row.returnDate] : []
+  abroadForm.approvedDays = row?.approvedDays ?? 7
+  abroadDialog.value = true
+}
+
+async function handleAbroadSubmit() {
+  if (!abroadForm.cadreId) return ElMessage.warning('请选择干部')
+  if (!abroadForm.destination) return ElMessage.warning('请输入目的地')
+  if (!abroadForm.dateRange || abroadForm.dateRange.length !== 2) return ElMessage.warning('请选择起止日期')
+  saving.value = true
+  try {
+    const payload = {
+      cadreId: abroadForm.cadreId,
+      destination: abroadForm.destination,
+      purpose: abroadForm.purpose,
+      departDate: abroadForm.dateRange[0],
+      returnDate: abroadForm.dateRange[1],
+      approvedDays: abroadForm.approvedDays
+    }
+    if (editId.abroad) {
+      await updateAbroad({ id: editId.abroad, ...payload })
+      ElMessage.success('出境记录已更新')
+    } else {
+      await addAbroad(payload)
+      ElMessage.success('出境记录已登记')
+    }
+    abroadDialog.value = false
+    loadAbroad()
+  } finally { saving.value = false }
+}
+
+function handleAbroadDelete(row) {
+  ElMessageBox.confirm('确定删除该出境记录吗？', '提示', { type: 'warning' }).then(async () => {
+    await deleteAbroad(row.id)
+    ElMessage.success('删除成功')
+    loadAbroad()
+  }).catch(() => {})
+}
+
 function exportOverseas() {
-  showExportDialog(overseasData, [
-    { prop: 'name', label: '姓名' },
-    { prop: 'destination', label: '目的地' },
-    { prop: 'reason', label: '出境事由' },
-    { prop: 'departDate', label: '出境日期' },
-    { prop: 'returnDate', label: '回国日期' },
-    { prop: 'approveStatus', label: '审批状态' },
-    { prop: 'remark', label: '备注' }
+  showExportDialog(filteredAbroadData.value, [
+    { prop: 'cadreName', label: '姓名' }, { prop: 'destination', label: '目的地' },
+    { prop: 'purpose', label: '出境事由' }, { prop: 'departDate', label: '出境日期' },
+    { prop: 'returnDate', label: '回国日期' }, { prop: 'approvedDays', label: '批准天数' },
+    { prop: 'actualDays', label: '实际天数' }, { prop: 'isOverdue', label: '是否超期(1是0否)' }
   ], '出境记录')
 }
+
+// ================= 休假管理 =================
+const leaveLoading = ref(false)
+const leaveData = ref([])
+const leaveDialog = ref(false)
+const leaveForm = reactive({ cadreId: null, leaveType: '', dateRange: [], reason: '' })
+
+async function loadLeave() {
+  leaveLoading.value = true
+  try {
+    const res = await getLeavePage({ current: 1, size: 500 })
+    leaveData.value = res.data.records || []
+  } finally { leaveLoading.value = false }
+}
+
+const filteredLeaveData = computed(() => leaveData.value.filter(d =>
+  (!search.leave.name || (cadreName(d.cadreId) || '').includes(search.leave.name)) &&
+  (!search.leave.status || d.approveStatus === search.leave.status)))
+
+function openLeaveDialog(row) {
+  editId.leave = row ? row.id : null
+  leaveForm.cadreId = row?.cadreId ?? null
+  leaveForm.leaveType = row?.leaveType || ''
+  leaveForm.dateRange = row ? [row.startDate, row.endDate] : []
+  leaveForm.reason = row?.reason || ''
+  leaveDialog.value = true
+}
+
+async function handleLeaveSubmit() {
+  if (!leaveForm.cadreId) return ElMessage.warning('请选择申请人')
+  if (!leaveForm.leaveType) return ElMessage.warning('请选择休假类型')
+  if (!leaveForm.dateRange || leaveForm.dateRange.length !== 2) return ElMessage.warning('请选择起止日期')
+  if (!leaveForm.reason) return ElMessage.warning('请填写事由')
+  saving.value = true
+  try {
+    const payload = {
+      cadreId: leaveForm.cadreId,
+      leaveType: leaveForm.leaveType,
+      startDate: leaveForm.dateRange[0],
+      endDate: leaveForm.dateRange[1],
+      reason: leaveForm.reason
+    }
+    if (editId.leave) {
+      await updateLeave({ id: editId.leave, ...payload })
+      ElMessage.success('休假申请已更新')
+    } else {
+      await addLeave(payload)
+      ElMessage.success('休假申请已提交，等待审批')
+    }
+    leaveDialog.value = false
+    loadLeave()
+  } finally { saving.value = false }
+}
+
+function handleLeaveDelete(row) {
+  ElMessageBox.confirm('确定删除该休假记录吗？', '提示', { type: 'warning' }).then(async () => {
+    await deleteLeave(row.id)
+    ElMessage.success('删除成功')
+    loadLeave()
+  }).catch(() => {})
+}
+
 function exportLeave() {
-  showExportDialog(leaveData, [
-    { prop: 'name', label: '申请人' },
-    { prop: 'dept', label: '部门' },
-    { prop: 'leaveType', label: '休假类型' },
-    { prop: 'startDate', label: '开始日期' },
-    { prop: 'endDate', label: '结束日期' },
-    { prop: 'days', label: '天数' },
-    { prop: 'status', label: '状态' }
+  showExportDialog(filteredLeaveData.value, [
+    { prop: 'cadreName', label: '申请人' }, { prop: 'leaveType', label: '休假类型' },
+    { prop: 'startDate', label: '开始日期' }, { prop: 'endDate', label: '结束日期' },
+    { prop: 'leaveDays', label: '天数' }, { prop: 'reason', label: '事由' },
+    { prop: 'approveStatus', label: '状态' }
   ], '休假管理')
 }
+
+// ================= 审批（休假/自助申报） =================
+const approveDialog = ref(false)
+const approveForm = reactive({ kind: 'leave', id: null, name: '', item: '', opinion: '' })
+
+function openApprove(row, kind) {
+  approveForm.kind = kind
+  approveForm.id = row.id
+  approveForm.opinion = ''
+  if (kind === 'leave') {
+    approveForm.name = cadreName(row.cadreId)
+    approveForm.item = `${row.leaveType}（${row.startDate} ~ ${row.endDate}）`
+  } else {
+    approveForm.name = userName(row.applicantId)
+    approveForm.item = `${row.applicationType} - ${row.applicationTitle}`
+  }
+  approveDialog.value = true
+}
+
+async function handleApprove() {
+  saving.value = true
+  try {
+    if (approveForm.kind === 'leave') {
+      const row = leaveData.value.find(d => d.id === approveForm.id)
+      await updateLeave({ ...row, approveStatus: '已批准' })
+    } else {
+      await approveSelfApplication(approveForm.id, { approverId: profile.value?.id, comment: approveForm.opinion })
+    }
+    ElMessage.success('审批通过')
+    approveDialog.value = false
+    approveForm.kind === 'leave' ? loadLeave() : loadDeclare()
+  } finally { saving.value = false }
+}
+
+async function handleReject() {
+  saving.value = true
+  try {
+    if (approveForm.kind === 'leave') {
+      const row = leaveData.value.find(d => d.id === approveForm.id)
+      await updateLeave({ ...row, approveStatus: '已驳回' })
+    } else {
+      await rejectSelfApplication(approveForm.id, { approverId: profile.value?.id, comment: approveForm.opinion })
+    }
+    ElMessage.success('已驳回')
+    approveDialog.value = false
+    approveForm.kind === 'leave' ? loadLeave() : loadDeclare()
+  } finally { saving.value = false }
+}
+
+// ================= 教育培训 =================
+const trainingLoading = ref(false)
+const trainingData = ref([])
+const trainingDialog = ref(false)
+const trainingForm = reactive({
+  trainingName: '', trainingType: '', organizer: '', trainingLocation: '', dateRange: [], description: ''
+})
+const trainingCadreCounts = ref({})
+const studentDialog = ref(false)
+const studentLoading = ref(false)
+const studentList = ref([])
+const currentTraining = ref(null)
+const studentForm = reactive({ cadreId: null })
+
+async function loadTraining() {
+  trainingLoading.value = true
+  try {
+    const res = await getTrainingPage({ current: 1, size: 500 })
+    trainingData.value = res.data.records || []
+    // 参训人数
+    const counts = {}
+    await Promise.all(trainingData.value.map(async (t) => {
+      try {
+        const r = await getTrainingCadreList({ trainingId: t.id })
+        counts[t.id] = (r.data || []).length
+      } catch { counts[t.id] = 0 }
+    }))
+    trainingCadreCounts.value = counts
+  } finally { trainingLoading.value = false }
+}
+
+const filteredTrainingData = computed(() => trainingData.value.filter(d =>
+  (!search.training.name || (d.trainingName || '').includes(search.training.name)) &&
+  (!search.training.type || d.trainingType === search.training.type)))
+
+function openTrainingDialog(row) {
+  editId.training = row ? row.id : null
+  trainingForm.trainingName = row?.trainingName || ''
+  trainingForm.trainingType = row?.trainingType || ''
+  trainingForm.organizer = row?.organizer || ''
+  trainingForm.trainingLocation = row?.trainingLocation || ''
+  trainingForm.dateRange = row ? [row.startDate, row.endDate] : []
+  trainingForm.description = row?.description || ''
+  trainingDialog.value = true
+}
+
+async function handleTrainingSubmit() {
+  if (!trainingForm.trainingName) return ElMessage.warning('请填写培训名称')
+  if (!trainingForm.trainingType) return ElMessage.warning('请选择培训类型')
+  if (!trainingForm.organizer) return ElMessage.warning('请填写主办单位')
+  if (!trainingForm.dateRange || trainingForm.dateRange.length !== 2) return ElMessage.warning('请选择起止日期')
+  saving.value = true
+  try {
+    const payload = {
+      trainingName: trainingForm.trainingName,
+      trainingType: trainingForm.trainingType,
+      organizer: trainingForm.organizer,
+      trainingLocation: trainingForm.trainingLocation,
+      startDate: trainingForm.dateRange[0],
+      endDate: trainingForm.dateRange[1],
+      description: trainingForm.description
+    }
+    if (editId.training) {
+      await updateTraining({ id: editId.training, ...payload })
+      ElMessage.success('培训已更新')
+    } else {
+      await addTraining(payload)
+      ElMessage.success('培训创建成功')
+    }
+    trainingDialog.value = false
+    loadTraining()
+  } finally { saving.value = false }
+}
+
+function handleTrainingDelete(row) {
+  ElMessageBox.confirm('确定删除该培训计划吗？', '提示', { type: 'warning' }).then(async () => {
+    await deleteTraining(row.id)
+    ElMessage.success('删除成功')
+    loadTraining()
+  }).catch(() => {})
+}
+
+async function openStudents(row) {
+  currentTraining.value = row
+  studentForm.cadreId = null
+  studentDialog.value = true
+  studentLoading.value = true
+  try {
+    const res = await getTrainingCadreList({ trainingId: row.id })
+    studentList.value = res.data || []
+  } finally { studentLoading.value = false }
+}
+
+async function handleAddStudent() {
+  if (!studentForm.cadreId) return ElMessage.warning('请选择干部')
+  saving.value = true
+  try {
+    await addTrainingCadre({ trainingId: currentTraining.value.id, cadreId: studentForm.cadreId })
+    ElMessage.success('学员添加成功')
+    studentForm.cadreId = null
+    await openStudents(currentTraining.value)
+    loadTraining()
+  } finally { saving.value = false }
+}
+
+async function handleStudentRemove(row) {
+  await deleteTrainingCadre(row.id)
+  ElMessage.success('已移除学员')
+  await openStudents(currentTraining.value)
+  loadTraining()
+}
+
 function exportTraining() {
-  showExportDialog(trainingData, [
-    { prop: 'name', label: '培训名称' },
-    { prop: 'type', label: '培训类型' },
-    { prop: 'organizer', label: '主办单位' },
-    { prop: 'startDate', label: '开始日期' },
-    { prop: 'endDate', label: '结束日期' },
-    { prop: 'studentCount', label: '参训人数' },
-    { prop: 'status', label: '状态' }
+  showExportDialog(filteredTrainingData.value, [
+    { prop: 'trainingName', label: '培训名称' }, { prop: 'trainingType', label: '培训类型' },
+    { prop: 'organizer', label: '主办单位' }, { prop: 'startDate', label: '开始日期' },
+    { prop: 'endDate', label: '结束日期' }, { prop: 'status', label: '状态' }
   ], '教育培训')
 }
+
+// ================= 挂职锻炼 =================
+const secondmentLoading = ref(false)
+const secondmentData = ref([])
+const secondmentDialog = ref(false)
+const secondmentForm = reactive({ cadreId: null, secondmentUnit: '', secondmentPosition: '', dateRange: [], remark: '' })
+
+async function loadSecondment() {
+  secondmentLoading.value = true
+  try {
+    const res = await getSecondmentPage({ current: 1, size: 500 })
+    secondmentData.value = res.data.records || []
+  } finally { secondmentLoading.value = false }
+}
+
+const filteredSecondmentData = computed(() => secondmentData.value.filter(d =>
+  !search.secondment.name || (cadreName(d.cadreId) || '').includes(search.secondment.name)))
+
+function openSecondmentDialog(row) {
+  editId.secondment = row ? row.id : null
+  secondmentForm.cadreId = row?.cadreId ?? null
+  secondmentForm.secondmentUnit = row?.secondmentUnit || ''
+  secondmentForm.secondmentPosition = row?.secondmentPosition || ''
+  secondmentForm.dateRange = row ? [row.startDate, row.endDate] : []
+  secondmentForm.remark = row?.remark || ''
+  secondmentDialog.value = true
+}
+
+async function handleSecondmentSubmit() {
+  if (!secondmentForm.cadreId) return ElMessage.warning('请选择挂职干部')
+  if (!secondmentForm.secondmentUnit) return ElMessage.warning('请填写挂职单位')
+  if (!secondmentForm.secondmentPosition) return ElMessage.warning('请填写挂任职务')
+  if (!secondmentForm.dateRange || secondmentForm.dateRange.length !== 2) return ElMessage.warning('请选择起止日期')
+  saving.value = true
+  try {
+    const payload = {
+      cadreId: secondmentForm.cadreId,
+      secondmentUnit: secondmentForm.secondmentUnit,
+      secondmentPosition: secondmentForm.secondmentPosition,
+      startDate: secondmentForm.dateRange[0],
+      endDate: secondmentForm.dateRange[1],
+      remark: secondmentForm.remark
+    }
+    if (editId.secondment) {
+      await updateSecondment({ id: editId.secondment, ...payload })
+      ElMessage.success('挂职记录已更新')
+    } else {
+      await addSecondment(payload)
+      ElMessage.success('挂职记录已登记')
+    }
+    secondmentDialog.value = false
+    loadSecondment()
+  } finally { saving.value = false }
+}
+
+function handleSecondmentDelete(row) {
+  ElMessageBox.confirm('确定删除该挂职记录吗？', '提示', { type: 'warning' }).then(async () => {
+    await deleteSecondment(row.id)
+    ElMessage.success('删除成功')
+    loadSecondment()
+  }).catch(() => {})
+}
+
 function exportSecondment() {
-  showExportDialog(secondmentData, [
-    { prop: 'name', label: '姓名' },
-    { prop: 'originalDept', label: '原单位/部门' },
-    { prop: 'targetDept', label: '挂职单位' },
-    { prop: 'position', label: '挂任职务' },
-    { prop: 'type', label: '挂职类型' },
-    { prop: 'startDate', label: '开始日期' },
-    { prop: 'endDate', label: '结束日期' }
+  showExportDialog(filteredSecondmentData.value, [
+    { prop: 'cadreName', label: '姓名' }, { prop: 'secondmentUnit', label: '挂职单位' },
+    { prop: 'secondmentPosition', label: '挂任职务' }, { prop: 'startDate', label: '开始日期' },
+    { prop: 'endDate', label: '结束日期' }, { prop: 'status', label: '状态' }, { prop: 'remark', label: '备注' }
   ], '挂职锻炼')
 }
+
+// ================= 自助申报 =================
+const declareLoading = ref(false)
+const declareData = ref([])
+const declareDialog = ref(false)
+const declareViewDialog = ref(false)
+const declareViewRow = ref(null)
+const declareForm = reactive({ applicationType: '', applicationTitle: '', applicationContent: '' })
+
+async function loadDeclare() {
+  declareLoading.value = true
+  try {
+    const res = await getSelfApplicationPage({ current: 1, size: 500 })
+    declareData.value = res.data.records || []
+  } finally { declareLoading.value = false }
+}
+
+function openDeclareDialog() {
+  if (profile.value && !profile.value.cadreId) {
+    ElMessage.warning('当前账号未绑定干部档案，无法自助申报')
+    return
+  }
+  declareForm.applicationType = ''
+  declareForm.applicationTitle = ''
+  declareForm.applicationContent = ''
+  declareDialog.value = true
+}
+
+async function handleDeclareSubmitNew() {
+  if (!declareForm.applicationType) return ElMessage.warning('请选择申报类型')
+  if (!declareForm.applicationTitle) return ElMessage.warning('请填写申报标题')
+  if (!declareForm.applicationContent) return ElMessage.warning('请填写申报内容')
+  saving.value = true
+  try {
+    const res = await addSelfApplication({ ...declareForm })
+    const id = res.data
+    if (id) {
+      await submitSelfApplication(id)
+    }
+    ElMessage.success('申报已提交，等待审批')
+    declareDialog.value = false
+    loadDeclare()
+  } finally { saving.value = false }
+}
+
+async function handleDeclareSubmit(row) {
+  await submitSelfApplication(row.id)
+  ElMessage.success('申报已提交')
+  loadDeclare()
+}
+
+function handleDeclareView(row) {
+  declareViewRow.value = row
+  declareViewDialog.value = true
+}
+
+function handleDeclareDelete(row) {
+  ElMessageBox.confirm('确定删除该申报吗？', '提示', { type: 'warning' }).then(async () => {
+    await deleteSelfApplication(row.id)
+    ElMessage.success('删除成功')
+    loadDeclare()
+  }).catch(() => {})
+}
+
 function exportDeclare() {
-  showExportDialog(declareData, [
-    { prop: 'name', label: '申报人' },
-    { prop: 'type', label: '申报事项' },
-    { prop: 'title', label: '申报标题' },
-    { prop: 'submitDate', label: '提交时间' },
-    { prop: 'status', label: '状态' }
+  showExportDialog(declareData.value.map(d => ({ ...d, applicantName: userName(d.applicantId), statusText: applyStatusText(d.applyStatus) })), [
+    { prop: 'applicantName', label: '申报人' }, { prop: 'applicationType', label: '申报类型' },
+    { prop: 'applicationTitle', label: '申报标题' }, { prop: 'createTime', label: '提交时间' },
+    { prop: 'statusText', label: '状态' }
   ], '自助申报')
 }
 
-function handleSearch() { ElMessage.success('查询条件已应用') }
-function handleReset(tab) {
-  if (tab === 'cert') search.cert = { name: '', type: '', status: '' }
-  else if (tab === 'overseas') search.overseas = { name: '', reason: '' }
-  else if (tab === 'leave') search.leave = { name: '', type: '', status: '' }
-  else if (tab === 'training') search.training = { name: '', type: '' }
-  else if (tab === 'secondment') search.secondment = { name: '', type: '' }
-  ElMessage.info('已重置查询条件')
+// ================= 工具 =================
+function today() {
+  return new Date().toISOString().slice(0, 10)
 }
 
-function handleAddCert() { ElMessage.info('新增证照登记功能') }
-function handleCertLend(row) { ElMessage.success(`已将 ${row.name} 的 ${row.certType}(${row.certNo}) 标记为借出`) }
-function handleCertReturn(row) { ElMessage.success(`${row.name} 的 ${row.certType} 已归还`) }
-function handleCertDelete(row) { ElMessage.success(`已删除 ${row.name} 的证照记录`) }
-
-function handleAddOverseas() { ElMessage.info('新增出境记录功能') }
-function handleOverseasView(row) { ElMessage.info(`查看 ${row.name} 的出境记录详情`) }
-function handleOverseasDelete(row) { ElMessage.success(`已删除 ${row.name} 的出境记录`) }
-
-function handleAddLeave() { ElMessage.info('申请休假功能') }
-function handleLeaveView(row) { ElMessage.info(`查看 ${row.name} 的休假详情`) }
-function handleLeaveDelete(row) { ElMessage.success(`已删除 ${row.name} 的休假记录`) }
-
-function handleAddTraining() { ElMessage.info('新增培训功能') }
-function handleTrainingEdit(row) { ElMessage.info(`编辑培训：${row.name}`) }
-function handleTrainingDelete(row) { ElMessage.success(`已删除培训：${row.name}`) }
-
-function handleAddSecondment() { ElMessage.info('新增挂职记录功能') }
-function handleSecondmentView(row) { ElMessage.info(`查看 ${row.name} 的挂职详情`) }
-function handleSecondmentDelete(row) { ElMessage.success(`已删除 ${row.name} 的挂职记录`) }
-
-function handleAddDeclare() { ElMessage.info('新增申报功能') }
-function handleDeclareView(row) { ElMessage.info(`查看申报：${row.title}`) }
-function handleDeclareDelete(row) { ElMessage.success(`已删除申报：${row.title}`) }
-
-function handleAddStudent() { ElMessage.info('添加学员功能') }
-function handleStudentRemove(row) { ElMessage.success(`已移除学员：${row.name}`) }
+// ================= 初始化 =================
+onMounted(async () => {
+  loadCert()
+  loadAbroad()
+  loadLeave()
+  loadTraining()
+  loadSecondment()
+  loadDeclare()
+  try {
+    const res = await getCadrePage({ current: 1, size: 500 })
+    cadreOptions.value = res.data.records || []
+  } catch { cadreOptions.value = [] }
+  try {
+    const p = await getUserProfile()
+    profile.value = p.data
+  } catch { profile.value = null }
+})
 </script>
 
 <style scoped>
@@ -511,5 +1091,26 @@ function handleStudentRemove(row) { ElMessage.success(`已移除学员：${row.n
 }
 .gov-tabs :deep(.el-tabs__content) {
   padding-top: 0;
+}
+
+@media (max-width: 768px) {
+  .gov-tabs :deep(.el-tabs__header) {
+    padding: 0 4px;
+  }
+  .gov-tabs :deep(.el-tabs__item) {
+    font-size: 13px;
+    padding: 0 10px;
+  }
+  .search-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .toolbar .el-button {
+    margin-left: 0;
+  }
 }
 </style>

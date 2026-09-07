@@ -33,9 +33,9 @@ public class DailySelfApplicationController {
     }
 
     @PostMapping
-    public Result<Void> create(@RequestBody DailySelfApplication application) {
+    public Result<Long> create(@RequestBody DailySelfApplication application) {
         dailySelfApplicationService.save(application);
-        return Result.success();
+        return Result.success(application.getId());
     }
 
     @PutMapping

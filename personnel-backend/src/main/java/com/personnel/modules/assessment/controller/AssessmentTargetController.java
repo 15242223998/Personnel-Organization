@@ -33,9 +33,10 @@ public class AssessmentTargetController {
         return Result.success();
     }
 
-    @PutMapping
-    public Result<Void> update(@RequestBody AssessmentTarget target) {
-        assessmentTargetService.updateById(target);
+    /** 更新测评对象备注字段（materialTitle/materialText 等），禁止修改 schemeId/cadreId */
+    @PutMapping("/{id}")
+    public Result<Void> update(@PathVariable Long id, @RequestBody AssessmentTarget target) {
+        assessmentTargetService.updateRemark(id, target);
         return Result.success();
     }
 

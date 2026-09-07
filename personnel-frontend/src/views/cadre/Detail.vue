@@ -475,7 +475,56 @@ async function handleSave() {
 }
 
 function handleExport() {
-  ElMessage.success('正在导出任免表，请稍候...')
+  ElMessage({ message: '正在导出任免表，请稍候...', type: 'success', duration: 0 })
+  setTimeout(() => {
+    const html = buildAppointmentDoc()
+    const blob = new Blob(['\ufeff' + html], { type: 'application/msword;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = (form.name || '干部') + '任免表.doc'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    ElMessage.closeAll()
+    ElMessage.success('任免表导出成功')
+  }, 600)
+}
+
+// 生成 Word 兼容的 HTML 任免表
+function buildAppointmentDoc() {
+  const f = form
+  const deptName = (deptOptions.value.find(d => d.id === f.deptId) || {}).deptName || f.deptId || ''
+  const rankName = (rankList.value.find(r => r.id === f.rankId) || {}).rankName || f.rankId || ''
+  const birth = f.birthDate ? String(f.birthDate).replace(/-/g, '.') : ''
+  const tr = cells => '<tr>' + cells + '</tr>'
+  const th = t => `<td style="width:110px;background:#f2f2f2;font-weight:bold;text-align:center">${t}</td>`
+  const td = v => `<td>${v || ''}</td>`
+
+  const rows = []
+  rows.push(tr(th('姓名') + td(f.name) + th('性别') + td(f.gender) + th('出生年月') + td(birth)))
+  rows.push(tr(th('民族') + td(f.nation) + th('籍贯') + td(f.nativePlace) + th('政治面貌') + td(f.politicalStatus)))
+  rows.push(tr(th('入党时间') + td(f.partyJoinDate) + th('参加工作时间') + td(f.workStartDate) + th('手机号码') + td(f.phone)))
+  rows.push(tr(th('全日制学历') + td(f.fullTimeEducation) + th('学位') + td(f.fullTimeDegree) + th('毕业院校') + td(f.fullTimeSchool)))
+  rows.push(tr(th('现任职务') + td(f.position) + th('职务层次') + td(f.positionLevel) + th('职级') + td(rankName)))
+  rows.push(tr(th('所属机构') + td(deptName) + th('任现职时间') + td(f.positionStartDate) + th('任命文号') + td(f.positionDocNo)))
+  rows.push(tr(th('工作简历') + `<td colspan="5" style="white-space:pre-wrap;line-height:1.7">${f.resumeText || ''}</td>`))
+
+  let familyHtml = ''
+  if (familyList.value && familyList.value.length) {
+    familyHtml = '<p style="margin:10px 0 4px;font-weight:bold">家庭成员</p><table style="border-collapse:collapse;width:100%;border:1px solid #333">' +
+      '<tr style="background:#f2f2f2"><th style="border:1px solid #333;padding:4px">姓名</th><th style="border:1px solid #333;padding:4px">关系</th><th style="border:1px solid #333;padding:4px">工作单位</th><th style="border:1px solid #333;padding:4px">联系电话</th></tr>' +
+      familyList.value.map(m => `<tr><td style="border:1px solid #333;padding:4px">${m.memberName || ''}</td><td style="border:1px solid #333;padding:4px">${m.relationship || ''}</td><td style="border:1px solid #333;padding:4px">${m.workUnit || ''}</td><td style="border:1px solid #333;padding:4px">${m.phone || ''}</td></tr>`).join('') +
+      '</table>'
+  }
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>干部任免表</title></head><body>` +
+    `<h2 style="text-align:center;margin:0 0 12px">干部任免审批表</h2>` +
+    `<table style="border-collapse:collapse;width:100%;border:1px solid #333;border-top:0">${rows.join('')}</table>` +
+    familyHtml +
+    `<p style="margin-top:14px;font-size:12px;color:#666">导出时间：${new Date().toLocaleString()}</p>` +
+    `</body></html>`
 }
 
 function openFamilyAdd() {

@@ -9,6 +9,12 @@ const routes = [
     meta: { noAuth: true }
   },
   {
+    path: '/tablet',
+    name: 'TabletVote',
+    component: () => import('../views/assessment/TabletVote.vue'),
+    meta: { title: '平板投票' }
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
