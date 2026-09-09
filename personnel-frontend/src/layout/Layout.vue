@@ -315,6 +315,16 @@ function closeTab(tab) {
   }
 }
 
+// 未读永远排最上面，同状态按时间新的在前（与加载时排序口径一致）
+function sortNoticesOrder() {
+  notifications.value.sort((a, b) => {
+    const ra = a.read ? 1 : 0
+    const rb = b.read ? 1 : 0
+    if (ra !== rb) return ra - rb
+    return String(b.time || '').localeCompare(String(a.time || ''))
+  })
+}
+
 function markAllRead() {
   notifications.value.forEach(n => n.read = true)
   localStorage.setItem('msg_read_ids', JSON.stringify(notifications.value.map(n => n.id)))

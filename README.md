@@ -18,7 +18,8 @@
 | 编程语言 | Java | 17 |
 | ORM | MyBatis-Plus | 3.5.5 |
 | 数据库 | MySQL | 8.0 |
-| 缓存 | Redis | 7.0（当前代码未实际依赖，可暂不部署） |
+| 多数据源 | baomidou dynamic-datasource | 4.3.1（运行时热切换 / 结构探测 / 自动对齐，见"数据库热切换"） |
+| 缓存 | Redis | 7.0（可选增强）：`app.cache.backend=auto` 时自动探测，可用则用于登录失败节流等缓存；无 Redis 自动降级为进程内存，项目无需部署 Redis 即可完整运行 |
 | 认证授权 | Spring Security + JWT | jjwt 0.12.5（已实现令牌签发/校验/数据权限） |
 | 工具库 | Hutool | 5.8.25 |
 | Excel | EasyExcel + Apache POI | 3.3.3 / 5.2.5 |
@@ -69,13 +70,28 @@
 ## 认证与安全（已启用）
 
 - 登录成功签发 JWT（HS256，默认有效期 24 小时），前端 `Authorization: Bearer <token>` 携带
-- Spring Security 统一鉴权：登录/注册/接口文档外，其余接口须携带有效令牌，未登录返回 401、越权返回 403（JSON）
+- Spring Security 统一鉴权：登录/注册/接口文档及数据库连接探测只读接口（`/api/db/probe`、`/api/db/current`）外，其余接口须携带有效令牌，未登录返回 401、越权返回 403（JSON）；`/api/db/align`、`/api/db/switch` 等变更性接口强制系统管理员（userType=1）
+- 登录失败节流：同一账号连续输错 5 次，15 分钟内即使密码正确也拒绝（计数存 Redis，无 Redis 自动落内存）
 - 模块权限（菜单访问控制）：生效权限 = 系统管理员（用户类型 1）全通 → 用户已单独授权（"权限授予"勾选）优先 → 否则回退该账号"用户类型"的内置默认模板（2~4 校级领导/组织部部长/组织员=9 个业务模块，5 二级学院领导=6 个模块，6 普通干部=默认空、需管理员单独授权）。模块菜单全员可见，未授权账号进入页面时被拦截提示（原 `sys_role` 角色层已不再参与权限计算）
 - 数据权限：按用户类型自动过滤（1~4 全量 / 5 本级及下级 / 6 本部门），干部档案分页/详情/导出实时生效
 - 干部状态、调配/任免/晋升均与干部档案联动，保证档案"现任职务/部门/职级/状态"一致；年度考核结果回写档案，并作为晋升资格判定与任免启动的前置核验
 - 消息通知（铃铛）：管理职能账号收到管理类聚合通知（测评/请假/证照/出境/注册审批/预警），普通干部仅收到本人相关预警与本人申报/休假审批结果
 
 > 初始账号：`admin / 123456`（系统管理员，数据全量可见）
+
+## 数据库热切换与自动对齐（运行期特性）
+
+登录页左下角 **"连接到服务器"** 支持在同一前端下连接不同的 MySQL 后端库，全程免重启：
+
+- **填连接**：主机 / 端口(3306) / 数据库(默认 `POP`) / 账号 / 密码（默认显示 `localhost:3306/POP`、`root/666666`）
+- **探测三种结果**：
+  1. 库存在且结构一致 → 直接"连接"切换；
+  2. 库存在但缺表 → 弹窗展示**差异清单（缺表名）**，可 [仍连接]（不改数据）或 [取消]；
+  3. **库不存在** → 弹窗"数据库出错，是否进行数据对齐"并列出**即将创建的 51 张表**；点 [确认对齐] 才在目标实例上 `CREATE DATABASE` + 按 `sql/init.sql` 整份重建（DROP+建表+种子），完成后自动切换；点 [取消，只登录前端系统] 则不切换、按当前库登录
+- **防误操作**：探测到目标库已有项目表时对齐接口拒绝执行（`库已存在项目表`），不会清掉有数据的库；切换前强制试连，失败自动保留原库
+- **记忆与恢复**：切换成功后连接写入 `personnel-backend/run/db-conn.json`（已 gitignore），后端重启自动连回上次选择；删除该文件即回默认 `master/POP`
+- 技术说明：基于 baomidou `dynamic-datasource` 路由数据源（`spring.datasource.dynamic.*`），切换对 MyBatis/MyBatis-Plus 透明；同弹窗另保留"API 服务器"页签可切换前端后端地址
+- **换机器部署注意**：`application.yml` 属本机环境配置（未纳入 git），新环境需把 `spring.datasource.*` 迁移为 `spring.datasource.dynamic.datasource.master.*` 形式；执行对齐的 MySQL 账号需具备 `CREATE DATABASE`/建表权限
 
 ## 快速开始
 
@@ -153,12 +169,15 @@ Personnel-Organization-Project/
 │       ├── common/           # 公共类（Result、PageResult、BaseEntity、CadreStatus等）
 │       ├── framework/        # 框架配置
 │       │   ├── config/       # Security、CORS、MyBatis-Plus 等
-│       │   └── security/     # JwtUtil、JWT过滤器、LoginUser、数据权限等
+│       │   ├── security/     # JwtUtil、JWT过滤器、LoginUser、数据权限等
+│       │   ├── cache/        # CacheStore：Redis 可选 + 自动降级内存
+│       │   └── ds/           # 数据库热切换：探测/对齐/切换/启动记忆（/api/db）
 │       ├── modules/          # 业务模块
 │       │   ├── appointment/  # 干部任免
 │       │   ├── assessment/   # 干部考核
 │       │   ├── cadre/        # 干部信息
 │       │   ├── daily/        # 日常事务
+│       │   ├── notice/       # 消息通知聚合（顶栏铃铛）
 │       │   ├── organization/ # 组织机构
 │       │   ├── statistics/   # 统计分析
 │       │   ├── supervision/  # 监督管理

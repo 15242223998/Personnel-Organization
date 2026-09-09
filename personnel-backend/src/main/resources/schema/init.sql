@@ -1,0 +1,1085 @@
+-- ============================================================================
+-- 注意：本文件为"数据对齐"使用的基线副本，由仓库根目录 sql/init.sql 同步生成，勿手改！
+-- 需要调整建表/种子脚本时，请修改根目录 sql/init.sql 后重新同步覆盖本文件。
+-- 后端 DbAlignService 只读取本 classpath 副本（resources/schema/init.sql）执行建库对齐。
+-- ============================================================================
+-- ====================================================
+-- 组织人事档案系统 - 数据库初始化脚本
+-- ====================================================
+
+CREATE DATABASE IF NOT EXISTS POP DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE POP;
+
+-- =================== 系统管理 ====================
+
+-- 用户表
+DROP TABLE IF EXISTS sys_user;
+CREATE TABLE sys_user (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(64) NOT NULL UNIQUE COMMENT '用户名',
+    password VARCHAR(128) NOT NULL COMMENT '密码',
+    real_name VARCHAR(64) NOT NULL COMMENT '真实姓名',
+    avatar VARCHAR(255) COMMENT '头像',
+    email VARCHAR(128) COMMENT '邮箱',
+    phone VARCHAR(20) COMMENT '手机号',
+    gender TINYINT DEFAULT 0 COMMENT '性别 0未知 1男 2女',
+    user_type TINYINT NOT NULL COMMENT '用户类型 1系统管理员 2校级领导 3组织部部长 4组织员 5二级学院领导 6普通干部',
+    status TINYINT DEFAULT 1 COMMENT '状态 0待审核 1正常(已批准) 2已拒绝 3停用',
+    dept_id BIGINT COMMENT '所属部门/学院ID',
+    cadre_id BIGINT COMMENT '关联干部档案ID（干部自助申报归属）',
+    permissions VARCHAR(512) DEFAULT '' COMMENT '模块级权限，逗号分隔多个key，空表示无任何权限（userType=1系统管理员不受限）',
+    ip_bound VARCHAR(128) COMMENT 'IP绑定',
+    login_fail_count INT DEFAULT 0 COMMENT '登录失败次数',
+    lock_until DATETIME COMMENT '锁定截止时间',
+    last_login_time DATETIME COMMENT '最后登录时间',
+    last_login_ip VARCHAR(64) COMMENT '最后登录IP',
+    create_by BIGINT COMMENT '创建人',
+    update_by BIGINT COMMENT '更新人',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除 0未删 1已删',
+    INDEX idx_status (status),
+    INDEX idx_dept (dept_id),
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='系统用户表';
+
+-- 角色表
+DROP TABLE IF EXISTS sys_role;
+CREATE TABLE sys_role (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    role_name VARCHAR(64) NOT NULL COMMENT '角色名称',
+    role_code VARCHAR(64) NOT NULL UNIQUE COMMENT '角色编码',
+    data_scope TINYINT DEFAULT 4 COMMENT '数据范围 1全部 2自定义 3本级及下级 4本级',
+    status TINYINT DEFAULT 1 COMMENT '状态',
+    permissions VARCHAR(512) DEFAULT '' COMMENT '模块级权限，逗号分隔多个key，空表示无任何权限（userType=1系统管理员不受限）',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='角色表';
+
+-- 用户角色关联
+DROP TABLE IF EXISTS sys_user_role;
+CREATE TABLE sys_user_role (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    UNIQUE KEY uk_user_role (user_id, role_id)
+) ENGINE=InnoDB COMMENT='用户角色关联表';
+
+-- 字典类型
+DROP TABLE IF EXISTS sys_dict_type;
+CREATE TABLE sys_dict_type (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    type_name VARCHAR(64) NOT NULL COMMENT '字典名称',
+    type_code VARCHAR(64) NOT NULL UNIQUE COMMENT '字典编码',
+    status TINYINT DEFAULT 1,
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='字典类型表';
+
+-- 字典数据
+DROP TABLE IF EXISTS sys_dict_data;
+CREATE TABLE sys_dict_data (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    type_code VARCHAR(64) NOT NULL COMMENT '字典编码',
+    dict_label VARCHAR(128) NOT NULL COMMENT '字典标签',
+    dict_value VARCHAR(128) NOT NULL COMMENT '字典值',
+    sort_order INT DEFAULT 0 COMMENT '排序',
+    status TINYINT DEFAULT 1,
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_type (type_code)
+) ENGINE=InnoDB COMMENT='字典数据表';
+
+-- 操作日志
+DROP TABLE IF EXISTS sys_oper_log;
+CREATE TABLE sys_oper_log (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT COMMENT '操作用户ID',
+    username VARCHAR(64) COMMENT '操作用户名',
+    oper_type VARCHAR(32) COMMENT '操作类型 INSERT/UPDATE/DELETE/QUERY/APPROVE',
+    oper_module VARCHAR(64) COMMENT '操作模块',
+    oper_desc VARCHAR(512) COMMENT '操作描述',
+    oper_ip VARCHAR(64) COMMENT '操作IP',
+    oper_time DATETIME COMMENT '操作时间',
+    oper_params TEXT COMMENT '操作参数',
+    oper_result VARCHAR(32) COMMENT '操作结果 SUCCESS/FAIL',
+    index idx_user (user_id),
+    index idx_time (oper_time),
+    index idx_module (oper_module)
+) ENGINE=InnoDB COMMENT='操作日志表';
+
+-- 登录日志
+DROP TABLE IF EXISTS sys_login_log;
+CREATE TABLE sys_login_log (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT COMMENT '用户ID',
+    username VARCHAR(64) COMMENT '用户名',
+    login_ip VARCHAR(64) COMMENT '登录IP',
+    device_type VARCHAR(32) COMMENT '设备类型 PC/PHONE/PAD',
+    browser VARCHAR(64) COMMENT '浏览器',
+    os VARCHAR(64) COMMENT '操作系统',
+    login_time DATETIME COMMENT '登录时间',
+    login_result VARCHAR(32) COMMENT '登录结果 SUCCESS/FAIL',
+    fail_reason VARCHAR(256) COMMENT '失败原因',
+    index idx_user (user_id),
+    index idx_time (login_time)
+) ENGINE=InnoDB COMMENT='登录日志表';
+
+
+-- =================== 组织机构管理 ====================
+
+-- 组织机构表
+DROP TABLE IF EXISTS org_department;
+CREATE TABLE org_department (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    parent_id BIGINT DEFAULT 0 COMMENT '上级机构ID',
+    dept_name VARCHAR(128) NOT NULL COMMENT '机构全称',
+    short_name VARCHAR(64) COMMENT '机构简称',
+    dept_level VARCHAR(32) COMMENT '机构级别 校级/处级/科级',
+    leader_quota INT DEFAULT 0 COMMENT '班子职数',
+    established_date DATE COMMENT '成立时间',
+    dept_sort INT DEFAULT 0 COMMENT '显示排序',
+    status TINYINT DEFAULT 1 COMMENT '状态 0撤销 1正常',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_parent (parent_id)
+) ENGINE=InnoDB COMMENT='组织机构表';
+
+-- 职务层次表
+DROP TABLE IF EXISTS org_position_level;
+CREATE TABLE org_position_level (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    level_name VARCHAR(64) NOT NULL COMMENT '职务层次名称 校级/处级/科级',
+    min_lower_years INT COMMENT '任低一级职务最低年限',
+    max_age INT COMMENT '年龄上限',
+    min_education VARCHAR(32) COMMENT '最低学历要求',
+    assessment_required VARCHAR(64) COMMENT '年度考核要求',
+    penalty_period_restrict INT COMMENT '处分影响期(月)内不得提拔',
+    sort_order INT DEFAULT 0,
+    status TINYINT DEFAULT 1,
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='职务层次表';
+
+-- 职级管理表
+DROP TABLE IF EXISTS org_rank;
+CREATE TABLE org_rank (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    rank_name VARCHAR(64) NOT NULL COMMENT '职级名称',
+    rank_type VARCHAR(32) COMMENT '职级类型 管理岗/专业技术岗',
+    promotion_years INT COMMENT '晋升所需任满年限',
+    sort_order INT DEFAULT 0,
+    status TINYINT DEFAULT 1,
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='职级管理表';
+
+-- 编制管理表
+DROP TABLE IF EXISTS org_staffing_quota;
+CREATE TABLE org_staffing_quota (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    dept_id BIGINT NOT NULL UNIQUE COMMENT '机构ID',
+    approved_quota INT DEFAULT 0 COMMENT '核定编制数',
+    leader_quota INT DEFAULT 0 COMMENT '核定领导职数',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='编制管理表';
+
+
+-- =================== 干部信息管理（核心） ====================
+
+-- 干部基本信息表
+DROP TABLE IF EXISTS cadre_info;
+CREATE TABLE cadre_info (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    -- 基础信息
+    name VARCHAR(64) NOT NULL COMMENT '姓名',
+    gender TINYINT COMMENT '性别 1男 2女',
+    birth_date DATE COMMENT '出生年月',
+    nation VARCHAR(32) COMMENT '民族',
+    native_place VARCHAR(128) COMMENT '籍贯',
+    political_status VARCHAR(32) COMMENT '政治面貌',
+    party_join_date DATE COMMENT '入党时间',
+    work_start_date DATE COMMENT '参加工作时间',
+    id_card VARCHAR(18) COMMENT '身份证号',
+    phone VARCHAR(20) COMMENT '联系电话',
+    email VARCHAR(128) COMMENT '邮箱',
+    photo_url VARCHAR(255) COMMENT '照片地址',
+    -- 学历学位
+    full_time_education VARCHAR(64) COMMENT '全日制教育学历',
+    full_time_degree VARCHAR(64) COMMENT '全日制教育学位',
+    full_time_school VARCHAR(128) COMMENT '全日制毕业院校及专业',
+    part_time_education VARCHAR(64) COMMENT '在职教育学历',
+    part_time_degree VARCHAR(64) COMMENT '在职教育学位',
+    part_time_school VARCHAR(128) COMMENT '在职毕业院校及专业',
+    -- 任职信息
+    dept_id BIGINT COMMENT '所属机构ID',
+    position VARCHAR(128) COMMENT '现任职务',
+    position_level VARCHAR(32) COMMENT '现职务层次 校级/处级/科级',
+    rank_id BIGINT COMMENT '职级ID',
+    position_start_date DATE COMMENT '任现职时间',
+    position_doc_no VARCHAR(64) COMMENT '任职文号',
+    -- 扩展信息
+    resume_text TEXT COMMENT '简历',
+    reward_punishment TEXT COMMENT '奖惩情况',
+    annual_assessment TEXT COMMENT '年度考核历史',
+    home_address VARCHAR(255) COMMENT '家庭住址',
+    emergency_contact VARCHAR(64) COMMENT '紧急联系人(姓名及联系电话)',
+    -- 状态
+    cadre_status VARCHAR(32) DEFAULT 'ON_JOB' COMMENT '干部状态 ON_JOB在职 RETIRED离退休 TRANSFERRED调出 RESIGNED辞职',
+    retirement_date DATE COMMENT '退休日期',
+    leave_date DATE COMMENT '减员日期',
+    leave_reason VARCHAR(64) COMMENT '减员原因',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_name (name),
+    INDEX idx_dept (dept_id),
+    INDEX idx_status (cadre_status),
+    INDEX idx_birth (birth_date),
+    INDEX idx_retirement (retirement_date)
+) ENGINE=InnoDB COMMENT='干部基本信息表';
+
+-- 家庭成员及社会关系
+DROP TABLE IF EXISTS cadre_family_member;
+CREATE TABLE cadre_family_member (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    member_name VARCHAR(64) NOT NULL COMMENT '姓名',
+    relation VARCHAR(32) COMMENT '关系',
+    workplace VARCHAR(128) COMMENT '工作单位及职务',
+    phone VARCHAR(20) COMMENT '联系电话',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='干部家庭成员表';
+
+-- 佐证材料表
+DROP TABLE IF EXISTS cadre_attachment;
+CREATE TABLE cadre_attachment (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    file_name VARCHAR(255) NOT NULL COMMENT '文件名',
+    file_path VARCHAR(512) NOT NULL COMMENT '文件路径',
+    file_type VARCHAR(64) COMMENT '文件类型',
+    file_size BIGINT COMMENT '文件大小',
+    attach_category VARCHAR(64) COMMENT '材料类别 出生年月/学历学位/其他',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='佐证材料表';
+
+-- 后备干部库
+DROP TABLE IF EXISTS cadre_reserve;
+CREATE TABLE cadre_reserve (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL UNIQUE COMMENT '干部ID',
+    reserve_type VARCHAR(64) COMMENT '后备类型 后备干部/优秀年轻干部',
+    reserve_level VARCHAR(32) COMMENT '后备级别',
+    enter_date DATE COMMENT '入库日期',
+    status TINYINT DEFAULT 1 COMMENT '状态 1在库 0出库',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='后备干部库';
+
+
+-- =================== 干部调配管理 ====================
+
+-- 调配记录表
+DROP TABLE IF EXISTS transfer_record;
+CREATE TABLE transfer_record (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    transfer_type VARCHAR(32) NOT NULL COMMENT '调配类型 ADD增员 REDUCE减员 RETIRE退休 ROTATE轮岗',
+    transfer_date DATE NOT NULL COMMENT '调配日期',
+    transfer_reason VARCHAR(256) COMMENT '调配原因',
+    from_dept_id BIGINT COMMENT '原机构ID',
+    to_dept_id BIGINT COMMENT '目标机构ID',
+    from_position VARCHAR(128) COMMENT '原职务',
+    to_position VARCHAR(128) COMMENT '目标职务',
+    doc_no VARCHAR(64) COMMENT '相关文号',
+    remark VARCHAR(512) COMMENT '备注',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_type (transfer_type),
+    INDEX idx_date (transfer_date)
+) ENGINE=InnoDB COMMENT='干部调配记录表';
+
+-- 职级晋升记录表
+DROP TABLE IF EXISTS rank_promotion_record;
+CREATE TABLE rank_promotion_record (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    from_rank_id BIGINT COMMENT '原职级ID',
+    to_rank_id BIGINT NOT NULL COMMENT '晋升后职级ID',
+    promotion_date DATE NOT NULL COMMENT '晋升日期',
+    doc_no VARCHAR(64) COMMENT '晋升文号',
+    remark VARCHAR(512) COMMENT '备注',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_date (promotion_date)
+) ENGINE=InnoDB COMMENT='职级晋升记录表';
+
+
+-- =================== 干部任免管理 ====================
+
+-- 任免流程主表
+DROP TABLE IF EXISTS appoint_process;
+CREATE TABLE appoint_process (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    position_info VARCHAR(256) NOT NULL COMMENT '选拔任用职位信息',
+    current_step VARCHAR(32) NOT NULL COMMENT '当前环节 MOTION动议 RECOMMEND推荐 INVESTIGATE考察 DECIDE讨论决定 PUBLICITY公示 APPOINT任职 CANCELLED终止',
+    process_status VARCHAR(32) NOT NULL COMMENT '流程状态 IN_PROGRESS进行中 PASSED通过 CANCELLED终止 COMPLETED完成',
+    cadre_id BIGINT COMMENT '最终确定人选ID',
+    start_time DATETIME COMMENT '启动时间',
+    end_time DATETIME COMMENT '结束时间',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_status (process_status),
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='任免流程主表';
+
+-- 任免动议记录
+DROP TABLE IF EXISTS appoint_motion;
+CREATE TABLE appoint_motion (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    process_id BIGINT NOT NULL COMMENT '流程ID',
+    position_condition TEXT COMMENT '职位条件/范围/方式/程序/人选意向',
+    candidate_ids VARCHAR(1024) COMMENT '候选干部ID列表',
+    selected_cadre_id BIGINT COMMENT '动议确定人选ID',
+    motion_status VARCHAR(32) COMMENT '动议状态 DRAFT草稿 ACTIVE进行中 CANCELLED终止 COMPLETED完成',
+    meeting_file_url VARCHAR(255) COMMENT '会议文件扫描件',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    UNIQUE INDEX idx_process (process_id)
+) ENGINE=InnoDB COMMENT='任免动议记录表';
+
+-- 民主推荐记录
+DROP TABLE IF EXISTS appoint_recommend;
+CREATE TABLE appoint_recommend (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    process_id BIGINT NOT NULL COMMENT '流程ID',
+    recommend_type VARCHAR(32) COMMENT '推荐方式 谈话调研/会议推荐',
+    recommend_date DATE COMMENT '推荐日期',
+    recommend_location VARCHAR(128) COMMENT '推荐地点',
+    expected_count INT COMMENT '应到人数',
+    actual_count INT COMMENT '实到人数',
+    vote_count INT COMMENT '得票数',
+    is_passed TINYINT COMMENT '是否通过 0未通过 1通过',
+    meeting_file_url VARCHAR(255) COMMENT '推荐会议文件扫描件',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    UNIQUE INDEX idx_process (process_id)
+) ENGINE=InnoDB COMMENT='民主推荐记录表';
+
+-- 组织考察记录
+DROP TABLE IF EXISTS appoint_investigation;
+CREATE TABLE appoint_investigation (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    process_id BIGINT NOT NULL COMMENT '流程ID',
+    archive_check TINYINT COMMENT '档案审核 0未通过 1通过 -- 三龄两历一身份',
+    archive_issue VARCHAR(512) COMMENT '档案审核问题描述',
+    personal_report_check TINYINT COMMENT '个人事项核查 0未通过 1通过',
+    personal_report_issue VARCHAR(512) COMMENT '个人事项核查问题',
+    discipline_check TINYINT COMMENT '纪检意见 0未通过 1通过',
+    discipline_issue VARCHAR(512) COMMENT '纪检问题描述',
+    complaint_check TINYINT COMMENT '信访核查 0未通过 1通过',
+    complaint_issue VARCHAR(512) COMMENT '信访问题描述',
+    is_passed TINYINT COMMENT '考察是否通过 0未通过 1通过',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    UNIQUE INDEX idx_process (process_id)
+) ENGINE=InnoDB COMMENT='组织考察记录表';
+
+-- 讨论决定记录
+DROP TABLE IF EXISTS appoint_decision;
+CREATE TABLE appoint_decision (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    process_id BIGINT NOT NULL COMMENT '流程ID',
+    meeting_date DATE COMMENT '上会日期',
+    approve_count INT COMMENT '赞成票',
+    oppose_count INT COMMENT '反对票',
+    abstain_count INT COMMENT '弃权票',
+    is_passed TINYINT COMMENT '是否通过 0未通过 1通过',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    UNIQUE INDEX idx_process (process_id)
+) ENGINE=InnoDB COMMENT='讨论决定记录表';
+
+-- 任前公示记录
+DROP TABLE IF EXISTS appoint_publicity;
+CREATE TABLE appoint_publicity (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    process_id BIGINT NOT NULL COMMENT '流程ID',
+    publicity_start DATE COMMENT '公示开始日期',
+    publicity_end DATE COMMENT '公示结束日期',
+    publicity_content TEXT COMMENT '公示信息',
+    report_info TEXT COMMENT '反映信息',
+    publicity_result VARCHAR(32) COMMENT '公示结果 PASSED通过 FAILED未通过',
+    remark VARCHAR(512) COMMENT '备注',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    UNIQUE INDEX idx_process (process_id)
+) ENGINE=InnoDB COMMENT='任前公示记录表';
+
+-- 任职记录表
+DROP TABLE IF EXISTS appoint_record;
+CREATE TABLE appoint_record (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    process_id BIGINT COMMENT '关联任免流程ID',
+    position VARCHAR(128) NOT NULL COMMENT '职务',
+    dept_id BIGINT COMMENT '所属机构ID',
+    position_level VARCHAR(32) COMMENT '职务层次',
+    appoint_date DATE NOT NULL COMMENT '任职日期',
+    appoint_doc_no VARCHAR(64) COMMENT '任命文号',
+    is_current TINYINT DEFAULT 0 COMMENT '是否现任 0否 1是',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_process (process_id),
+    INDEX idx_date (appoint_date)
+) ENGINE=InnoDB COMMENT='干部任职记录表';
+
+
+-- =================== 干部监督管理 ====================
+
+-- 廉政意见表
+DROP TABLE IF EXISTS supervise_integrity;
+CREATE TABLE supervise_integrity (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    opinion_type VARCHAR(64) COMMENT '意见类型 选拔任用/职级晋升/其他',
+    opinion_content TEXT COMMENT '廉政意见内容',
+    opinion_source VARCHAR(64) COMMENT '意见来源单位',
+    opinion_date DATE COMMENT '出具日期',
+    opinion_result VARCHAR(32) COMMENT '意见结果',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='廉政意见表';
+
+-- 信访举报表
+DROP TABLE IF EXISTS supervise_complaint;
+CREATE TABLE supervise_complaint (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '被举报干部ID',
+    complaint_source VARCHAR(64) COMMENT '举报来源',
+    complaint_type VARCHAR(64) COMMENT '举报类型',
+    complaint_content TEXT COMMENT '举报内容',
+    complaint_date DATE COMMENT '举报日期',
+    handle_status VARCHAR(32) COMMENT '处理状态 PENDING待处理 INVESTIGATING查核中 CLOSED已办结',
+    handle_result TEXT COMMENT '处理结果',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_status (handle_status)
+) ENGINE=InnoDB COMMENT='信访举报表';
+
+-- 个人事项报告表
+DROP TABLE IF EXISTS supervise_personal_report;
+CREATE TABLE supervise_personal_report (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    report_year VARCHAR(8) NOT NULL COMMENT '报告年度',
+    report_content TEXT COMMENT '报告内容',
+    check_result VARCHAR(32) COMMENT '核查结果 NORMAL正常 ABNORMAL异常',
+    check_issue TEXT COMMENT '核查问题描述',
+    submit_date DATE COMMENT '提交日期',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_year (report_year)
+) ENGINE=InnoDB COMMENT='个人事项报告表';
+
+-- 预警记录表
+DROP TABLE IF EXISTS supervise_alert;
+CREATE TABLE supervise_alert (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    alert_type VARCHAR(64) NOT NULL COMMENT '预警级别编码 RED红 ORANGE橙 YELLOW黄 (BLUE蓝兼容保留)',
+    alert_category VARCHAR(64) NOT NULL COMMENT '预警类别 证件到期/出国超期/休假超时/任职超期/到龄退休',
+    alert_title VARCHAR(256) NOT NULL COMMENT '预警标题',
+    alert_content TEXT COMMENT '预警内容',
+    target_user_id BIGINT COMMENT '提醒对象用户ID',
+    target_cadre_id BIGINT COMMENT '关联干部ID',
+    rule_id BIGINT COMMENT '来源预警规则ID(supervise_alert_rule.id)，规则引擎生成时写入',
+    ref_id VARCHAR(64) COMMENT '规则扫描幂等引用(业务类型-业务主键，如 CERT-1/ABROAD-2/LEAVE-3/TEAM-4/RETIRE-5)',
+    is_read TINYINT DEFAULT 0 COMMENT '是否已读 0未读(未处理) 1已读(视为已处理)',
+    read_time DATETIME COMMENT '阅读时间',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_user (target_user_id),
+    INDEX idx_cadre (target_cadre_id),
+    INDEX idx_read (is_read),
+    INDEX idx_rule_ref (rule_id, ref_id)
+) ENGINE=InnoDB COMMENT='预警记录表';
+
+-- 预警规则配置表（持久化，可重复执行）
+CREATE TABLE IF NOT EXISTS supervise_alert_rule (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    rule_name VARCHAR(128) NOT NULL COMMENT '规则名称',
+    rule_type VARCHAR(64) NOT NULL COMMENT '预警类型 证件到期/出国超期/休假超时/任职超期/到龄退休 等',
+    level VARCHAR(16) DEFAULT '黄色' COMMENT '预警级别 红色/橙色/黄色',
+    threshold INT DEFAULT 30 COMMENT '触发阈值(天数或数值)',
+    is_enabled TINYINT DEFAULT 1 COMMENT '是否启用 1启用 0停用',
+    remark VARCHAR(512) COMMENT '备注',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_type (rule_type),
+    INDEX idx_enabled (is_enabled)
+) ENGINE=InnoDB COMMENT='预警规则配置表';
+
+
+-- =================== 政策法规 / 干部考察登记 / 监督扩展（新接入模块） ====================
+
+-- 政策法规文档表
+CREATE TABLE IF NOT EXISTS policy_document (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(256) NOT NULL COMMENT '标题',
+    doc_no VARCHAR(128) COMMENT '文号',
+    publish_unit VARCHAR(256) COMMENT '发布单位',
+    issue_date DATE COMMENT '发布日期',
+    effective_date DATE COMMENT '施行日期',
+    category VARCHAR(32) COMMENT '分类 党内法规/干部选拔/干部监督/教育培训/其他',
+    content LONGTEXT COMMENT '正文',
+    attachment_name VARCHAR(255) COMMENT '附件名称',
+    attachment_url VARCHAR(512) COMMENT '附件地址',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_category (category),
+    INDEX idx_issue_date (issue_date),
+    INDEX idx_title (title)
+) ENGINE=InnoDB COMMENT='政策法规文档表';
+
+-- 干部考察登记表（独立于任免流程的考察登记台账）
+CREATE TABLE IF NOT EXISTS cadre_investigation (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    investigation_type VARCHAR(32) COMMENT '考察类型 任前考察/年度考核考察/专项考察/换届考察',
+    investigation_time DATE COMMENT '考察时间',
+    investigator VARCHAR(256) COMMENT '考察组成员',
+    result VARCHAR(32) COMMENT '考察结论 优秀/称职/基本称职/其他',
+    content TEXT COMMENT '考察材料',
+    org_unit VARCHAR(128) COMMENT '组织单位',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_type (investigation_type),
+    INDEX idx_time (investigation_time)
+) ENGINE=InnoDB COMMENT='干部考察登记表';
+
+-- 提醒函询诫勉记录表
+CREATE TABLE IF NOT EXISTS supervise_admonish (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    admonish_type VARCHAR(32) COMMENT '类型 提醒谈话/函询/诫勉',
+    trigger_type VARCHAR(256) COMMENT '触发事由',
+    content TEXT COMMENT '内容',
+    result TEXT COMMENT '处理结果',
+    discipline VARCHAR(64) COMMENT '纪律处分类别',
+    handle_status VARCHAR(32) DEFAULT '待处理' COMMENT '处理状态 待处理/已办结',
+    handle_user VARCHAR(64) COMMENT '处理人',
+    handle_time DATETIME COMMENT '处理时间',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_status (handle_status)
+) ENGINE=InnoDB COMMENT='提醒函询诫勉记录表';
+
+-- 经济责任审计记录表
+CREATE TABLE IF NOT EXISTS supervise_audit (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    audit_scope VARCHAR(64) COMMENT '审计范围 任期经济责任审计/离任审计/专项审计',
+    audit_period_start DATE COMMENT '审计期间开始',
+    audit_period_end DATE COMMENT '审计期间结束',
+    audit_org VARCHAR(128) COMMENT '审计机构',
+    start_time DATE COMMENT '实施开始时间',
+    end_time DATE COMMENT '实施结束时间',
+    audit_result VARCHAR(64) COMMENT '审计结论 无重大问题/基本正常/存在需整改问题/重大问题',
+    issue TEXT COMMENT '发现问题',
+    rectify_status VARCHAR(32) COMMENT '整改状态 待整改/整改中/已整改',
+    audit_report_url VARCHAR(512) COMMENT '报告附件地址',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_scope (audit_scope),
+    INDEX idx_rectify (rectify_status)
+) ENGINE=InnoDB COMMENT='经济责任审计记录表';
+
+
+-- =================== 干部考核测评 ====================
+
+-- 年度考核记录表
+DROP TABLE IF EXISTS assessment_annual;
+CREATE TABLE assessment_annual (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    assessment_year VARCHAR(8) NOT NULL COMMENT '考核年度',
+    assessment_result VARCHAR(32) COMMENT '考核结果 优秀/称职/基本称职/不称职',
+    assessment_comment TEXT COMMENT '考核评语',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_year (assessment_year)
+) ENGINE=InnoDB COMMENT='年度考核记录表';
+
+-- 民主测评方案表
+DROP TABLE IF EXISTS assessment_scheme;
+CREATE TABLE assessment_scheme (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    scheme_name VARCHAR(128) NOT NULL COMMENT '方案名称',
+    scheme_year VARCHAR(8) COMMENT '方案年度',
+    vote_start_time DATETIME COMMENT '投票开始时间',
+    vote_end_time DATETIME COMMENT '投票结束时间',
+    allow_anonymous TINYINT DEFAULT 1 COMMENT '允许匿名投票',
+    excellent_max_ratio DECIMAL(5,2) COMMENT '优秀占比上限',
+    forbid_all_excellent TINYINT DEFAULT 1 COMMENT '禁止全优评价',
+    vote_mode VARCHAR(16) DEFAULT 'SCORE' COMMENT '投票方式 SCORE评分式 BALLOT表决式',
+    need_sign TINYINT DEFAULT 1 COMMENT '是否需要签字确认 0否 1是',
+    status VARCHAR(32) COMMENT '状态 DRAFT草稿 ACTIVE进行中 FINISHED已结束',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='民主测评方案表';
+
+-- 测评维度表
+DROP TABLE IF EXISTS assessment_dimension;
+CREATE TABLE assessment_dimension (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    scheme_id BIGINT NOT NULL COMMENT '方案ID',
+    dimension_name VARCHAR(64) NOT NULL COMMENT '维度名称 德/能/勤/绩/廉',
+    dimension_weight DECIMAL(5,2) COMMENT '权重',
+    sort_order INT DEFAULT 0,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_scheme (scheme_id)
+) ENGINE=InnoDB COMMENT='测评维度表';
+
+-- 测评指标项
+DROP TABLE IF EXISTS assessment_indicator;
+CREATE TABLE assessment_indicator (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    dimension_id BIGINT NOT NULL COMMENT '维度ID',
+    indicator_name VARCHAR(128) NOT NULL COMMENT '指标名称',
+    max_score DECIMAL(5,2) DEFAULT 100 COMMENT '最高分',
+    sort_order INT DEFAULT 0,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_dimension (dimension_id)
+) ENGINE=InnoDB COMMENT='测评指标项';
+
+-- 测评被评对象
+DROP TABLE IF EXISTS assessment_target;
+CREATE TABLE assessment_target (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    scheme_id BIGINT NOT NULL COMMENT '方案ID',
+    cadre_id BIGINT NOT NULL COMMENT '被评干部ID',
+    material_title VARCHAR(200) COMMENT '测评材料标题',
+    material_text TEXT COMMENT '测评材料正文',
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_scheme (scheme_id)
+) ENGINE=InnoDB COMMENT='测评被评对象';
+
+-- 测评投票记录
+DROP TABLE IF EXISTS assessment_vote;
+CREATE TABLE assessment_vote (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    scheme_id BIGINT NOT NULL COMMENT '方案ID',
+    voter_id BIGINT NOT NULL COMMENT '投票人ID',
+    target_cadre_id BIGINT NOT NULL COMMENT '被评干部ID',
+    indicator_id BIGINT NOT NULL COMMENT '指标ID',
+    score DECIMAL(5,2) NOT NULL COMMENT '评分',
+    vote_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_scheme_voter (scheme_id, voter_id),
+    INDEX idx_target (target_cadre_id)
+) ENGINE=InnoDB COMMENT='测评投票记录';
+
+-- 表决式投票记录（平板表决 APPROVE赞成/DISAPPROVE反对/ABSTAIN弃权）
+DROP TABLE IF EXISTS assessment_ballot;
+CREATE TABLE assessment_ballot (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    scheme_id BIGINT NOT NULL COMMENT '方案ID',
+    voter_id BIGINT NOT NULL COMMENT '投票人ID',
+    target_cadre_id BIGINT NOT NULL COMMENT '被表决干部ID',
+    choice VARCHAR(16) NOT NULL COMMENT '表决意见 APPROVE赞成/DISAPPROVE反对/ABSTAIN弃权',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除 0未删 1已删',
+    INDEX idx_scheme (scheme_id),
+    INDEX idx_scheme_voter (scheme_id, voter_id)
+) ENGINE=InnoDB COMMENT='表决式投票记录表';
+
+-- 投票签字留证表
+DROP TABLE IF EXISTS assessment_signature;
+CREATE TABLE assessment_signature (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    scheme_id BIGINT NOT NULL COMMENT '方案ID',
+    voter_id BIGINT NOT NULL COMMENT '签字人ID',
+    sign_image LONGBLOB COMMENT '签字图片(PNG)',
+    sign_md5 VARCHAR(64) COMMENT '签字图片MD5',
+    device_ip VARCHAR(64) COMMENT '设备IP',
+    sign_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '签字时间',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除 0未删 1已删',
+    INDEX idx_scheme (scheme_id),
+    INDEX idx_scheme_voter (scheme_id, voter_id)
+) ENGINE=InnoDB COMMENT='投票签字留证表';
+
+
+-- =================== 干部日常事务管理 ====================
+
+-- 证照管理表
+DROP TABLE IF EXISTS daily_certificate;
+CREATE TABLE daily_certificate (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    cert_type VARCHAR(64) COMMENT '证件类型 PASSPORT护照 ENTRY_PERMIT通行证',
+    cert_number VARCHAR(64) COMMENT '证件号码',
+    cert_status VARCHAR(32) COMMENT '证件状态 STORED存放中 LENT借出 RETURNED已归还 OVERDUE逾期',
+    borrow_date DATE COMMENT '借出日期',
+    return_date DATE COMMENT '归还日期',
+    expected_return_date DATE COMMENT '预计归还日期',
+    abroad_id BIGINT COMMENT '关联已批准出国(境)记录ID（因公临时领用来源）',
+    remark VARCHAR(256) COMMENT '备注',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='证照管理表';
+
+-- 出境登记表
+DROP TABLE IF EXISTS daily_abroad_record;
+CREATE TABLE daily_abroad_record (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    destination VARCHAR(128) COMMENT '目的地',
+    purpose VARCHAR(256) COMMENT '事由',
+    depart_date DATE COMMENT '出境日期',
+    return_date DATE COMMENT '入境日期',
+    approved_days INT COMMENT '批准天数',
+    actual_days INT COMMENT '实际天数',
+    is_overdue TINYINT DEFAULT 0 COMMENT '是否超期',
+    is_approved TINYINT DEFAULT 1 COMMENT '是否经批准出国(境) 1已批准 0未批准',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='出境登记表';
+
+-- 休假管理表
+DROP TABLE IF EXISTS daily_leave;
+CREATE TABLE daily_leave (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    leave_type VARCHAR(32) COMMENT '假别 ANNUAL年假 PERSONAL事假 SICK病假',
+    start_date DATE COMMENT '开始日期',
+    end_date DATE COMMENT '结束日期',
+    leave_days DECIMAL(5,1) COMMENT '请假天数',
+    reason VARCHAR(512) COMMENT '请假事由',
+    approve_status VARCHAR(32) COMMENT '审批状态 DRAFT草稿 SUBMITTED已提交 APPROVED已通过 REJECTED已驳回',
+    approve_id BIGINT COMMENT '审批人ID',
+    approve_time DATETIME COMMENT '审批时间',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id),
+    INDEX idx_status (approve_status)
+) ENGINE=InnoDB COMMENT='休假管理表';
+
+-- 教育培训表
+DROP TABLE IF EXISTS daily_training;
+CREATE TABLE daily_training (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    training_name VARCHAR(128) NOT NULL COMMENT '培训班名称',
+    training_type VARCHAR(64) COMMENT '培训类型',
+    start_date DATE COMMENT '开始日期',
+    end_date DATE COMMENT '结束日期',
+    training_location VARCHAR(128) COMMENT '培训地点',
+    organizer VARCHAR(128) COMMENT '主办单位',
+    description TEXT COMMENT '培训内容描述',
+    status VARCHAR(32) COMMENT '状态 ACTIVE进行中 FINISHED已结束',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='教育培训表';
+
+-- 培训学员关联
+DROP TABLE IF EXISTS daily_training_cadre;
+CREATE TABLE daily_training_cadre (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    training_id BIGINT NOT NULL COMMENT '培训ID',
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    is_completed TINYINT DEFAULT 0 COMMENT '是否完成',
+    certificate_url VARCHAR(255) COMMENT '证书地址',
+    UNIQUE KEY uk_training_cadre (training_id, cadre_id)
+) ENGINE=InnoDB COMMENT='培训学员关联表';
+
+-- 挂职锻炼表
+DROP TABLE IF EXISTS daily_secondment;
+CREATE TABLE daily_secondment (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    secondment_unit VARCHAR(128) COMMENT '挂职单位',
+    secondment_position VARCHAR(128) COMMENT '挂职职务',
+    start_date DATE COMMENT '开始日期',
+    end_date DATE COMMENT '结束日期',
+    status VARCHAR(32) COMMENT '状态 ACTIVE在岗 FINISHED已结束',
+    remark VARCHAR(512) COMMENT '备注',
+    create_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='挂职锻炼表';
+
+-- 自助申报表（通用）
+DROP TABLE IF EXISTS daily_self_application;
+CREATE TABLE daily_self_application (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    applicant_id BIGINT NOT NULL COMMENT '申请人ID',
+    application_type VARCHAR(64) NOT NULL COMMENT '申报类型 INFO_UPDATE档案信息更正 LEAVE请假 PART_TIME兼职 TRAINING培训 ABROAD出国',
+    application_title VARCHAR(256) COMMENT '申报标题',
+    application_content TEXT COMMENT '申报内容',
+    apply_field VARCHAR(64) COMMENT '申请变更字段key(档案信息更正,白名单见CadreInfoMapperKeys)',
+    old_value VARCHAR(255) COMMENT '变更前档案值(提交时读取真实档案)',
+    new_value VARCHAR(255) COMMENT '变更后档案值',
+    apply_status VARCHAR(32) DEFAULT 'DRAFT' COMMENT '申报状态 DRAFT草稿 SUBMITTED已提交 APPROVED已通过 REJECTED已驳回',
+    approver_id BIGINT COMMENT '审批人ID',
+    approve_time DATETIME COMMENT '审批时间',
+    approve_comment VARCHAR(512) COMMENT '审批意见',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_applicant (applicant_id),
+    INDEX idx_status (apply_status)
+) ENGINE=InnoDB COMMENT='自助申报表';
+
+
+-- =================== 名册/打印模板 ====================
+
+-- 名册模板
+DROP TABLE IF EXISTS sys_roster_template;
+CREATE TABLE sys_roster_template (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    template_name VARCHAR(128) NOT NULL COMMENT '模板名称',
+    template_fields TEXT COMMENT '模板包含字段(JSON)',
+    is_system TINYINT DEFAULT 0 COMMENT '是否系统预设',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='名册模板表';
+
+-- 打印模板
+DROP TABLE IF EXISTS sys_print_template;
+CREATE TABLE sys_print_template (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    template_name VARCHAR(128) NOT NULL COMMENT '模板名称',
+    template_type VARCHAR(64) COMMENT '模板类型 APPOINTMENT任免表 ARCHIVE档案 EXPORT导出',
+    template_content LONGTEXT COMMENT '模板内容(HTML/Word)',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0
+) ENGINE=InnoDB COMMENT='打印模板表';
+
+
+-- =================== 初始数据 ====================
+
+-- 初始系统管理员账号（密码 123456，status=1 已批准可登录）
+INSERT INTO sys_user (username, password, real_name, user_type, status, create_time, update_time)
+VALUES ('admin', '123456', '系统管理员', 1, 1, NOW(), NOW());
+
+-- 初始角色（配合 JWT + Spring Security 权限识别）
+INSERT INTO sys_role (role_name, role_code, data_scope, status, permissions, create_time, update_time)
+VALUES ('系统管理员', 'admin', 1, 1, 'ALL', NOW(), NOW());
+
+-- 初始管理员绑定角色（admin 用户为 sys_user 首条记录，自增 id=1）
+INSERT INTO sys_user_role (user_id, role_id)
+SELECT u.id, r.id FROM sys_user u, sys_role r WHERE u.username = 'admin' AND r.role_code = 'admin';
+
+-- =================== 兼容修复 ====================
+-- 以下实体继承 BaseEntity（含 create_by/create_time/update_by/update_time/deleted 字段），
+-- 早期建表缺少 update_by/update_time，会导致新增/更新报"Unknown column 'update_time'"。
+-- 本段为统一补齐（在脚本全量 DROP+CREATE 之后执行，不会重复添加）。
+ALTER TABLE appoint_decision      ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE appoint_investigation ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE appoint_publicity     ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE appoint_recommend     ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE appoint_record        ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE assessment_annual     ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE cadre_attachment      ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE daily_abroad_record   ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE daily_secondment      ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE daily_training        ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE rank_promotion_record ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE supervise_integrity   ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE supervise_personal_report ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+ALTER TABLE transfer_record       ADD COLUMN update_by BIGINT NULL AFTER create_time, ADD COLUMN update_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER update_by;
+
+-- ====================================================
+-- 班子登记 / 职务层次 / 系统字典 种子（末尾可重复执行段）
+-- 说明：班子登记表 DDL 幂等（IF NOT EXISTS）；职务层次、字典先删后插，
+--       与 seed-demo.sql 末尾种子保持一致，可重复执行。
+-- ====================================================
+USE POP;
+
+-- 班子成员登记表（按机构手工登记的班子，区别于干部档案派生展示）
+CREATE TABLE IF NOT EXISTS org_team_member (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    dept_id BIGINT NOT NULL COMMENT '机构ID',
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    leader_post VARCHAR(64) COMMENT '班子职务 党委书记/院长/副院长/党委副书记/纪委书记/部长/处长等',
+    sort_order INT DEFAULT 0 COMMENT '排序',
+    is_leader TINYINT DEFAULT 0 COMMENT '是否主要负责人 0否 1是',
+    start_date DATE COMMENT '任职开始日期',
+    end_date DATE COMMENT '任职结束日期(空表示现任)',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_dept (dept_id),
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='班子成员登记表';
+
+-- 职务层次（空表→9 条常用层次示例，先删后插；字段对齐实体 PositionLevel：level_name/min_lower_years/max_age/min_education/assessment_required/penalty_period_restrict/sort_order/status）
+DELETE FROM org_position_level;
+INSERT INTO org_position_level (level_name, min_lower_years, max_age, min_education, assessment_required, penalty_period_restrict, sort_order, status, create_time, update_time) VALUES
+('国家级正职', 5, 70, '本科', '近五年年度考核称职及以上（示例）', 24, 1, 1, NOW(), NOW()),
+('国家级副职', 4, 65, '本科', '近五年年度考核称职及以上（示例）', 24, 2, 1, NOW(), NOW()),
+('省部级正职', 4, 63, '本科', '近五年年度考核称职及以上（示例）', 18, 3, 1, NOW(), NOW()),
+('省部级副职', 3, 60, '本科', '近五年年度考核称职及以上（示例）', 18, 4, 1, NOW(), NOW()),
+('厅局级正职', 3, 58, '本科', '近三年年度考核称职及以上（示例）', 12, 5, 1, NOW(), NOW()),
+('厅局级副职', 3, 55, '本科', '近三年年度考核称职及以上（示例）', 12, 6, 1, NOW(), NOW()),
+('县处级正职', 3, 52, '本科', '近三年年度考核称职及以上（示例）', 6, 7, 1, NOW(), NOW()),
+('县处级副职', 3, 50, '本科', '近三年年度考核称职及以上（示例）', 6, 8, 1, NOW(), NOW()),
+('乡科级正职', 3, 48, '专科', '近三年年度考核称职及以上（示例）', 6, 9, 1, NOW(), NOW());
+
+-- 系统字典：类型（6 类）+ 数据（先删后插；type_code 对齐 SysDictType.typeCode / SysDictData.typeCode 字段）
+DELETE FROM sys_dict_data;
+DELETE FROM sys_dict_type;
+INSERT INTO sys_dict_type (type_name, type_code, status, create_time, update_time) VALUES
+('干部状态', 'cadre_status', 1, NOW(), NOW()),
+('民族', 'nation', 1, NOW(), NOW()),
+('政治面貌', 'political_status', 1, NOW(), NOW()),
+('学历层次', 'education', 1, NOW(), NOW()),
+('婚姻状况', 'marriage', 1, NOW(), NOW()),
+('考核结果', 'assessment_result', 1, NOW(), NOW());
+INSERT INTO sys_dict_data (type_code, dict_label, dict_value, sort_order, status, create_time, update_time) VALUES
+-- 干部状态（value 与 cadre_info.cadre_status 存储一致）
+('cadre_status', '在职', 'ON_JOB', 1, 1, NOW(), NOW()),
+('cadre_status', '离退休', 'RETIRED', 2, 1, NOW(), NOW()),
+('cadre_status', '调出', 'TRANSFERRED', 3, 1, NOW(), NOW()),
+('cadre_status', '辞职', 'RESIGNED', 4, 1, NOW(), NOW()),
+-- 民族（label/value 与 cadre_info.nation 存储的中文一致）
+('nation', '汉族', '汉族', 1, 1, NOW(), NOW()),
+('nation', '蒙古族', '蒙古族', 2, 1, NOW(), NOW()),
+('nation', '回族', '回族', 3, 1, NOW(), NOW()),
+('nation', '朝鲜族', '朝鲜族', 4, 1, NOW(), NOW()),
+('nation', '满族', '满族', 5, 1, NOW(), NOW()),
+('nation', '锡伯族', '锡伯族', 6, 1, NOW(), NOW()),
+('nation', '达斡尔族', '达斡尔族', 7, 1, NOW(), NOW()),
+-- 政治面貌（label/value 与 cadre_info.political_status 存储中文一致）
+('political_status', '中共党员', '中共党员', 1, 1, NOW(), NOW()),
+('political_status', '中共预备党员', '中共预备党员', 2, 1, NOW(), NOW()),
+('political_status', '共青团员', '共青团员', 3, 1, NOW(), NOW()),
+('political_status', '民主党派', '民主党派', 4, 1, NOW(), NOW()),
+('political_status', '无党派人士', '无党派人士', 5, 1, NOW(), NOW()),
+('political_status', '群众', '群众', 6, 1, NOW(), NOW()),
+-- 学历层次（label/value 与 cadre_info.full_time_education 存储中文一致）
+('education', '博士研究生', '博士研究生', 1, 1, NOW(), NOW()),
+('education', '硕士研究生', '硕士研究生', 2, 1, NOW(), NOW()),
+('education', '本科', '本科', 3, 1, NOW(), NOW()),
+('education', '专科', '专科', 4, 1, NOW(), NOW()),
+('education', '高中及以下', '高中及以下', 5, 1, NOW(), NOW()),
+-- 婚姻状况
+('marriage', '未婚', '未婚', 1, 1, NOW(), NOW()),
+('marriage', '已婚', '已婚', 2, 1, NOW(), NOW()),
+('marriage', '离异', '离异', 3, 1, NOW(), NOW()),
+('marriage', '丧偶', '丧偶', 4, 1, NOW(), NOW()),
+-- 考核结果（label/value 与 assessment_annual.assessment_result 存储中文一致）
+('assessment_result', '优秀', '优秀', 1, 1, NOW(), NOW()),
+('assessment_result', '称职', '称职', 2, 1, NOW(), NOW()),
+('assessment_result', '基本称职', '基本称职', 3, 1, NOW(), NOW()),
+('assessment_result', '不称职', '不称职', 4, 1, NOW(), NOW());
+-- 末尾种子合计：职务层次 9 / 字典类型 6 / 字典数据 30（班子登记演示成员见 seed-demo.sql）
+
+

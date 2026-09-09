@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.personnel.common.BusinessException;
+import com.personnel.framework.cache.CacheStore;
 import com.personnel.framework.security.JwtUtil;
 import com.personnel.system.UserTypePermTemplate;
 import com.personnel.system.entity.SysUser;
@@ -18,18 +19,40 @@ import java.time.LocalDateTime;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
+    /** 登录失败节流：同一用户名 15 分钟内连续失败 >= 该次数即临时锁定（对演示账号无明显影响） */
+    private static final int LOGIN_FAIL_LIMIT = 5;
+    /** 失败计数保留时长（秒）= 15 分钟 */
+    private static final long LOGIN_FAIL_TTL_SECONDS = 15 * 60L;
+    /** 失败计数 key 前缀，实际形如 auth:fail:admin */
+    private static final String LOGIN_FAIL_KEY_PREFIX = "auth:fail:";
+
     @Resource
     private JwtUtil jwtUtil;
 
+    @Resource
+    private CacheStore cacheStore;
+
     @Override
     public SysUser login(String username, String password) {
+        // 登录失败节流（方法顶部先查锁）：同一用户名 15 分钟内累计失败 5 次即临时锁定，
+        // 锁定期内即使密码正确也拒绝。计数走缓存门面 CacheStore——
+        // 有 Redis 的机器计数落在 Redis（key: auth:fail:{username}），没有 Redis 自动降级进程内存，行为不变。
+        String failKey = LOGIN_FAIL_KEY_PREFIX + username;
+        if (cacheStore.getLong(failKey, 0L) >= LOGIN_FAIL_LIMIT) {
+            throw new BusinessException("失败次数过多，账号已临时锁定，请15分钟后再试");
+        }
+
         SysUser user = getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
         if (user == null) {
+            cacheStore.increment(failKey, LOGIN_FAIL_TTL_SECONDS);
             throw new BusinessException("用户名或密码错误");
         }
         if (!user.getPassword().equals(password)) {
+            cacheStore.increment(failKey, LOGIN_FAIL_TTL_SECONDS);
             throw new BusinessException("用户名或密码错误");
         }
+        // 密码校验通过即清零失败计数，避免历史失败误锁后续正常登录
+        cacheStore.delete(failKey);
         Integer status = user.getStatus();
         String info = buildUserInfo(user);
         if (status != null && status == 0) {
