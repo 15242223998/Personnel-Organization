@@ -5,7 +5,7 @@
       <el-col :span="6" v-for="card in statCards" :key="card.label">
         <div class="stat-card" :style="{ borderLeftColor: card.color }" @click="$router.push(card.path)">
           <div class="stat-info">
-            <div class="stat-value" :style="{ color: card.color }">{{ card.value }}</div>
+            <div class="stat-value" :style="{ color: card.color }">{{ card.key === 'todo' ? todoCount : (statNums[card.key] ?? 0) }}</div>
             <div class="stat-label">{{ card.label }}</div>
           </div>
           <div class="stat-icon" :style="{ background: card.color }">
@@ -16,24 +16,24 @@
     </el-row>
 
     <el-row :gutter="10">
-      <!-- 预警提醒 -->
+      <!-- 待办预警提醒 -->
       <el-col :span="14">
         <el-card>
           <template #header>
             <span><el-icon><Bell /></el-icon> 待办预警提醒</span>
           </template>
-          <el-table :data="alertList" border size="small">
+          <el-table :data="alertList" border size="small" :empty-text="emptyText">
             <el-table-column label="序号" width="50" type="index" align="center" />
-            <el-table-column label="预警类型" width="100" align="center">
+            <el-table-column label="预警类型" width="110" align="center">
               <template #default="{row}">
                 <el-tag :type="row.tagType" size="small">{{ row.type }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="title" label="预警内容" />
-            <el-table-column prop="time" label="时间" width="120" align="center" />
+            <el-table-column prop="title" label="预警内容" show-overflow-tooltip />
+            <el-table-column prop="time" label="时间" width="130" align="center" />
             <el-table-column label="操作" width="80" align="center">
-              <template #default>
-                <span class="link-blue" @click="$router.push('/supervision/alert')">处理</span>
+              <template #default="{row}">
+                <span class="link-blue" @click="handleNotice(row)">处理</span>
               </template>
             </el-table-column>
           </el-table>
@@ -53,7 +53,7 @@
           </div>
         </el-card>
         <el-card>
-          <template #header><span><el-icon><PieChart /></el-icon> 干部队伍概览</span></template>
+          <template #header><span><el-icon><PieChart /></el-icon> 干部队伍概览（职务层次分布）</span></template>
           <div ref="miniChart" style="height:180px"></div>
         </el-card>
       </el-col>
@@ -62,28 +62,42 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, markRaw } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, markRaw } from 'vue'
 import * as echarts from 'echarts'
-import { generateAlerts } from '@/utils/alert-service'
+import { useUserStore } from '../stores/user'
 import {
   UserFilled, User, OfficeBuilding, Medal, WarningFilled,
   Bell, DataAnalysis, Switch, Stamp, Grid, PieChart, Calendar, Top
 } from '@element-plus/icons-vue'
+import request from '../utils/request'
+import { getCadrePage } from '../api/cadre'
+import { getPositionLevelDistribution } from '../api/statistics'
 
 const statCards = [
-  { label: '在职干部总数', value: '328', color: '#1976D2', icon: markRaw(UserFilled), path: '/cadre/onjob' },
-  { label: '机构数量', value: '46', color: '#43A047', icon: markRaw(OfficeBuilding), path: '/organization' },
-  { label: '后备干部', value: '35', color: '#FB8C00', icon: markRaw(Medal), path: '/cadre/reserve' },
-  { label: '待办事项', value: '12', color: '#E53935', icon: markRaw(WarningFilled), path: '/supervision/alert' }
+  { key: 'onjob', label: '在职干部总数', color: '#1976D2', icon: markRaw(UserFilled), path: '/cadre/onjob' },
+  { key: 'org', label: '机构数量', color: '#43A047', icon: markRaw(OfficeBuilding), path: '/organization' },
+  { key: 'reserve', label: '后备干部', color: '#FB8C00', icon: markRaw(Medal), path: '/cadre/reserve' },
+  { key: 'todo', label: '待办事项', color: '#E53935', icon: markRaw(WarningFilled), path: '/supervision/alert' }
 ]
+const statNums = reactive({ onjob: 0, org: 0, reserve: 0 })
 
-// 待办预警：按事件结束时间(deadline)最临近排序，取前7项
-const alertList = computed(() => generateAlerts().slice(0, 7).map(a => ({
-  type: a.category,
-  tagType: a.level === '红色' ? 'danger' : a.level === '黄色' ? 'warning' : '',
-  title: a.title,
-  time: a.deadline || '—'
-})))
+const userStore = useUserStore()
+// 管理职能账号（系统管理员/校级领导/部长/组织员）可看全员待办；普通账号后端不推送，显示空态文案
+const isManager = computed(() => userStore.isAdmin || [2, 3, 4].includes(Number(userStore.userType)))
+
+// 预警类型展示映射（来自后端 notice 汇总，类型取后端原始 type 兜底）
+const noticeTypeMap = {
+  register: { label: '注册审批', tagType: 'warning' },
+  scheme: { label: '测评提醒', tagType: 'primary' },
+  leave: { label: '休假审批', tagType: 'warning' },
+  cert: { label: '证照借还', tagType: 'danger' },
+  abroad: { label: '出境超期', tagType: 'danger' },
+  alert: { label: '本人预警', tagType: 'danger' }
+}
+
+const alertList = ref([])
+const todoCount = computed(() => alertList.value.length)
+const emptyText = computed(() => (isManager.value ? '暂无待办预警提醒' : '暂无与您本人相关的待办预警提醒'))
 
 const quickMenus = [
   { name: '干部信息', path: '/cadre', color: '#1976D2', icon: markRaw(User) },
@@ -96,27 +110,117 @@ const quickMenus = [
   { name: '统计分析', path: '/statistics', color: '#D81B60', icon: markRaw(PieChart) }
 ]
 
-const miniChart = ref(null)
+function formatTime(t) {
+  if (!t) return '—'
+  return String(t).replace('T', ' ').substring(0, 16)
+}
 
-onMounted(() => {
-  const chart = echarts.init(miniChart.value)
+async function loadStats() {
+  // 在职干部总数：干部库真实分页 total（在职状态）
+  getCadrePage({ current: 1, size: 1, cadreStatus: 'ON_JOB' })
+    .then(res => { statNums.onjob = (res.data && res.data.total) || 0 })
+    .catch(() => { statNums.onjob = 0 })
+  // 机构数量：组织树真实节点数
+  request.get('/organization/tree')
+    .then(res => {
+      const count = { total: 0 }
+      const walk = list => {
+        if (!Array.isArray(list)) return
+        list.forEach(o => {
+          if (o && o.id != null) count.total++
+          walk(o.children)
+        })
+      }
+      walk(res.data)
+      statNums.org = count.total
+    })
+    .catch(() => { statNums.org = 0 })
+  // 后备干部：后备干部库真实列表长度
+  request.get('/cadre-reserve/list')
+    .then(res => { statNums.reserve = Array.isArray(res.data) ? res.data.length : 0 })
+    .catch(() => { statNums.reserve = 0 })
+}
+
+async function loadNotices() {
+  try {
+    const res = await request.get('/notice/list')
+    const list = Array.isArray(res.data) ? res.data : []
+    alertList.value = list.slice(0, 7).map(n => {
+      const map = noticeTypeMap[n.type] || { label: n.type || '提醒', tagType: 'info' }
+      return {
+        type: map.label,
+        tagType: map.tagType,
+        title: n.desc || n.title || '',
+        time: formatTime(n.time),
+        path: n.path || '/supervision/alert'
+      }
+    })
+  } catch (e) {
+    alertList.value = []
+  }
+}
+
+function handleNotice(row) {
+  router.push(row.path || '/supervision/alert')
+}
+
+const miniChart = ref(null)
+let chart = null
+
+function renderPie(rows) {
+  if (!chart) return
+  const hasData = (rows || []).some(it => Number(it.value) > 0)
+  if (!rows || rows.length === 0 || !hasData) {
+    chart.clear()
+    chart.setOption({
+      title: { text: '暂无分布数据', left: 'center', top: 'middle', textStyle: { fontSize: 13, color: '#999', fontWeight: 'normal' } },
+      series: []
+    })
+    return
+  }
+  const colors = ['#1976D2', '#42A5F5', '#64B5F6', '#90CAF9', '#FB8C00', '#43A047', '#7E57C2', '#26A69A', '#E53935']
   chart.setOption({
-    tooltip: { trigger: 'item' },
+    tooltip: { trigger: 'item', formatter: '{b}: {c}人 ({d}%)' },
     legend: { bottom: 0, itemWidth: 10, itemHeight: 10, textStyle: { fontSize: 12 } },
     series: [{
       type: 'pie',
       radius: ['40%', '65%'],
       center: ['50%', '42%'],
       label: { fontSize: 11 },
-      data: [
-        { value: 156, name: '处级干部', itemStyle: { color: '#1976D2' } },
-        { value: 98, name: '科级干部', itemStyle: { color: '#42A5F5' } },
-        { value: 39, name: '校级领导', itemStyle: { color: '#64B5F6' } },
-        { value: 35, name: '后备干部', itemStyle: { color: '#FB8C00' } }
-      ]
+      data: rows.map((it, i) => ({
+        value: Number(it.value) || 0,
+        name: it.name,
+        itemStyle: { color: colors[i % colors.length] }
+      }))
     }]
   })
-  window.addEventListener('resize', () => chart.resize())
+}
+
+async function loadChartData() {
+  try {
+    const res = await getPositionLevelDistribution()
+    renderPie((res.data || []).filter(it => it && it.name != null))
+  } catch (e) {
+    renderPie([])
+  }
+}
+
+function handleResize() {
+  chart && chart.resize()
+}
+
+onMounted(() => {
+  chart = echarts.init(miniChart.value)
+  loadStats()
+  loadNotices()
+  loadChartData()
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  chart && chart.dispose()
+  chart = null
 })
 </script>
 

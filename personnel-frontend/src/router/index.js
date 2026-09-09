@@ -48,14 +48,14 @@ const routes = [
       { path: 'daily', name: 'Daily', component: () => import('../views/daily/Index.vue'), meta: { title: '日常事务管理' } },
       { path: 'statistics', name: 'Statistics', component: () => import('../views/statistics/Index.vue'), meta: { title: '统计分析' } },
       { path: 'system/user', name: 'SysUser', component: () => import('../views/system/User.vue'), meta: { title: '用户管理' } },
-      { path: 'system/role', name: 'SysRole', component: () => import('../views/system/Role.vue'), meta: { title: '角色管理' } },
       { path: 'system/dict', name: 'SysDict', component: () => import('../views/system/Dict.vue'), meta: { title: '字典管理' } },
       { path: 'system/log', name: 'SysLog', component: () => import('../views/system/Log.vue'), meta: { title: '系统日志' } },
       { path: 'system/approval', name: 'SysApproval', component: () => import('../views/system/Approval.vue'), meta: { title: '审批事项管理' } },
       { path: 'system/policy', name: 'SysPolicy', component: () => import('../views/system/Policy.vue'), meta: { title: '政策法规管理' } },
       { path: 'system/alert-rule', name: 'SysAlertRule', component: () => import('../views/system/AlertRule.vue'), meta: { title: '预警规则管理' } },
       { path: 'system/declaration-approval', name: 'DeclarationApproval', component: () => import('../views/system/DeclarationApproval.vue'), meta: { title: '信息申报审批' } },
-      { path: 'system/register-approval', name: 'RegisterApproval', component: () => import('../views/system/RegisterApproval.vue'), meta: { title: '注册审批' } }
+      { path: 'system/register-approval', name: 'RegisterApproval', component: () => import('../views/system/RegisterApproval.vue'), meta: { title: '注册审批' } },
+      { path: 'system/grant', name: 'PermissionGrant', component: () => import('../views/system/PermissionGrant.vue'), meta: { title: '权限授予' } }
     ]
   }
 ]

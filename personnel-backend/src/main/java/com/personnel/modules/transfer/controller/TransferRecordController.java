@@ -30,6 +30,18 @@ public class TransferRecordController {
         return Result.success();
     }
 
+    @PutMapping
+    public Result<Void> update(@RequestBody TransferRecord transferRecord) {
+        transferRecordService.updateById(transferRecord);
+        return Result.success();
+    }
+
+    @DeleteMapping("/{id}")
+    public Result<Void> delete(@PathVariable Long id) {
+        transferRecordService.removeById(id);
+        return Result.success();
+    }
+
     @GetMapping("/{id}")
     public Result<TransferRecord> getById(@PathVariable Long id) {
         return Result.success(transferRecordService.getById(id));

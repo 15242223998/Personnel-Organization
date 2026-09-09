@@ -33,14 +33,13 @@
                 <el-tag :type="row.certStatus === '已归还' ? 'success' : row.certStatus === '在借' ? 'warning' : 'info'" size="small">{{ row.certStatus || '在库' }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="borrowDate" label="借出日期" width="110" align="center" sortable />
+            <el-table-column prop="borrowDate" label="领用日期" width="110" align="center" sortable />
             <el-table-column prop="expectedReturnDate" label="应还日期" width="110" align="center" sortable />
-            <el-table-column prop="returnDate" label="归还日期" width="110" align="center" sortable />
-            <el-table-column prop="remark" label="备注" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="returnDate" label="交回日期" width="110" align="center" sortable />
             <el-table-column label="操作" width="180" align="center" fixed="right">
               <template #default="{ row }">
-                <span class="link-blue" v-if="row.certStatus !== '在借'" @click="handleCertLend(row)">借出</span>
-                <span class="link-blue" v-else @click="handleCertReturn(row)">归还</span>
+                <span class="link-blue" v-if="row.certStatus !== '在借'" @click="handleCertLend(row)">领用</span>
+                <span class="link-blue" v-else @click="handleCertReturn(row)">交回</span>
                 <el-divider direction="vertical" />
                 <span class="link-blue" @click="openCertDialog(row)">编辑</span>
                 <el-divider direction="vertical" />
@@ -278,13 +277,41 @@
         <el-form-item label="证照号码" required>
           <el-input v-model="certForm.certNumber" placeholder="请输入证照号码" />
         </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="certForm.remark" type="textarea" :rows="2" />
-        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="certDialog = false">取消</el-button>
         <el-button type="primary" :loading="saving" @click="handleCertSubmit">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 证照领用（出境记录 → 证照领用 联动） -->
+    <el-dialog title="证照临时领用" v-model="lendDialog" width="560px" destroy-on-close>
+      <el-form label-width="110px">
+        <el-form-item label="证照">
+          {{ lendForm.cadreName }}（{{ lendForm.certType }} {{ lendForm.certNumber }}）
+        </el-form-item>
+        <el-form-item label="关联出国(境)记录" required>
+          <el-select v-model="lendForm.abroadId" filterable style="width:100%" placeholder="选择该干部已批准的待出行程">
+            <el-option v-for="t in lendTrips" :key="t.id" :value="t.id"
+              :label="`${t.destination}（${t.departDate} ~ ${t.returnDate}）`" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="领用日期">
+          {{ lendForm.borrowDate || '-' }}
+        </el-form-item>
+        <el-form-item label="预计交回日期">
+          <template v-if="lendSelected">
+            {{ lendSelected.returnDate || '行程返回后交回' }}
+            <span style="margin-left:8px;color:#999">按行程返回日期自动确定</span>
+          </template>
+          <span v-else style="color:#999">选择关联行程后自动生成</span>
+        </el-form-item>
+        <el-alert type="info" :closable="false"
+          title="证照集中保管：仅已批准且尚未出发的出国(境)记录可领用；行程返回登记后证照将自动交回，逾期交回会预警" />
+      </el-form>
+      <template #footer>
+        <el-button @click="lendDialog = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="handleCertLendSubmit">确认领用</el-button>
       </template>
     </el-dialog>
 
@@ -498,7 +525,7 @@ import { showExportDialog } from '@/utils/export-store'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getCadrePage } from '@/api/cadre'
 import {
-  getCertificatePage, addCertificate, updateCertificate, deleteCertificate,
+  getCertificatePage, addCertificate, updateCertificate, deleteCertificate, getApprovedTrips,
   getAbroadPage, addAbroad, updateAbroad, deleteAbroad,
   getLeavePage, addLeave, updateLeave, deleteLeave,
   getTrainingPage, addTraining, updateTraining, deleteTraining,
@@ -538,7 +565,13 @@ const search = reactive({
 const certLoading = ref(false)
 const certData = ref([])
 const certDialog = ref(false)
-const certForm = reactive({ cadreId: null, certType: '', certNumber: '', remark: '' })
+const certForm = reactive({ cadreId: null, certType: '', certNumber: '' })
+// 领用弹窗（出境记录 → 证照领用 联动）
+const lendDialog = ref(false)
+const lendRow = ref(null)
+const lendTrips = ref([])
+const lendForm = reactive({ cadreName: '', certType: '', certNumber: '', borrowDate: '', abroadId: null })
+const lendSelected = computed(() => lendTrips.value.find(t => t.id === lendForm.abroadId))
 
 async function loadCert() {
   certLoading.value = true
@@ -557,7 +590,6 @@ function openCertDialog(row) {
   certForm.cadreId = row?.cadreId ?? null
   certForm.certType = row?.certType || ''
   certForm.certNumber = row?.certNumber || ''
-  certForm.remark = row?.remark || ''
   certDialog.value = true
 }
 
@@ -577,14 +609,49 @@ async function handleCertSubmit() {
 }
 
 async function handleCertLend(row) {
-  await updateCertificate({ ...row, certStatus: '在借', borrowDate: today() })
-  ElMessage.success('已登记借出')
-  loadCert()
+  lendForm.cadreName = cadreName(row.cadreId)
+  lendForm.certType = row.certType
+  lendForm.certNumber = row.certNumber
+  lendForm.borrowDate = today()
+  lendForm.abroadId = null
+  lendTrips.value = []
+  lendRow.value = row
+  try {
+    const res = await getApprovedTrips(row.cadreId)
+    lendTrips.value = res.data || []
+  } catch {
+    lendTrips.value = []
+  }
+  // 未登记出境记录：提示先登记，避免空弹窗无意义操作
+  if (!lendTrips.value.length) {
+    ElMessage.warning('该干部尚未登记出国(境)记录，请先在「出境记录」中登记后再领用')
+    return
+  }
+  lendDialog.value = true
+}
+
+async function handleCertLendSubmit() {
+  const trip = lendSelected.value
+  if (!trip) return ElMessage.warning('请选择该干部已批准的出国(境)记录')
+  if (!trip.returnDate) return ElMessage.warning('所选行程未设置返回日期，请先在出境记录中补充')
+  saving.value = true
+  try {
+    await updateCertificate({
+      ...lendRow.value,
+      certStatus: '在借',
+      borrowDate: lendForm.borrowDate,
+      abroadId: trip.id,
+      expectedReturnDate: trip.returnDate
+    })
+    ElMessage.success('已登记领用，行程返回登记后证照将自动交回')
+    lendDialog.value = false
+    loadCert()
+  } finally { saving.value = false }
 }
 
 async function handleCertReturn(row) {
   await updateCertificate({ ...row, certStatus: '已归还', returnDate: today() })
-  ElMessage.success('已登记归还')
+  ElMessage.success('已登记交回')
   loadCert()
 }
 
@@ -600,8 +667,8 @@ function exportCert() {
   showExportDialog(filteredCertData.value, [
     { prop: 'cadreName', label: '持证人' }, { prop: 'certType', label: '证照类型' },
     { prop: 'certNumber', label: '证照号码' }, { prop: 'certStatus', label: '状态' },
-    { prop: 'borrowDate', label: '借出日期' }, { prop: 'expectedReturnDate', label: '应还日期' },
-    { prop: 'returnDate', label: '归还日期' }, { prop: 'remark', label: '备注' }
+    { prop: 'borrowDate', label: '领用日期' }, { prop: 'expectedReturnDate', label: '应还日期' },
+    { prop: 'returnDate', label: '交回日期' }
   ], '证照管理')
 }
 

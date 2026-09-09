@@ -1,5 +1,5 @@
 -- ============================================
--- 辽宁工业大学 · 干部人事系统 - 演示/示例数据
+-- 辽宁某某大学 · 干部人事系统 - 演示/示例数据
 -- 机构树 + 编制 + 干部档案（可重复执行，先清空相关业务表）
 -- 提示：以下姓名均为虚构，职位均为示例占位，不含真实人员信息
 -- ============================================
@@ -9,19 +9,21 @@ DELETE FROM cadre_reserve; DELETE FROM cadre_attachment; DELETE FROM cadre_famil
 DELETE FROM appoint_record; DELETE FROM appoint_process; DELETE FROM transfer_record; DELETE FROM rank_promotion_record;
 DELETE FROM cadre_info; DELETE FROM org_staffing_quota; DELETE FROM org_rank; DELETE FROM org_department;
 
-INSERT INTO org_rank (rank_name, rank_type, promotion_years, sort_order, status, create_time, update_time) VALUES
-('管理岗-一级调研员', '管理岗', 3, 1, 1, NOW(), NOW()),
-('管理岗-正处级', '管理岗', 3, 2, 1, NOW(), NOW()),
-('管理岗-副处级', '管理岗', 3, 3, 1, NOW(), NOW()),
-('管理岗-正科级', '管理岗', 3, 4, 1, NOW(), NOW()),
-('管理岗-副科级', '管理岗', 3, 5, 1, NOW(), NOW()),
-('专业技术岗-正高级', '专业技术岗', 3, 6, 1, NOW(), NOW()),
-('专业技术岗-副高级', '专业技术岗', 3, 7, 1, NOW(), NOW()),
-('专业技术岗-中级', '专业技术岗', 3, 8, 1, NOW(), NOW()),
-('专业技术岗-初级', '专业技术岗', 3, 9, 1, NOW(), NOW());
+-- 职级显式 id（1-9），确保重复执行时 cadre_info.rank_id 引用稳定不漂移
+INSERT INTO org_rank (id, rank_name, rank_type, promotion_years, sort_order, status, create_time, update_time) VALUES
+(1, '管理岗-一级调研员', '管理岗', 3, 1, 1, NOW(), NOW()),
+(2, '管理岗-正处级', '管理岗', 3, 2, 1, NOW(), NOW()),
+(3, '管理岗-副处级', '管理岗', 3, 3, 1, NOW(), NOW()),
+(4, '管理岗-正科级', '管理岗', 3, 4, 1, NOW(), NOW()),
+(5, '管理岗-副科级', '管理岗', 3, 5, 1, NOW(), NOW()),
+(6, '专业技术岗-正高级', '专业技术岗', 3, 6, 1, NOW(), NOW()),
+(7, '专业技术岗-副高级', '专业技术岗', 3, 7, 1, NOW(), NOW()),
+(8, '专业技术岗-中级', '专业技术岗', 3, 8, 1, NOW(), NOW()),
+(9, '专业技术岗-初级', '专业技术岗', 3, 9, 1, NOW(), NOW());
+ALTER TABLE org_rank AUTO_INCREMENT = 10;
 
 INSERT INTO org_department (id, parent_id, dept_name, short_name, dept_level, leader_quota, dept_sort, status, create_time, update_time) VALUES
-(1, 0, '辽宁工业大学', '学校机关', '校级', 11, 1, 1, NOW(), NOW()),
+(1, 0, '辽宁某某大学', '学校机关', '校级', 11, 1, 1, NOW(), NOW()),
 (2, 1, '党委组织部', '组织部', '处级', 3, 2, 1, NOW(), NOW()),
 (3, 1, '人事处', '人事处', '处级', 4, 3, 1, NOW(), NOW()),
 (4, 1, '党委宣传部', '宣传部', '处级', 3, 4, 1, NOW(), NOW()),
@@ -576,12 +578,12 @@ DELETE FROM daily_self_application;
 SET @cadre_qin := (SELECT id FROM cadre_info WHERE name = '秦霞' LIMIT 1);
 SET @cadre_cao := (SELECT id FROM cadre_info WHERE name = '蔡浩然' LIMIT 1);
 
-INSERT INTO sys_user (username, password, real_name, email, phone, user_type, status, dept_id, cadre_id, create_time, update_time)
-SELECT 'qinxia', '123456', '秦霞', 'qinxia@demo.lnut.edu.cn', '13800000021', 6, 1, 2, @cadre_qin, NOW(), NOW()
+INSERT INTO sys_user (username, password, real_name, email, phone, user_type, status, dept_id, cadre_id, permissions, create_time, update_time)
+SELECT 'qinxia', '123456', '秦霞', 'qinxia@demo.lnut.edu.cn', '13800000021', 6, 1, 2, @cadre_qin, '', NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM sys_user WHERE username = 'qinxia');
 
-INSERT INTO sys_user (username, password, real_name, email, phone, user_type, status, dept_id, cadre_id, create_time, update_time)
-SELECT 'caohaoran', '123456', '蔡浩然', 'caohaoran@demo.lnut.edu.cn', '13800000022', 3, 1, 2, @cadre_cao, NOW(), NOW()
+INSERT INTO sys_user (username, password, real_name, email, phone, user_type, status, dept_id, cadre_id, permissions, create_time, update_time)
+SELECT 'caohaoran', '123456', '蔡浩然', 'caohaoran@demo.lnut.edu.cn', '13800000022', 3, 1, 2, @cadre_cao, 'organization,cadre,transfer,promotion,appointment,evaluation,supervision,assessment,daily', NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM sys_user WHERE username = 'caohaoran');
 
 SET @u_admin := (SELECT id FROM sys_user WHERE username = 'admin' LIMIT 1);
@@ -613,6 +615,13 @@ INSERT INTO assessment_annual (cadre_id, assessment_year, assessment_result, ass
 (@c_deng,'2025', '基本称职', '年度重点工作推进不够有力（示例）', @u_admin, NOW()),
 (@c_hu,  '2024', '称职',   '工作作风务实（示例）', @u_admin, NOW()),
 (@c_wan, '2025', '不称职', '存在履职不到位情形（示例）', @u_admin, NOW());
+
+-- 档案 annual_assessment 回写镜像（与后端“年度考核保存时回写”一致，供晋升/任免/后备等考核核验使用）
+UPDATE cadre_info c JOIN (
+  SELECT cadre_id, GROUP_CONCAT(CONCAT(assessment_year, ':', assessment_result) ORDER BY assessment_year SEPARATOR ';') v
+  FROM assessment_annual GROUP BY cadre_id
+) a ON a.cadre_id = c.id
+SET c.annual_assessment = a.v;
 
 -- ---------- 测评方案 ----------
 INSERT INTO assessment_scheme (scheme_name, scheme_year, vote_start_time, vote_end_time, allow_anonymous, excellent_max_ratio, forbid_all_excellent, status, create_by, create_time) VALUES
@@ -677,7 +686,7 @@ CROSS JOIN (SELECT i.id, i.max_score FROM assessment_indicator i
 -- ---------- 证照管理 ----------
 INSERT INTO daily_certificate (cadre_id, cert_type, cert_number, cert_status, borrow_date, return_date, expected_return_date, remark, create_by, create_time) VALUES
 (@c_cao, '护照',       'DEMO-E88001234', '在库',   NULL,          NULL,          NULL,          '集中保管（示例）', @u_admin, NOW()),
-(@c_lin, '港澳通行证', 'DEMO-W12345678', '在借',   '2026-08-20',  NULL,          '2026-09-20',  '因公赴港澳交流借用（示例）', @u_admin, NOW()),
+(@c_lin, '港澳通行证', 'DEMO-W12345678', '在借',   '2026-09-08',  NULL,          '2026-09-15',  '因公赴香港学术交流获批，行程期间临时领用（示例）', @u_admin, NOW()),
 (@c_qin, '护照',       'DEMO-E88005678', '已归还', '2026-05-10',  '2026-06-05',  '2026-06-10',  '已按期归还（示例）', @u_admin, NOW()),
 (@c_gu,  '其他',       'DEMO-G00011122', '在库',   NULL,          NULL,          NULL,          '工作证件（示例）', @u_admin, NOW());
 
@@ -685,7 +694,15 @@ INSERT INTO daily_certificate (cadre_id, cert_type, cert_number, cert_status, bo
 INSERT INTO daily_abroad_record (cadre_id, destination, purpose, depart_date, return_date, approved_days, actual_days, is_overdue, create_by, create_time) VALUES
 (@c_gu,  '新加坡', '公务出访', '2026-05-10', '2026-05-17', 8,  8,  0, @u_admin, NOW()),
 (@c_cao, '日本',   '学术交流', '2026-06-01', '2026-06-12', 10, 12, 1, @u_admin, NOW()),
+(@c_lin, '中国香港', '学术交流', '2026-09-10', '2026-09-14', 5,  NULL, 0, @u_admin, NOW()),
 (@c_lin, '中国香港', '探亲',   '2025-10-01', '2025-10-08', 7,  7,  0, @u_admin, NOW());
+
+-- 在借证照关联其对应的已批准出境记录（出境记录 → 证照领用 联动）
+UPDATE daily_certificate c
+JOIN daily_abroad_record r ON r.cadre_id = c.cadre_id AND r.is_approved = 1
+   AND r.depart_date >= c.borrow_date AND c.borrow_date IS NOT NULL
+SET c.abroad_id = r.id
+WHERE c.cert_status = '在借' AND c.abroad_id IS NULL;
 
 -- ---------- 休假台账 ----------
 INSERT INTO daily_leave (cadre_id, leave_type, start_date, end_date, leave_days, reason, approve_status, approve_id, approve_time, create_by, create_time) VALUES
@@ -716,11 +733,13 @@ INSERT INTO daily_secondment (cadre_id, secondment_unit, secondment_position, st
 (@c_lin, '上级机关业务处室（示例）', '跟班学习（示例）', '2026-10-01', '2027-03-31', '未开始', '待报到（示例）', @u_admin, NOW());
 
 -- ---------- 干部自助申报 ----------
-INSERT INTO daily_self_application (applicant_id, application_type, application_title, application_content, apply_status, approver_id, approve_time, approve_comment, create_by, create_time) VALUES
-(@u_qin, 'INFO_UPDATE', '更新学历学位信息', '本人档案中在职学历已更新为硕士研究生，申请同步更新档案信息（示例）。', 'SUBMITTED', NULL, NULL, NULL, @u_qin, NOW()),
-(@u_cao, 'LEAVE', '9月中旬年休假申请', '拟于9月14日至9月16日休年休假3天，期间工作已安排交接（示例）。', 'APPROVED', @u_admin, '2026-09-02 10:00:00', '同意，注意工作衔接（示例）', @u_cao, NOW()),
-(@u_qin, 'PART_TIME', '校外学会兼职备案', '拟兼任省XX学会理事，按学校规定申请备案（示例）。', 'REJECTED', @u_admin, '2026-08-28 15:30:00', '按学校兼职管理暂行规定暂不予备案（示例）', @u_qin, NOW()),
-(@u_cao, 'TRAINING', '报名参加高校干部专题培训班', '申请参加本期专题培训班，学习计划已列入年度安排（示例）。', 'DRAFT', NULL, NULL, NULL, @u_cao, NOW());
+-- 首条为「档案信息更正」结构化申报：apply_field 白名单(education=最高学历/full_time_education)，
+-- old_value 取干部档案真实值(本科)，new_value 硕士研究生；审批通过后由后端自动回写 cadre_info
+INSERT INTO daily_self_application (applicant_id, application_type, application_title, application_content, apply_field, old_value, new_value, apply_status, approver_id, approve_time, approve_comment, create_by, create_time) VALUES
+(@u_qin, 'INFO_UPDATE', '档案信息更正-最高学历', '【档案信息更正】最高学历：本科 → 硕士研究生（示例，审批通过后自动更新档案）。', 'education', '本科', '硕士研究生', 'SUBMITTED', NULL, NULL, NULL, @u_qin, NOW()),
+(@u_cao, 'LEAVE', '9月中旬年休假申请', '拟于9月14日至9月16日休年休假3天，期间工作已安排交接（示例）。', NULL, NULL, NULL, 'APPROVED', @u_admin, '2026-09-02 10:00:00', '同意，注意工作衔接（示例）', @u_cao, NOW()),
+(@u_qin, 'PART_TIME', '校外学会兼职备案', '拟兼任省XX学会理事，按学校规定申请备案（示例）。', NULL, NULL, NULL, 'REJECTED', @u_admin, '2026-08-28 15:30:00', '按学校兼职管理暂行规定暂不予备案（示例）', @u_qin, NOW()),
+(@u_cao, 'TRAINING', '报名参加高校干部专题培训班', '申请参加本期专题培训班，学习计划已列入年度安排（示例）。', NULL, NULL, NULL, 'DRAFT', NULL, NULL, NULL, @u_cao, NOW());
 
 -- 考核与日常事务演示数据：方案3、维度10、指标18、对象6、投票若干、年度考核9、
 -- 证照4、出境3、休假4、培训3（学员8）、挂职3、自助申报4
@@ -768,3 +787,255 @@ INSERT INTO assessment_ballot (scheme_id, voter_id, target_cadre_id, choice, cre
 (@sch_ballot, @u_cao,  @c_szx, 'DISAPPROVE', NOW()),
 (@sch_ballot, @u_cao,  @c_lht, 'APPROVE', NOW()),
 (@sch_ballot, @u_cao,  @c_qjw, 'ABSTAIN', NOW());
+
+-- ============================================================
+-- 政策法规 / 干部考察登记 / 提醒函询诫勉 / 经济责任审计 演示种子
+-- 说明：全部为虚构示例数据（姓名取自上方 cadre_info 演示档案，
+--       正文与结论均标注“示例”），可重复执行（先删后插）。
+-- ============================================================
+USE POP;
+SET FOREIGN_KEY_CHECKS=0;
+
+DELETE FROM policy_document;
+DELETE FROM cadre_investigation;
+DELETE FROM supervise_admonish;
+DELETE FROM supervise_audit;
+
+SET @u_admin := (SELECT id FROM sys_user WHERE username = 'admin' LIMIT 1);
+
+-- ---------- 干部引用（按姓名关联 cadre_info 演示档案） ----------
+SET @c_linyt  := (SELECT id FROM cadre_info WHERE name = '林雨桐' LIMIT 1);
+SET @c_qin    := (SELECT id FROM cadre_info WHERE name = '秦霞' LIMIT 1);
+SET @c_caohr  := (SELECT id FROM cadre_info WHERE name = '蔡浩然' LIMIT 1);
+SET @c_qianht := (SELECT id FROM cadre_info WHERE name = '钱海涛' LIMIT 1);
+SET @c_deng   := (SELECT id FROM cadre_info WHERE name = '邓军' LIMIT 1);
+SET @c_songzx := (SELECT id FROM cadre_info WHERE name = '宋梓萱' LIMIT 1);
+SET @c_luht   := (SELECT id FROM cadre_info WHERE name = '陆海涛' LIMIT 1);
+SET @c_duan   := (SELECT id FROM cadre_info WHERE name = '段艳' LIMIT 1);
+SET @c_luyang := (SELECT id FROM cadre_info WHERE name = '陆洋' LIMIT 1);
+SET @c_xiezm  := (SELECT id FROM cadre_info WHERE name = '谢志明' LIMIT 1);
+SET @c_caosh  := (SELECT id FROM cadre_info WHERE name = '曹诗涵' LIMIT 1);
+SET @c_yangyn := (SELECT id FROM cadre_info WHERE name = '杨一诺' LIMIT 1);
+
+-- ---------- 干部考察登记（7 条） ----------
+INSERT INTO cadre_investigation (cadre_id, investigation_type, investigation_time, investigator, result, content, org_unit, create_by, create_time) VALUES
+(@c_linyt, '任前考察', '2026-03-16', '考察组（示例）', '优秀', '林雨桐同志政治素质好，组织协调能力强，群众基础扎实。经民主推荐、个别谈话与延伸了解，符合提任条件，建议作为组织部副职岗位人选（考察材料为虚构示例）。', '党委组织部', @u_admin, NOW()),
+(@c_qin, '年度考核考察', '2026-06-18', '考核组（示例）', '称职', '秦霞同志年度内较好地完成了干部信息管理与档案审核等各项工作，履职情况总体良好，个别工作推进效率有待提升（考察材料为虚构示例）。', '党委组织部', @u_admin, NOW()),
+(@c_caohr, '专项考察', '2026-05-11', '专项考察组（示例）', '优秀', '结合优秀年轻干部调研对蔡浩然同志开展专项考察，其统筹部门工作实绩突出，干部群众认可度较高（考察材料为虚构示例）。', '党委组织部', @u_admin, NOW()),
+(@c_qianht, '任前考察', '2026-07-06', '考察组（示例）', '称职', '钱海涛同志业务熟练、作风正派，经考察符合拟任岗位要求，建议按规定程序任用（考察材料为虚构示例）。', '党委组织部', @u_admin, NOW()),
+(@c_deng, '换届考察', '2026-08-12', '换届考察组（示例）', '称职', '邓军同志在换届考察中谈话评价总体良好，未发现影响使用的问题（考察材料为虚构示例）。', '党委组织部', @u_admin, NOW()),
+(@c_songzx, '年度考核考察', '2026-06-24', '考核组（示例）', '优秀', '宋梓萱同志年度考核综合评定为优秀，民主测评得分名列前茅（考察材料为虚构示例）。', '人事处', @u_admin, NOW()),
+(@c_luht, '任前考察', '2026-09-03', '考察组（示例）', '称职', '陆海涛同志教学管理经验丰富，考察期间反映良好，建议按程序提交讨论决定（考察材料为虚构示例）。', '党委组织部', @u_admin, NOW());
+
+-- ---------- 提醒函询诫勉（6 条） ----------
+INSERT INTO supervise_admonish (cadre_id, admonish_type, trigger_type, content, result, discipline, handle_status, handle_user, handle_time, create_by, create_time) VALUES
+(@c_qianht, '提醒谈话', '换届启动前收到反映其存在请托拉票倾向的问题线索（示例）', '提醒其严守换届纪律，如实说明相关情况，自觉接受组织监督（示例）。', NULL, '无', '待处理', NULL, NULL, @u_admin, NOW()),
+(@c_qin, '提醒谈话', '年度考核民主测评中个别项目满意度偏低（示例）', '就工作作风与统筹协调方面的问题进行提醒，要求改进不足（示例）。', '本人已作表态并提交整改打算，组织予以关注（示例）。', '无', '已办结', '杨一诺', '2026-03-05 15:20:00', @u_admin, NOW()),
+(@c_deng, '函询', '审计及信访反映其在评优评先中存在说情打招呼问题（示例）', '请其就反映问题作出书面说明并提供佐证材料（示例）。', '经函询并组织核查，反映问题部分属实，按程序给予党内警告处分（示例）。', '党内警告（示例）', '已办结', '杨一诺', '2026-05-18 10:00:00', @u_admin, NOW()),
+(@c_caohr, '函询', '信访反映其在岗位聘用工作中程序不够规范（示例）', '要求其说明岗位聘用组织程序及相关情况（示例）。', NULL, '无', '待处理', NULL, NULL, @u_admin, NOW()),
+(@c_linyt, '诫勉', '个人有关事项报告与核实结果存在出入（示例）', '经核实后对其进行诫勉，责令作出深刻书面检查（示例）。', '本人已提交书面检查，相关事项已按规定纠正（示例）。', '无', '已办结', '杨一诺', '2026-08-27 09:40:00', @u_admin, NOW()),
+(@c_songzx, '诫勉', '所负责工作出现一般性失职失责情形（示例）', '对其进行诫勉谈话，指出问题并提出整改要求（示例）。', NULL, '无', '待处理', NULL, NULL, @u_admin, NOW());
+
+-- ---------- 经济责任审计（6 条） ----------
+INSERT INTO supervise_audit (cadre_id, audit_scope, audit_period_start, audit_period_end, audit_org, start_time, end_time, audit_result, issue, rectify_status, audit_report_url, create_by, create_time) VALUES
+(@c_duan, '任期经济责任审计', '2021-09-01', '2026-08-31', '学校审计处', '2026-05-06', '2026-07-10', '存在需整改问题', '部分教学专项经费预算执行进度与申报用途存在差异，相关审批台账需补充完善（示例）。', '整改中', NULL, @u_admin, NOW()),
+(@c_songzx, '任期经济责任审计', '2022-01-01', '2026-06-30', '学校审计处', '2026-07-13', '2026-08-21', '基本正常', '总体预算执行规范，个别科目核算口径建议进一步统一（示例）。', '已整改', NULL, @u_admin, NOW()),
+(@c_luyang, '任期经济责任审计', '2021-06-01', '2026-05-31', '学校审计处', '2026-06-02', '2026-07-31', '存在需整改问题', '部分修缮工程变更签证资料不完整，需限期补齐并完善内控流程（示例）。', '待整改', NULL, @u_admin, NOW()),
+(@c_xiezm, '专项审计', '2024-01-01', '2025-12-31', '学校审计处', '2026-08-10', '2026-08-28', '无重大问题', NULL, NULL, NULL, @u_admin, NOW()),
+(@c_caosh, '离任审计', '2018-09-01', '2026-06-30', '上级审计部门委托第三方机构（示例）', '2026-07-06', '2026-08-14', '无重大问题', NULL, NULL, NULL, @u_admin, NOW()),
+(@c_yangyn, '任期经济责任审计', '2020-09-01', '2026-05-31', '学校审计处', '2026-06-15', '2026-08-05', '基本正常', '部门经费使用总体合规，建议进一步规范公务接待审批记录（示例）。', '已整改', NULL, @u_admin, NOW());
+
+-- ---------- 政策法规（6 条，正文为虚构示例） ----------
+INSERT INTO policy_document (title, doc_no, publish_unit, issue_date, effective_date, category, content, attachment_name, attachment_url, create_by, create_time) VALUES
+('辽宁某某大学中层领导人员选拔任用工作办法（2026年修订）', '辽工大党发〔2026〕4号', '中共辽宁某某大学委员会', '2026-02-26', '2026-03-05', '干部选拔', '第一条 为规范中层领导人员选拔任用工作，坚持党管干部原则，落实新时代好干部标准，根据上级有关规定，结合学校实际制定本办法（示例正文，仅作功能演示）。\n第二条 选拔任用工作坚持德才兼备、以德为先，注重实绩、群众公认，坚持事业为上、依事择人。\n第三条 选拔任用一般经过动议、民主推荐、考察、讨论决定、任职等环节（示例）。', '办法全文（示例）.pdf', '/demo/policy/2026-4.pdf', @u_admin, NOW()),
+('关于加强干部日常监督管理的若干措施（试行）', '辽工大党发〔2026〕11号', '中共辽宁某某大学委员会', '2026-03-18', '2026-04-01', '干部监督', '一、强化政治监督，把牢正确政治方向（示例正文）。\n二、坚持抓早抓小，综合运用提醒谈话、函询、诫勉等方式加强日常监督。\n三、贯通审计、信访、巡察等监督资源，提升监督合力（示例）。', NULL, NULL, @u_admin, NOW()),
+('2026年度干部教育培训工作计划', '辽工大党发〔2026〕7号', '中共辽宁某某大学委员会', '2026-01-20', '2026-02-01', '教育培训', '一、总体要求：以提升干部政治能力与履职本领为重点（示例正文）。\n二、重点班次：中层干部专题培训班、新任职干部履职能力提升班、青年干部理论学习班等。\n三、组织保障：由党委组织部统筹实施，各部门协同配合（示例）。', NULL, NULL, @u_admin, NOW()),
+('基层党委（党总支）党建工作责任清单（2026年）', '辽工大党发〔2026〕15号', '中共辽宁某某大学委员会', '2026-05-06', '2026-05-06', '党内法规', '一、政治建设责任：落实“第一议题”制度，及时传达学习上级精神（示例正文）。\n二、组织建设责任：规范党内组织生活，做好发展党员与党员教育管理。\n三、纪律建设责任：落实全面从严治党要求，配合开展监督执纪问责（示例）。', NULL, NULL, @u_admin, NOW()),
+('领导干部报告个人有关事项工作指引（2026年版）', '辽工大组字〔2026〕3号', '党委组织部', '2026-04-15', '2026-04-20', '干部监督', '一、报告对象范围、报告事项与填报要求以有关规定为准（示例正文）。\n二、实行报告材料专人管理、严格保密。\n三、按要求开展随机抽查与重点核实，发现瞒报漏报依规处理（示例）。', '填报说明（示例）.pdf', '/demo/policy/zzb-2026-3.pdf', @u_admin, NOW()),
+('关于严肃暑期干部调整交流期间纪律要求的通知', '辽工大纪发〔2026〕6号', '学校纪委', '2026-06-20', '2026-06-20', '其他', '一、严禁在干部调整交流期间跑官要官、说情打招呼（示例正文）。\n二、严禁突击提拔调整干部、违规用人。\n三、对违反纪律要求的问题线索，一经查实严肃处理（示例）。', NULL, NULL, @u_admin, NOW());
+
+SET FOREIGN_KEY_CHECKS=1;
+-- 演示种子合计：政策法规6 / 干部考察登记7 / 提醒函询诫勉6 / 经济责任审计6
+
+-- ============================================================
+-- 角色级模块权限 + 预警规则配置 演示种子（可重复执行）
+-- 说明：姓名/内容均为虚构示例；sys_role 仅补缺行 + 更新权限，
+--       不清空/删除已有角色，避免破坏运行库的用户-角色绑定。
+-- ============================================================
+USE POP;
+SET FOREIGN_KEY_CHECKS=0;
+
+-- 1) 补充演示角色行（不存在才插入，避免破坏 sys_role 既有数据）
+INSERT INTO sys_role (role_name, role_code, data_scope, status, permissions, create_time, update_time)
+SELECT '组织部长(处级)', 'org_leader', 3, 1,
+       'organization,cadre,transfer,promotion,appointment,evaluation,supervision,assessment,daily',
+       NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM sys_role WHERE role_code = 'org_leader');
+
+-- 2) 按 role_code 给既有角色行赋予合理模块权限（可重复执行，幂等覆盖）
+--    admin 系统管理员：全模块；org_leader 组织部长：除系统管理外全部业务模块
+UPDATE sys_role SET permissions = 'ALL' WHERE role_code = 'admin';
+UPDATE sys_role SET permissions = 'organization,cadre,transfer,promotion,appointment,evaluation,supervision,assessment,daily'
+WHERE role_code = 'org_leader';
+
+-- 3) 演示用户与角色权限打通：caohaoran(组织部部长,user_type=3) 已显式授权则不动；
+--    若其用户级权限被清空，将自动回退 org_leader 角色权限（后端 resolveEffectivePermissions 逻辑）。
+
+-- 4) 预警规则配置（5 条，先删后插可重复执行；阈值单位：天）
+DELETE FROM supervise_alert_rule;
+INSERT INTO supervise_alert_rule (rule_name, rule_type, level, threshold, is_enabled, remark, create_by, create_time, update_time) VALUES
+('证件到期预警', '证件到期', '黄色', 90,  1, '干部证件（护照/通行证）有效期剩余不足 N 天时提醒换领/续期（示例）', @u_admin, NOW(), NOW()),
+('出国(境)超期预警', '出国超期', '红色', 30,  1, '经批准出国(境)逾期未归超过 N 天自动告警（示例）', @u_admin, NOW(), NOW()),
+('休假超时预警', '休假超时', '黄色', 5,   1, '休假/请假到期未销假超过 N 天提醒补办销假手续（示例）', @u_admin, NOW(), NOW()),
+('任职年限预警', '任职超期', '橙色', 60,  1, '现岗位距最长任职年限不足 N 天提示启动轮岗交流（示例）', @u_admin, NOW(), NOW()),
+('到龄退休提醒', '到龄退休', '橙色', 365, 1, '距法定退休年龄不足 N 天提醒办理退休手续（示例）', @u_admin, NOW(), NOW());
+
+SET FOREIGN_KEY_CHECKS=1;
+-- 角色权限种子：admin=ALL / org_leader=9业务模块；预警规则配置种子：5 条
+
+-- ============================================================
+-- 班子登记表(org_team_member)演示种子 + 职务层次/系统字典 种子
+-- 说明：全部为虚构示例数据，均可重复执行（先删后插）。
+--   org_team_member 用 CREATE TABLE IF NOT EXISTS 幂等建表（兼容只执行本脚本场景），
+--   干部按姓名关联 cadre_info 演示档案（上方已重灌），不依赖固定自增 id。
+-- ============================================================
+USE POP;
+SET FOREIGN_KEY_CHECKS=0;
+
+-- 0) 班子成员登记表 DDL（与 init.sql 一致；幂等）
+CREATE TABLE IF NOT EXISTS org_team_member (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    dept_id BIGINT NOT NULL COMMENT '机构ID',
+    cadre_id BIGINT NOT NULL COMMENT '干部ID',
+    leader_post VARCHAR(64) COMMENT '班子职务 党委书记/院长/副院长/党委副书记/纪委书记/部长/处长等',
+    sort_order INT DEFAULT 0 COMMENT '排序',
+    is_leader TINYINT DEFAULT 0 COMMENT '是否主要负责人 0否 1是',
+    start_date DATE COMMENT '任职开始日期',
+    end_date DATE COMMENT '任职结束日期(空表示现任)',
+    create_by BIGINT,
+    update_by BIGINT,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted TINYINT DEFAULT 0,
+    INDEX idx_dept (dept_id),
+    INDEX idx_cadre (cadre_id)
+) ENGINE=InnoDB COMMENT='班子成员登记表';
+
+SET @u_admin := (SELECT id FROM sys_user WHERE username = 'admin' LIMIT 1);
+
+-- 1) 职务层次（空表→9 条常用层次示例，先删后插）
+DELETE FROM org_position_level;
+INSERT INTO org_position_level (level_name, min_lower_years, max_age, min_education, assessment_required, penalty_period_restrict, sort_order, status, create_time, update_time) VALUES
+('国家级正职', 5, 70, '本科', '近五年年度考核称职及以上（示例）', 24, 1, 1, NOW(), NOW()),
+('国家级副职', 4, 65, '本科', '近五年年度考核称职及以上（示例）', 24, 2, 1, NOW(), NOW()),
+('省部级正职', 4, 63, '本科', '近五年年度考核称职及以上（示例）', 18, 3, 1, NOW(), NOW()),
+('省部级副职', 3, 60, '本科', '近五年年度考核称职及以上（示例）', 18, 4, 1, NOW(), NOW()),
+('厅局级正职', 3, 58, '本科', '近三年年度考核称职及以上（示例）', 12, 5, 1, NOW(), NOW()),
+('厅局级副职', 3, 55, '本科', '近三年年度考核称职及以上（示例）', 12, 6, 1, NOW(), NOW()),
+('县处级正职', 3, 52, '本科', '近三年年度考核称职及以上（示例）', 6, 7, 1, NOW(), NOW()),
+('县处级副职', 3, 50, '本科', '近三年年度考核称职及以上（示例）', 6, 8, 1, NOW(), NOW()),
+('乡科级正职', 3, 48, '专科', '近三年年度考核称职及以上（示例）', 6, 9, 1, NOW(), NOW());
+
+-- 2) 系统字典：类型（6 类）+ 数据（先删后插）
+DELETE FROM sys_dict_data;
+DELETE FROM sys_dict_type;
+INSERT INTO sys_dict_type (type_name, type_code, status, create_time, update_time) VALUES
+('干部状态', 'cadre_status', 1, NOW(), NOW()),
+('民族', 'nation', 1, NOW(), NOW()),
+('政治面貌', 'political_status', 1, NOW(), NOW()),
+('学历层次', 'education', 1, NOW(), NOW()),
+('婚姻状况', 'marriage', 1, NOW(), NOW()),
+('考核结果', 'assessment_result', 1, NOW(), NOW());
+INSERT INTO sys_dict_data (type_code, dict_label, dict_value, sort_order, status, create_time, update_time) VALUES
+-- 干部状态（value 与 cadre_info.cadre_status 存储一致）
+('cadre_status', '在职', 'ON_JOB', 1, 1, NOW(), NOW()),
+('cadre_status', '离退休', 'RETIRED', 2, 1, NOW(), NOW()),
+('cadre_status', '调出', 'TRANSFERRED', 3, 1, NOW(), NOW()),
+('cadre_status', '辞职', 'RESIGNED', 4, 1, NOW(), NOW()),
+-- 民族（label/value 与 cadre_info.nation 存储的中文一致）
+('nation', '汉族', '汉族', 1, 1, NOW(), NOW()),
+('nation', '蒙古族', '蒙古族', 2, 1, NOW(), NOW()),
+('nation', '回族', '回族', 3, 1, NOW(), NOW()),
+('nation', '朝鲜族', '朝鲜族', 4, 1, NOW(), NOW()),
+('nation', '满族', '满族', 5, 1, NOW(), NOW()),
+('nation', '锡伯族', '锡伯族', 6, 1, NOW(), NOW()),
+('nation', '达斡尔族', '达斡尔族', 7, 1, NOW(), NOW()),
+-- 政治面貌（label/value 与 cadre_info.political_status 存储中文一致）
+('political_status', '中共党员', '中共党员', 1, 1, NOW(), NOW()),
+('political_status', '中共预备党员', '中共预备党员', 2, 1, NOW(), NOW()),
+('political_status', '共青团员', '共青团员', 3, 1, NOW(), NOW()),
+('political_status', '民主党派', '民主党派', 4, 1, NOW(), NOW()),
+('political_status', '无党派人士', '无党派人士', 5, 1, NOW(), NOW()),
+('political_status', '群众', '群众', 6, 1, NOW(), NOW()),
+-- 学历层次（label/value 与 cadre_info.full_time_education 存储中文一致）
+('education', '博士研究生', '博士研究生', 1, 1, NOW(), NOW()),
+('education', '硕士研究生', '硕士研究生', 2, 1, NOW(), NOW()),
+('education', '本科', '本科', 3, 1, NOW(), NOW()),
+('education', '专科', '专科', 4, 1, NOW(), NOW()),
+('education', '高中及以下', '高中及以下', 5, 1, NOW(), NOW()),
+-- 婚姻状况
+('marriage', '未婚', '未婚', 1, 1, NOW(), NOW()),
+('marriage', '已婚', '已婚', 2, 1, NOW(), NOW()),
+('marriage', '离异', '离异', 3, 1, NOW(), NOW()),
+('marriage', '丧偶', '丧偶', 4, 1, NOW(), NOW()),
+-- 考核结果（label/value 与 assessment_annual.assessment_result 存储中文一致）
+('assessment_result', '优秀', '优秀', 1, 1, NOW(), NOW()),
+('assessment_result', '称职', '称职', 2, 1, NOW(), NOW()),
+('assessment_result', '基本称职', '基本称职', 3, 1, NOW(), NOW()),
+('assessment_result', '不称职', '不称职', 4, 1, NOW(), NOW());
+
+-- 3) 班子演示成员（8 条：校级班子 4 + 组织部 2 + 人事处 2，干部按姓名关联）
+DELETE FROM org_team_member;
+INSERT INTO org_team_member (dept_id, cadre_id, leader_post, sort_order, is_leader, start_date, end_date, create_by, create_time, update_time) VALUES
+(1, (SELECT id FROM cadre_info WHERE name = '顾晓东' LIMIT 1), '党委书记', 1, 1, '2021-06-01', NULL, @u_admin, NOW(), NOW()),
+(1, (SELECT id FROM cadre_info WHERE name = '邓秀兰' LIMIT 1), '校长', 2, 0, '2021-06-01', NULL, @u_admin, NOW(), NOW()),
+(1, (SELECT id FROM cadre_info WHERE name = '万娟' LIMIT 1), '党委副书记', 3, 0, '2021-06-01', NULL, @u_admin, NOW(), NOW()),
+(1, (SELECT id FROM cadre_info WHERE name = '黎志明' LIMIT 1), '纪委书记', 4, 0, '2021-06-01', NULL, @u_admin, NOW(), NOW()),
+(2, (SELECT id FROM cadre_info WHERE name = '蔡浩然' LIMIT 1), '部长', 1, 1, '2022-09-01', NULL, @u_admin, NOW(), NOW()),
+(2, (SELECT id FROM cadre_info WHERE name = '林雨桐' LIMIT 1), '副部长', 2, 0, '2023-03-01', NULL, @u_admin, NOW(), NOW()),
+(3, (SELECT id FROM cadre_info WHERE name = '宋梓萱' LIMIT 1), '处长', 1, 1, '2022-09-01', NULL, @u_admin, NOW(), NOW()),
+(3, (SELECT id FROM cadre_info WHERE name = '史娜' LIMIT 1), '副处长', 2, 0, '2023-03-01', NULL, @u_admin, NOW(), NOW());
+
+SET FOREIGN_KEY_CHECKS=1;
+-- 本段种子合计：班子登记 8 / 职务层次 9 / 字典类型 6 / 字典数据 30
+
+-- ============================================================
+-- 预警规则驱动演示触发点（supervise_alert 由后端“按规则生成”产生，本段只造台账触发条件）
+-- 说明：全部关联既有虚构干部；均“先 DELETE 该行再 INSERT”保证可重复执行；
+--       日期采用 CURDATE() 相对计算，任意时间重跑 seed 后执行“一键生成”都能命中各规则。
+-- 触发点：1)在借证照逾期未交回 2)已批准休假结束早于今天 3)班子任职多年超期 4)在职干部到龄退休
+-- ============================================================
+USE POP;
+SET FOREIGN_KEY_CHECKS=0;
+
+-- 0) 清空历史预警：预警由接口按规则生成，此处重置演示现场（可重复执行）
+DELETE FROM supervise_alert;
+
+SET @u_admin  := (SELECT id FROM sys_user WHERE username = 'admin' LIMIT 1);
+SET @c_lin    := (SELECT id FROM cadre_info WHERE name = '林雨桐' LIMIT 1);
+SET @c_qin    := (SELECT id FROM cadre_info WHERE name = '秦霞' LIMIT 1);
+SET @c_dengxl := (SELECT id FROM cadre_info WHERE name = '邓秀兰' LIMIT 1);
+SET @c_pengb  := (SELECT id FROM cadre_info WHERE name = '彭波' LIMIT 1);
+
+-- 1) 触发点：在借证照 expected_return_date 设为过去日期（逾期未交回）—— 证件到期规则
+DELETE FROM daily_certificate WHERE cadre_id = @c_lin AND cert_status = '在借' AND cert_type = '港澳通行证';
+INSERT INTO daily_certificate (cadre_id, cert_type, cert_number, cert_status, borrow_date, return_date, expected_return_date, remark, create_by, create_time) VALUES
+(@c_lin, '港澳通行证', 'DEMO-W12345678', '在借', DATE_SUB(CURDATE(), INTERVAL 40 DAY), NULL, DATE_SUB(CURDATE(), INTERVAL 20 DAY), '演示触发点：在借证照逾期未交回（示例）', @u_admin, NOW());
+
+-- 2) 触发点：已批准休假 end_date 早于今天（超期未销假）—— 休假超时规则
+DELETE FROM daily_leave WHERE cadre_id = @c_qin AND approve_status = '已批准' AND leave_type = '年休假';
+INSERT INTO daily_leave (cadre_id, leave_type, start_date, end_date, leave_days, reason, approve_status, approve_id, approve_time, create_by, create_time) VALUES
+(@c_qin, '年休假', DATE_SUB(CURDATE(), INTERVAL 35 DAY), DATE_SUB(CURDATE(), INTERVAL 30 DAY), 6.0, '演示触发点：休假结束超期未销假（示例）', '已批准', @u_admin, NOW(), @u_admin, NOW());
+
+-- 3) 触发点：班子 org_team_member start_date 设为多年前（任职超期）—— 任职超期规则
+DELETE FROM org_team_member WHERE cadre_id = @c_dengxl AND leader_post = '校长';
+INSERT INTO org_team_member (dept_id, cadre_id, leader_post, sort_order, is_leader, start_date, end_date, create_by, create_time, update_time) VALUES
+(1, @c_dengxl, '校长', 2, 0, '2015-01-01', NULL, @u_admin, NOW(), NOW());
+
+-- 4) 触发点：在职干部出生年设为 1966（男，2026-02 已届 60 周岁仍 ON_JOB）—— 到龄退休规则
+DELETE FROM cadre_info WHERE name = '彭波' AND cadre_status = 'ON_JOB';
+INSERT INTO cadre_info (name, gender, birth_date, nation, native_place, political_status, party_join_date, work_start_date, id_card, phone, email, photo_url, resume_text, full_time_education, full_time_degree, full_time_school, part_time_education, part_time_degree, part_time_school, dept_id, position, position_level, rank_id, position_start_date, position_doc_no, reward_punishment, annual_assessment, cadre_status, retirement_date, leave_date, leave_reason, create_time, update_time) VALUES
+('彭波', 1, '1966-02-15', '汉族', '辽宁营口', '中共党员', '1985-06-01', '1985-07-01', NULL, NULL, NULL, NULL, NULL, '本科', '学士', '北京航空航天大学', NULL, NULL, NULL, 4, '管理员', '科级', 7, '1990-09-01', NULL, NULL, NULL, 'ON_JOB', NULL, NULL, NULL, NOW(), NOW());
+
+SET FOREIGN_KEY_CHECKS=1;
+-- 本段触发点合计：证照 1 / 休假 1 / 班子任职 1 / 到龄退休 1（执行后端“按规则生成预警”后可产生对应预警）

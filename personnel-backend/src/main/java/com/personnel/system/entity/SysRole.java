@@ -22,4 +22,7 @@ public class SysRole extends BaseEntity {
     private Integer dataScope;
 
     private Integer status;
+
+    /** 模块级权限key(逗号分隔，可含按钮级如 organization:add)；与 sys_user.permissions 语义一致 */
+    private String permissions;
 }

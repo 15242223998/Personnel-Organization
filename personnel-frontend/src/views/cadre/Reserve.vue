@@ -45,27 +45,33 @@
         size="small"
         v-loading="loading"
         @selection-change="handleSelectionChange"
-        @sort-change="handleSortChange"
       >
         <el-table-column type="selection" width="45" align="center" />
         <el-table-column type="index" label="序号" width="55" align="center" />
-        <el-table-column prop="name" label="姓名" width="90" align="center" sortable="custom" />
-        <el-table-column prop="gender" label="性别" width="60" align="center" sortable="custom" />
-        <el-table-column prop="birthDate" label="出生年月" width="100" align="center" sortable="custom" />
-        <el-table-column prop="politicalStatus" label="政治面貌" width="100" align="center" sortable="custom" />
-        <el-table-column prop="education" label="学历" width="110" align="center" sortable="custom" />
-        <el-table-column prop="position" label="现职务" min-width="160" show-overflow-tooltip sortable="custom" />
-        <el-table-column prop="rankName" label="现职级" width="110" align="center" sortable="custom" />
-        <el-table-column prop="reserveType" label="后备类型" width="100" align="center" sortable="custom">
+        <el-table-column prop="name" label="姓名" width="90" align="center" />
+        <el-table-column prop="genderText" label="性别" width="60" align="center" />
+        <el-table-column prop="birthDate" label="出生年月" width="100" align="center" />
+        <el-table-column prop="politicalStatus" label="政治面貌" width="100" align="center" />
+        <el-table-column prop="education" label="学历" width="110" align="center" />
+        <el-table-column prop="position" label="现职务" min-width="160" show-overflow-tooltip />
+        <el-table-column prop="rankName" label="现职级" width="120" align="center" />
+        <el-table-column label="考核核验" width="190" align="center">
+          <template #default="{ row }">
+            <el-tag v-if="qualifiedOf(row.cadreId) === true" type="success" size="small">考核达标</el-tag>
+            <el-tag v-else-if="checkOf(row.cadreId)" type="warning" size="small" effect="plain">{{ reasonOf(row.cadreId) }}</el-tag>
+            <span v-else style="color:#bbb">-</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="reserveType" label="后备类型" width="100" align="center">
           <template #default="{ row }">
             <el-tag :type="row.reserveType === '正职' ? 'danger' : 'primary'" size="small">
               {{ row.reserveType }}后备
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="reserveLevel" label="级别" width="90" align="center" sortable="custom" />
-        <el-table-column prop="entryDate" label="入库日期" width="110" align="center" sortable="custom" />
-        <el-table-column prop="status" label="状态" width="70" align="center" sortable="custom">
+        <el-table-column prop="reserveLevel" label="级别" width="90" align="center" />
+        <el-table-column prop="enterDate" label="入库日期" width="110" align="center" />
+        <el-table-column prop="status" label="状态" width="70" align="center">
           <template #default="{ row }">
             <el-tag :type="row.status === 1 ? 'success' : 'info'" size="small">
               {{ row.status === 1 ? '在库' : '已出库' }}
@@ -102,7 +108,7 @@
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" size="default">
         <el-form-item label="选择干部" prop="cadreId">
           <el-select v-model="form.cadreId" filterable placeholder="请搜索选择干部" style="width:100%">
-            <el-option v-for="c in cadreOptions" :key="c.id" :label="c.name + ' - ' + c.position" :value="c.id" :disabled="c.inReserve" />
+            <el-option v-for="c in cadreOptions" :key="c.id" :label="c.name + ' - ' + (c.position || '')" :value="c.id" :disabled="c.inReserve && c.id !== form.cadreId" />
           </el-select>
         </el-form-item>
         <el-form-item label="后备类型" prop="reserveType">
@@ -121,11 +127,14 @@
             <el-option label="副科级" value="副科级" />
           </el-select>
         </el-form-item>
-        <el-form-item label="入库日期" prop="entryDate">
-          <el-date-picker v-model="form.entryDate" type="date" value-format="YYYY-MM-DD" style="width:100%" placeholder="请选择入库日期" />
+        <el-form-item label="入库日期" prop="enterDate">
+          <el-date-picker v-model="form.enterDate" type="date" value-format="YYYY-MM-DD" style="width:100%" placeholder="请选择入库日期" />
         </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="form.remark" type="textarea" :rows="3" placeholder="请输入备注信息（选填）" />
+        <el-form-item label="在库状态" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio :value="1">在库</el-radio>
+            <el-radio :value="0">已出库</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -141,6 +150,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, RefreshLeft, Plus, Delete, Download } from '@element-plus/icons-vue'
+import request from '@/utils/request'
+import { getCadrePage } from '@/api/cadre'
 import { showExportDialog } from '@/utils/export-store'
 
 const router = useRouter()
@@ -153,15 +164,12 @@ const formRef = ref(null)
 const selectedRows = ref([])
 const tableData = ref([])
 
-const cadreOptions = ref([
-  { id: 4, name: '陈丽', position: '信息学院副院长', inReserve: false },
-  { id: 5, name: '刘强', position: '经管学院系主任', inReserve: false },
-  { id: 7, name: '孙梅', position: '机械学院副院长', inReserve: true },
-  { id: 8, name: '周志强', position: '学工处副处长', inReserve: true },
-  { id: 9, name: '吴敏', position: '电气学院院长助理', inReserve: false },
-  { id: 10, name: '郑涛', position: '人事处科长', inReserve: false },
-  { id: 11, name: '黄丽娟', position: '党委办公室副主任', inReserve: false }
-])
+// 真实字典：干部池 / 机构名 / 职级名
+const cadreOptions = ref([])
+const reserveIds = ref(new Set())
+const cadreMap = ref({})
+const deptNameMap = ref({})
+const rankNameMap = ref({})
 
 const queryForm = reactive({
   name: '',
@@ -169,128 +177,167 @@ const queryForm = reactive({
   reserveLevel: ''
 })
 
-const page = reactive({ current: 1, size: 10, total: 35 })
+// ---------- 考核核验（近三年考核称职以上，批量接口 GET /reserve/assessment-check） ----------
+const assessmentMap = ref({})
+function checkOf(cadreId) {
+  if (cadreId == null) return null
+  const m = assessmentMap.value || {}
+  return m[cadreId] || null // JSON 对象键为字符串，数字索引自动转换
+}
+function qualifiedOf(cadreId) {
+  const ch = checkOf(cadreId)
+  return ch ? !!ch.qualified : null
+}
+function reasonOf(cadreId) {
+  const ch = checkOf(cadreId)
+  return (ch && ch.reason) || '考核记录不足'
+}
+async function fetchAssessmentCheck(ids) {
+  const uniq = [...new Set((ids || []).map(Number).filter(n => Number.isFinite(n)))]
+  if (uniq.length === 0) {
+    assessmentMap.value = {}
+    return
+  }
+  const CHUNK = 150
+  const tasks = []
+  for (let i = 0; i < uniq.length; i += CHUNK) {
+    const chunk = uniq.slice(i, i + CHUNK)
+    tasks.push(request.get('/reserve/assessment-check', { params: { cadreIds: chunk.join(',') } })
+      .then(r => r.data || {}).catch(() => ({})))
+  }
+  const merged = {}
+  ;(await Promise.all(tasks)).forEach(m => Object.assign(merged, m || {}))
+  assessmentMap.value = merged
+}
+function reloadAssessmentTags() {
+  return fetchAssessmentCheck(Object.keys(cadreMap.value))
+}
+
+const page = reactive({ current: 1, size: 10, total: 0 })
+const allRows = ref([])
 
 const form = reactive({
   cadreId: null,
   reserveType: '副职',
   reserveLevel: '',
-  entryDate: '',
-  remark: ''
+  enterDate: '',
+  status: 1
 })
 
 const rules = {
   cadreId: [{ required: true, message: '请选择干部', trigger: 'change' }],
   reserveType: [{ required: true, message: '请选择后备类型', trigger: 'change' }],
   reserveLevel: [{ required: true, message: '请选择后备级别', trigger: 'change' }],
-  entryDate: [{ required: true, message: '请选择入库日期', trigger: 'change' }]
+  enterDate: [{ required: true, message: '请选择入库日期', trigger: 'change' }]
 }
 
-const baseMockData = [
-  { id:1,name:'孙梅',gender:'女',birthDate:'1975-12-03',politicalStatus:'中共党员',education:'博士研究生',position:'机械工程学院副院长',rankName:'教授',reserveType:'正职',reserveLevel:'正处级',entryDate:'2022-03-15',status:1,remark:'教学科研能力突出，管理经验丰富' },
-  { id:2,name:'周志强',gender:'男',birthDate:'1982-09-18',politicalStatus:'中共党员',education:'博士研究生',position:'学生工作处副处长',rankName:'副教授',reserveType:'正职',reserveLevel:'正处级',entryDate:'2023-06-20',status:1,remark:'学生工作经验丰富，组织协调能力强' },
-  { id:3,name:'陈丽',gender:'女',birthDate:'1978-05-12',politicalStatus:'中共党员',education:'博士研究生',position:'信息科学与工程学院副院长',rankName:'副教授',reserveType:'副职',reserveLevel:'副厅级',entryDate:'2023-01-10',status:1,remark:'学科带头人，科研成果显著' },
-  { id:4,name:'黄丽娟',gender:'女',birthDate:'1980-03-25',politicalStatus:'中共党员',education:'硕士研究生',position:'党委办公室副主任',rankName:'研究员',reserveType:'正职',reserveLevel:'正处级',entryDate:'2024-01-08',status:1,remark:'党务工作经验丰富，政策理论水平高' },
-  { id:5,name:'郑涛',gender:'男',birthDate:'1985-11-08',politicalStatus:'中共党员',education:'硕士研究生',position:'人事处科长',rankName:'助理研究员',reserveType:'副职',reserveLevel:'副处级',entryDate:'2024-03-01',status:1,remark:'人事业务精通，工作认真负责' }
-]
+function fmtDate(v) {
+  if (!v) return ''
+  return String(v).substring(0, 10)
+}
 
-const surnames = ['张','李','王','刘','陈','杨','赵','黄','吴','徐','孙','胡','朱','高','林','何','郭','马','罗','梁']
-const givenNames = ['伟','芳','娜','敏','静','强','磊','军','洋','勇','杰','娟','涛','明','超','艳','秀英','霞','平','刚','桂英','建国','建军','志强','晓东','晓红','雪梅','振华','永明','国栋']
-const positions = ['院长助理','副处长','副院长','副主任','系主任','科长','副系主任','副科长']
-const ranks = ['教授','副教授','研究员','副研究员','讲师','助理研究员']
-const levels = ['正处级','副处级','正科级','副科级','副厅级']
-const educations = ['博士研究生','硕士研究生','本科']
-
-function generateReserveData() {
-  const data = [...baseMockData]
-  const types = ['正职','副职']
-  for (let i = 6; i <= 35; i++) {
-    const sn = surnames[Math.floor(Math.random() * surnames.length)]
-    const gn = givenNames[Math.floor(Math.random() * givenNames.length)]
-    const gender = Math.random() > 0.35 ? '男' : '女'
-    const year = 1970 + Math.floor(Math.random() * 20)
-    const month = String(Math.floor(Math.random()*12)+1).padStart(2,'0')
-    const day = String(Math.floor(Math.random()*28)+1).padStart(2,'0')
-    const entryYear = 2020 + Math.floor(Math.random() * 6)
-    const rType = types[Math.floor(Math.random() * 2)]
-    data.push({
-      id: i,
-      name: sn + gn,
-      gender,
-      birthDate: `${year}-${month}-${day}`,
-      politicalStatus: Math.random()>0.2?'中共党员':'群众',
-      education: educations[Math.floor(Math.random() * educations.length)],
-      position: positions[Math.floor(Math.random() * positions.length)],
-      rankName: ranks[Math.floor(Math.random() * ranks.length)],
-      reserveType: rType,
-      reserveLevel: levels[Math.floor(Math.random() * levels.length)],
-      entryDate: `${entryYear}-${String(Math.floor(Math.random()*12)+1).padStart(2,'0')}-${String(Math.floor(Math.random()*28)+1).padStart(2,'0')}`,
-      status: Math.random()>0.15 ? 1 : 0,
-      remark: ''
+async function loadDictAndCadrePool() {
+  const [treeRes, rankRes, cadreRes] = await Promise.all([
+    request.get('/organization/tree').catch(() => null),
+    request.get('/rank/list').catch(() => null),
+    getCadrePage({ current: 1, size: 2000 }).catch(() => null)
+  ])
+  const deptMap = {}
+  const walk = nodes => {
+    if (!Array.isArray(nodes)) return
+    nodes.forEach(o => {
+      if (o && o.id != null) deptMap[o.id] = o.deptName || o.shortName || ''
+      walk(o.children)
     })
   }
+  walk(treeRes && treeRes.data)
+  deptNameMap.value = deptMap
+  const rankMap = {}
+  if (rankRes && Array.isArray(rankRes.data)) {
+    rankRes.data.forEach(r => { if (r && r.id != null) rankMap[r.id] = r.rankName })
+  }
+  rankNameMap.value = rankMap
+  const cadres = {}
+  if (cadreRes && Array.isArray(cadreRes.data.records)) {
+    cadreRes.data.records.forEach(c => { if (c && c.id != null) cadres[c.id] = c })
+  }
+  cadreMap.value = cadres
+}
+
+function refreshCadreOptions() {
+  const ids = new Set(reserveIds.value)
+  cadreOptions.value = Object.keys(cadreMap.value).map(id => {
+    const c = cadreMap.value[Number(id)]
+    return {
+      id: c.id,
+      name: c.name || '',
+      position: c.position || '',
+      inReserve: ids.has(c.id)
+    }
+  })
+}
+
+function decorateRow(r) {
+  const c = cadreMap.value[r.cadreId] || {}
+  return {
+    id: r.id,
+    cadreId: r.cadreId,
+    name: c.name || '未知',
+    genderText: c.gender === 1 ? '男' : c.gender === 2 ? '女' : '-',
+    birthDate: fmtDate(c.birthDate),
+    politicalStatus: c.politicalStatus || '',
+    education: c.fullTimeEducation || '',
+    deptId: c.deptId,
+    position: c.position || '',
+    rankName: c.rankId != null ? (rankNameMap.value[c.rankId] || '-') : '-',
+    reserveType: r.reserveType || '',
+    reserveLevel: r.reserveLevel || '',
+    enterDate: fmtDate(r.enterDate),
+    status: r.status === 0 ? 0 : 1
+  }
+}
+
+async function fetchReserveRows() {
+  try {
+    const res = await request.get('/cadre-reserve/list')
+    const list = Array.isArray(res.data) ? res.data : []
+    reserveIds.value = new Set(list.map(r => r.cadreId).filter(id => id != null))
+    allRows.value = list.map(decorateRow)
+  } catch (e) {
+    reserveIds.value = new Set()
+    allRows.value = []
+  }
+}
+
+function applyFilter() {
+  let data = [...allRows.value]
+  if (queryForm.name) data = data.filter(d => d.name.includes(queryForm.name))
+  if (queryForm.reserveType) data = data.filter(d => d.reserveType === queryForm.reserveType)
+  if (queryForm.reserveLevel) data = data.filter(d => d.reserveLevel === queryForm.reserveLevel)
   return data
 }
 
-const allReserveData = generateReserveData()
-
-const sortInfo = reactive({ prop: '', order: '' })
-
-function applySort(data) {
-  if (!sortInfo.prop || !sortInfo.order) return data
-  const sorted = [...data]
-  const dir = sortInfo.order === 'ascending' ? 1 : -1
-  sorted.sort((a, b) => {
-    let va = a[sortInfo.prop]
-    let vb = b[sortInfo.prop]
-    if (va == null) va = ''
-    if (vb == null) vb = ''
-    if (typeof va === 'number' && typeof vb === 'number') return (va - vb) * dir
-    return String(va).localeCompare(String(vb), 'zh-CN') * dir
-  })
-  return sorted
-}
-
-function fetchData() {
+async function fetchData() {
   loading.value = true
-  setTimeout(() => {
-    let data = [...allReserveData]
-    if (queryForm.name) {
-      data = data.filter(d => d.name.includes(queryForm.name))
-    }
-    if (queryForm.reserveType) {
-      data = data.filter(d => d.reserveType === queryForm.reserveType)
-    }
-    if (queryForm.reserveLevel) {
-      data = data.filter(d => d.reserveLevel === queryForm.reserveLevel)
-    }
-    data = applySort(data)
+  try {
+    await fetchReserveRows()
+    const data = applyFilter()
     page.total = data.length
     const start = (page.current - 1) * page.size
     tableData.value = data.slice(start, start + page.size)
+  } finally {
     loading.value = false
-  }, 300)
+  }
 }
-function handleSortChange({ prop, order }) {
-  sortInfo.prop = prop || ''
-  sortInfo.order = order || ''
-  fetchData()
-}
+
 function handleSizeChange() {
   page.current = 1
   fetchData()
 }
-
-function handleSearch() {
-  page.current = 1
-  fetchData()
-}
-
+function handleSearch() { page.current = 1; fetchData() }
 function handleReset() {
   Object.assign(queryForm, { name: '', reserveType: '', reserveLevel: '' })
   page.current = 1
-  sortInfo.prop = ''
-  sortInfo.order = ''
   fetchData()
 }
 
@@ -298,7 +345,7 @@ function resetForm() {
   formRef.value?.resetFields()
   isEdit.value = false
   editId.value = null
-  Object.assign(form, { cadreId: null, reserveType: '副职', reserveLevel: '', entryDate: '', remark: '' })
+  Object.assign(form, { cadreId: null, reserveType: '副职', reserveLevel: '', enterDate: '', status: 1 })
 }
 
 function openAdd() {
@@ -307,7 +354,7 @@ function openAdd() {
 }
 
 function handleView(row) {
-  router.push(`/cadre/${row.id}`)
+  if (row.cadreId != null) router.push(`/cadre/${row.cadreId}`)
 }
 
 function handleEdit(row) {
@@ -315,113 +362,108 @@ function handleEdit(row) {
   isEdit.value = true
   editId.value = row.id
   Object.assign(form, {
-    cadreId: cadreOptions.value.find(c => c.name === row.name)?.id || null,
+    cadreId: row.cadreId,
     reserveType: row.reserveType,
     reserveLevel: row.reserveLevel,
-    entryDate: row.entryDate,
-    remark: row.remark || ''
+    enterDate: row.enterDate,
+    status: row.status
   })
   dialogVisible.value = true
 }
 
 function handleSubmit() {
-  formRef.value?.validate((valid) => {
+  formRef.value?.validate(async (valid) => {
     if (!valid) return
     submitLoading.value = true
-    setTimeout(() => {
-      const selectedCadre = cadreOptions.value.find(c => c.id === form.cadreId)
+    try {
+      const payload = {
+        cadreId: form.cadreId,
+        reserveType: form.reserveType,
+        reserveLevel: form.reserveLevel,
+        enterDate: form.enterDate || null,
+        status: form.status === 0 ? 0 : 1
+      }
       if (isEdit.value) {
-        const idx = tableData.value.findIndex(d => d.id === editId.value)
-        if (idx > -1) {
-          tableData.value[idx] = {
-            ...tableData.value[idx],
-            reserveType: form.reserveType,
-            reserveLevel: form.reserveLevel,
-            entryDate: form.entryDate,
-            remark: form.remark
-          }
-        }
+        payload.id = editId.value
+        await request.put('/cadre-reserve', payload)
         ElMessage.success('更新成功')
       } else {
-        if (selectedCadre) {
-          selectedCadre.inReserve = true
-        }
-        const newId = Math.max(...tableData.value.map(d => d.id)) + 1
-        tableData.value.unshift({
-          id: newId,
-          name: selectedCadre?.name || '未知',
-          gender: '男',
-          birthDate: '1980-01-01',
-          politicalStatus: '中共党员',
-          education: '硕士研究生',
-          position: selectedCadre?.position || '',
-          rankName: '待补充',
-          reserveType: form.reserveType,
-          reserveLevel: form.reserveLevel,
-          entryDate: form.entryDate,
-          status: 1,
-          remark: form.remark
-        })
-        page.total = tableData.value.length
+        await request.post('/cadre-reserve', payload)
         ElMessage.success('添加成功')
       }
-      submitLoading.value = false
       dialogVisible.value = false
-    }, 400)
+      await loadDictAndCadrePool()
+      await fetchData()
+      refreshCadreOptions()
+      await reloadAssessmentTags()
+    } catch (e) {
+      ElMessage.error(e.message || '保存失败')
+    } finally {
+      submitLoading.value = false
+    }
   })
 }
 
-function handleRemove(row) {
-  ElMessageBox.confirm(`确定将"${row.name}"移出后备干部库吗？`, '移出确认', {
-    type: 'warning',
-    confirmButtonText: '确定移出',
-    cancelButtonText: '取消'
-  }).then(() => {
-    const idx = tableData.value.findIndex(d => d.id === row.id)
-    if (idx > -1) {
-      tableData.value[idx].status = 0
-    }
-    const cadre = cadreOptions.value.find(c => c.name === row.name)
-    if (cadre) cadre.inReserve = false
+async function handleRemove(row) {
+  try {
+    await ElMessageBox.confirm(`确定将"${row.name}"移出后备干部库吗？`, '移出确认', {
+      type: 'warning',
+      confirmButtonText: '确定移出',
+      cancelButtonText: '取消'
+    })
+  } catch (e) {
+    return
+  }
+  try {
+    await request.delete(`/cadre-reserve/${row.id}`)
     ElMessage.success('已移出后备库')
-  }).catch(() => {})
+    await loadDictAndCadrePool()
+    await fetchData()
+    refreshCadreOptions()
+  } catch (e) {
+    ElMessage.error(e.message || '移出失败')
+  }
 }
 
-function handleBatchRemove() {
+async function handleBatchRemove() {
   if (selectedRows.value.length === 0) return
-  ElMessageBox.confirm(`确定将选中的 ${selectedRows.value.length} 名干部移出后备干部库吗？`, '批量移出确认', {
-    type: 'warning',
-    confirmButtonText: '确定移出',
-    cancelButtonText: '取消'
-  }).then(() => {
-    selectedRows.value.forEach(row => {
-      const idx = tableData.value.findIndex(d => d.id === row.id)
-      if (idx > -1) {
-        tableData.value[idx].status = 0
-      }
-      const cadre = cadreOptions.value.find(c => c.name === row.name)
-      if (cadre) cadre.inReserve = false
+  const names = selectedRows.value.map(r => r.name).join('、')
+  try {
+    await ElMessageBox.confirm(`确定将选中的 ${selectedRows.value.length} 名干部（${names}）移出后备干部库吗？`, '批量移出确认', {
+      type: 'warning',
+      confirmButtonText: '确定移出',
+      cancelButtonText: '取消'
     })
-    selectedRows.value = []
+  } catch (e) {
+    return
+  }
+  try {
+    for (const row of selectedRows.value) {
+      await request.delete(`/cadre-reserve/${row.id}`)
+    }
     ElMessage.success('批量移出成功')
-  }).catch(() => {})
+    selectedRows.value = []
+    await loadDictAndCadrePool()
+    await fetchData()
+    refreshCadreOptions()
+  } catch (e) {
+    ElMessage.error(e.message || '批量移出失败')
+  }
 }
 
 function handleSelectionChange(rows) {
   selectedRows.value = rows.filter(r => r.status === 1)
 }
 
-onMounted(fetchData)
-
 function handleExport() {
-  let data = [...allReserveData]
-  if (queryForm.name) data = data.filter(d => d.name.includes(queryForm.name))
-  if (queryForm.reserveType) data = data.filter(d => d.reserveType === queryForm.reserveType)
-  if (queryForm.reserveLevel) data = data.filter(d => d.reserveLevel === queryForm.reserveLevel)
-  data = applySort(data)
+  const data = applyFilter()
+  if (data.length === 0) {
+    ElMessage.warning('当前条件下没有可导出的数据')
+    return
+  }
   showExportDialog(data, [
     { prop: 'name', label: '姓名' },
-    { prop: 'gender', label: '性别' },
+    { prop: 'genderText', label: '性别' },
     { prop: 'birthDate', label: '出生年月' },
     { prop: 'politicalStatus', label: '政治面貌' },
     { prop: 'education', label: '学历' },
@@ -429,11 +471,18 @@ function handleExport() {
     { prop: 'rankName', label: '现职级' },
     { prop: 'reserveType', label: '后备类型' },
     { prop: 'reserveLevel', label: '级别' },
-    { prop: 'entryDate', label: '入库日期' },
+    { prop: 'enterDate', label: '入库日期' },
     { prop: 'status', label: '状态' }
   ], '后备干部库')
 }
 
+onMounted(async () => {
+  await loadDictAndCadrePool()
+  await fetchData()
+  refreshCadreOptions()
+  // 已入库列表/候选池的考核核验 tag（批量核验接口 /reserve/assessment-check）
+  reloadAssessmentTags()
+})
 </script>
 
 <style scoped>

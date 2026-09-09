@@ -1,27 +1,49 @@
 <template>
   <div>
-    <div class="page-header">个人基础信息审批</div>
+    <div class="page-header">档案变更审批</div>
 
     <el-tabs v-model="activeTab" class="gov-tabs">
       <el-tab-pane label="待审批" name="pending">
         <div class="search-bar">
-          <span class="label">申请人：</span><el-input v-model="searchName" placeholder="请输入姓名" size="default" style="width:140px" clearable />
-          <span class="label">申报类型：</span>
-          <el-select v-model="searchType" placeholder="全部" size="default" style="width:140px" clearable>
-            <el-option label="个人基础信息" value="basic" /><el-option label="履历信息" value="resume" />
-            <el-option label="奖惩资料" value="reward" /><el-option label="家庭成员" value="family" />
-          </el-select>
-          <el-button type="primary" @click="filterApps"><el-icon><Search /></el-icon> 查询</el-button>
+          <span class="label">申请人：</span>
+          <el-input v-model="searchName" placeholder="请输入姓名" size="default" style="width:150px" clearable />
+          <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
+          <el-button @click="resetSearch">重置</el-button>
+          <span style="margin-left:12px;font-size:12px;color:#999">
+            数据来源：干部自助申报「档案信息变更 INFO_UPDATE」（/api/self-application，仅 SUBMITTED）
+          </span>
         </div>
         <div class="table-wrap">
-          <el-table :data="filteredApps" border size="small">
+          <el-table v-loading="loading" :data="pagedPending" border size="small">
             <el-table-column type="index" label="序号" width="55" align="center" />
-            <el-table-column prop="applicant" label="申请人" width="90" align="center" sortable />
-            <el-table-column prop="deptName" label="所在机构" min-width="150" show-overflow-tooltip sortable />
-            <el-table-column prop="type" label="申报类型" width="120" align="center" sortable />
-            <el-table-column prop="summary" label="变更摘要" min-width="200" show-overflow-tooltip />
-            <el-table-column prop="submitTime" label="提交时间" width="160" align="center" sortable />
-            <el-table-column label="操作" width="180" align="center" fixed="right">
+            <el-table-column label="申请人" width="100" align="center" sortable>
+              <template #default="{ row }">{{ applicantName(row) }}</template>
+            </el-table-column>
+            <el-table-column label="申报类型" width="120" align="center">
+              <template #default="{ row }">
+                <el-tag size="small">{{ applicationTypeText(row.applicationType) }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="applicationTitle" label="申报标题" min-width="200" show-overflow-tooltip sortable />
+            <el-table-column prop="applicationContent" label="申报内容" min-width="220" show-overflow-tooltip />
+            <el-table-column label="变更字段" width="110" align="center">
+              <template #default="{ row }">
+                <el-tag v-if="row.applyField" size="small" type="warning">{{ fieldLabel(row.applyField) }}</el-tag>
+                <span v-else>-</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="旧值 → 新值" min-width="220">
+              <template #default="{ row }">
+                <span v-if="row.applyField" style="font-family:monospace">
+                  {{ displayVal(row.oldValue) }} <span style="color:#1976D2">→</span> {{ displayVal(row.newValue) }}
+                </span>
+                <span v-else style="color:#bbb">非字段级更正</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="提交时间" width="160" align="center" sortable>
+              <template #default="{ row }">{{ fmtTime(row.createTime) }}</template>
+            </el-table-column>
+            <el-table-column label="操作" width="160" align="center" fixed="right">
               <template #default="{ row }">
                 <span class="link-blue" @click="openReview(row)">审核</span>
                 <el-divider direction="vertical" />
@@ -30,172 +52,195 @@
             </el-table-column>
           </el-table>
         </div>
+        <div class="pagination-wrap">
+          <el-pagination
+            v-model:current-page="page.current"
+            v-model:page-size="page.size"
+            :page-sizes="[10, 20, 50]"
+            :total="page.total"
+            layout="total,sizes,prev,pager,next,jumper"
+            background small
+            @size-change="page.current = 1"
+          />
+        </div>
       </el-tab-pane>
 
       <el-tab-pane label="已审批" name="done">
+        <div class="search-bar">
+          <span style="font-size:12px;color:#999">已审批 = INFO_UPDATE 中 APPROVED / REJECTED 的真实记录</span>
+        </div>
         <div class="table-wrap">
-          <el-table :data="doneApps" border size="small">
+          <el-table v-loading="doneLoading" :data="doneApps" border size="small">
             <el-table-column type="index" label="序号" width="55" align="center" />
-            <el-table-column prop="applicant" label="申请人" width="90" align="center" />
-            <el-table-column prop="type" label="申报类型" width="120" align="center" />
-            <el-table-column prop="result" label="审批结果" width="90" align="center">
-              <template #default="{ row }"><el-tag :type="row.result === '通过' ? 'success' : 'danger'" size="small">{{ row.result }}</el-tag></template>
+            <el-table-column label="申请人" width="100" align="center">
+              <template #default="{ row }">{{ applicantName(row) }}</template>
             </el-table-column>
-            <el-table-column prop="reviewer" label="审批人" width="90" align="center" />
-            <el-table-column prop="reviewTime" label="审批时间" width="160" align="center" />
-            <el-table-column prop="comment" label="审批意见" min-width="180" show-overflow-tooltip />
+            <el-table-column prop="applicationTitle" label="申报标题" min-width="200" show-overflow-tooltip />
+            <el-table-column prop="applicationContent" label="申报内容" min-width="220" show-overflow-tooltip />
+            <el-table-column label="变更字段" width="110" align="center">
+              <template #default="{ row }">
+                <el-tag v-if="row.applyField" size="small" type="warning">{{ fieldLabel(row.applyField) }}</el-tag>
+                <span v-else>-</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="旧值 → 新值" min-width="200">
+              <template #default="{ row }">
+                <span v-if="row.applyField" style="font-family:monospace">
+                  {{ displayVal(row.oldValue) }} <span style="color:#1976D2">→</span> {{ displayVal(row.newValue) }}
+                </span>
+                <span v-else style="color:#bbb">非字段级更正</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="审批结果" width="100" align="center">
+              <template #default="{ row }">
+                <el-tag :type="row.applyStatus === 'APPROVED' ? 'success' : 'danger'" size="small">{{ applyStatusText(row.applyStatus) }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="审批人" width="100" align="center">
+              <template #default="{ row }">{{ approverName(row) }}</template>
+            </el-table-column>
+            <el-table-column label="审批时间" width="160" align="center">
+              <template #default="{ row }">{{ fmtTime(row.approveTime) }}</template>
+            </el-table-column>
+            <el-table-column label="审批意见" min-width="180" show-overflow-tooltip>
+              <template #default="{ row }">{{ row.approveComment || '-' }}</template>
+            </el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
     </el-tabs>
 
-    <!-- 审核详情：新旧对比弹窗 -->
-    <el-dialog v-model="reviewVisible" title="档案变更审核" width="900px" top="2vh" destroy-on-close>
-      <el-alert :title="`${currentApp?.applicant} 提交的${currentApp?.type}变更申请`" type="info" :closable="false" show-icon style="margin-bottom:16px" />
-
-      <el-table :data="compareFields" border size="small" style="margin-bottom:16px">
-        <el-table-column prop="label" label="字段" width="120" align="center" />
-        <el-table-column label="修改前" min-width="200">
-          <template #default="{ row }"><span :class="{ 'highlight-changed': row.changed }">{{ row.oldValue }}</span></template>
-        </el-table-column>
-        <el-table-column label="修改后" min-width="200">
-          <template #default="{ row }"><span :class="{ 'highlight-changed': row.changed }" style="color:#1976D2;font-weight:500">{{ row.newValue }}</span></template>
-        </el-table-column>
-      </el-table>
-
-      <!-- 奖惩/家庭成员/履历的子表对比 -->
-      <div v-if="currentApp?.subTables && currentApp.subTables.length > 0" v-for="(st, si) in currentApp.subTables" :key="si" style="margin-bottom:16px">
-        <div style="font-weight:600;color:#1976D2;margin-bottom:8px;font-size:13px">{{ st.title }}</div>
-        <el-table :data="st.items" border size="small">
-          <el-table-column type="index" label="序号" width="50" align="center" />
-          <el-table-column v-for="col in st.columns" :key="col" :prop="col" :label="col" min-width="120" align="center">
-            <template #default="{ row: item }">
-              <span :class="{ 'highlight-changed': item._changed }" :style="item._changed ? 'color:#1976D2;font-weight:500' : ''">{{ item[col] }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="状态" width="80" align="center">
-            <template #default="{ row: item }">
-              <el-tag :type="item._action === '新增' ? 'success' : item._action === '删除' ? 'danger' : ''" size="small">{{ item._action || '—' }}</el-tag>
-            </template>
-          </el-table-column>
-        </el-table>
+    <!-- 审核详情弹窗 -->
+    <el-dialog v-model="reviewVisible" title="档案变更审核" width="640px" top="8vh" align-center destroy-on-close>
+      <div v-if="currentApp">
+        <el-alert :title="`${applicantName(currentApp)} 提交的档案信息变更申报`" type="info" :closable="false" show-icon style="margin-bottom:16px" />
+        <el-descriptions :column="1" border size="small" style="margin-bottom:16px">
+          <el-descriptions-item label="申报标题">{{ currentApp.applicationTitle || '-' }}</el-descriptions-item>
+          <el-descriptions-item v-if="currentApp.applyField" label="变更字段">
+            <el-tag size="small" type="warning">{{ fieldLabel(currentApp.applyField) }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item v-if="currentApp.applyField" label="变更前后">
+            <span style="font-family:monospace">{{ displayVal(currentApp.oldValue) }} <span style="color:#1976D2">→</span> {{ displayVal(currentApp.newValue) }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="提交时间">{{ fmtTime(currentApp.createTime) }}</el-descriptions-item>
+          <el-descriptions-item label="申报内容">
+            <div style="white-space:pre-wrap;line-height:1.6">{{ currentApp.applicationContent || '-' }}</div>
+          </el-descriptions-item>
+        </el-descriptions>
+        <el-alert v-if="currentApp.applyField" type="success" :closable="false" show-icon style="margin-bottom:8px"
+          title="通过后系统将按「变更字段」把干部档案由旧值自动更新为新值（白名单字段）并记录审批意见。" />
+        <p v-else style="font-size:12px;color:#999;margin:0 0 8px">说明：该申报为整表信息申报（无单字段更正），通过后仅完成审批归档，不直接回写档案。</p>
+        <el-form label-width="90px">
+          <el-form-item label="审批意见">
+            <el-input v-model="reviewComment" type="textarea" :rows="3" placeholder="可选填写审批意见" />
+          </el-form-item>
+        </el-form>
       </div>
-
-      <el-form label-width="100px">
-        <el-form-item label="审批意见">
-          <el-input v-model="reviewComment" type="textarea" :rows="3" placeholder="可选填写审批意见" />
-        </el-form-item>
-      </el-form>
       <template #footer>
         <el-button @click="reviewVisible = false">关闭</el-button>
-        <el-button type="danger" @click="doReject">拒绝</el-button>
-        <el-button type="primary" @click="doApprove">通过</el-button>
+        <el-button type="danger" :loading="saving" @click="doReject">拒绝</el-button>
+        <el-button type="primary" :loading="saving" @click="doApprove">通过</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
+import { getSelfApplicationPage, approveSelfApplication, rejectSelfApplication, getUserProfile } from '@/api/daily'
+import request from '@/utils/request'
 
 const activeTab = ref('pending')
+const loading = ref(false)
+const doneLoading = ref(false)
+const saving = ref(false)
 const searchName = ref('')
-const searchType = ref('')
+
+const pendingAll = ref([])
+const doneApps = ref([])
+const users = ref([])
+
 const reviewVisible = ref(false)
 const reviewComment = ref('')
 const currentApp = ref(null)
 
-// Built-in sample approvals (always present as baseline)
-const sampleApps = [
-  {
-    id: 1, applicant: '张建国', deptName: '党委办公室', type: '个人基础信息',
-    summary: '学历由"硕士研究生"变更为"博士研究生"；学位由"硕士"变更为"博士"',
-    submitTime: '2026-08-10 14:30',
-    fields: [
-      { label: '最高学历', oldValue: '硕士研究生', newValue: '博士研究生', changed: true },
-      { label: '最高学位', oldValue: '硕士', newValue: '博士', changed: true },
-      { label: '联系电话', oldValue: '13800138000', newValue: '13912345678', changed: true },
-      { label: '家庭住址', oldValue: '鼓楼区中山路100号', newValue: '建邺区奥体大街200号', changed: true }
-    ]
-  },
-  {
-    id: 2, applicant: '李秀英', deptName: '机械工程学院', type: '家庭成员',
-    summary: '新增家庭成员"李小明"（子女）；删除原配偶记录',
-    submitTime: '2026-08-11 09:15',
-    fields: [
-      { label: '原配偶', oldValue: '王志强（电气工程学院 教授）', newValue: '—（已删除）', changed: true },
-      { label: '新增子女', oldValue: '—', newValue: '李小明（南京市第一中学 在读）', changed: true }
-    ]
-  },
-  {
-    id: 3, applicant: '王志强', deptName: '电气工程学院', type: '履历信息',
-    summary: '补充挂职经历；修正任职结束时间',
-    submitTime: '2026-08-09 16:20',
-    fields: [
-      { label: '新增经历', oldValue: '—', newValue: '2018-06 至 2021-07 甘肃省陇南市教育局', changed: true },
-      { label: '修改历史', oldValue: '2015-03 至 2017-06', newValue: '2015-03 至 2017-12', changed: true }
-    ]
-  }
-]
+const profile = ref(null)
 
-function loadSubmissions() {
-  return JSON.parse(localStorage.getItem('cadre_submissions') || '[]')
+const userMap = computed(() => Object.fromEntries(users.value.map(u => [u.id, u.realName])))
+
+function fmtTime(t) {
+  if (!t) return '-'
+  return String(t).replace('T', ' ').slice(0, 19)
+}
+function applyStatusText(s) {
+  return { SUBMITTED: '待审批', APPROVED: '已通过', REJECTED: '已驳回' }[s] || s || '-'
+}
+function applicationTypeText(t) {
+  return { INFO_UPDATE: '档案信息变更' }[t] || t || '-'
+}
+function applicantName(row) {
+  return userMap.value[row.applicantId] || `#${row.applicantId}`
+}
+function approverName(row) {
+  if (!row.approverId) return '-'
+  return userMap.value[row.approverId] || `#${row.approverId}`
 }
 
-function saveSubmissions(subs) {
-  localStorage.setItem('cadre_submissions', JSON.stringify(subs))
-}
+const filteredPending = computed(() => pendingAll.value.filter(d =>
+  !searchName.value || applicantName(d).includes(searchName.value)))
 
-const pendingApps = ref([])
-const doneApps = ref([
-  { applicant: '刘德明', type: '个人基础信息', result: '通过', reviewer: '赵处长', reviewTime: '2026-08-05 10:30', comment: '学历信息已核实无误，准予通过' },
-  { applicant: '陈丽华', type: '奖惩资料', result: '拒绝', reviewer: '赵处长', reviewTime: '2026-08-03 15:00', comment: '奖励证明文件不完整，请补充后重新提交' },
-  { applicant: '周伟民', type: '家庭成员', result: '通过', reviewer: '钱副处长', reviewTime: '2026-07-28 11:20', comment: '家庭成员变更与实际情况相符' }
-])
-
-function refreshFromStorage() {
-  const subs = loadSubmissions()
-  const fromStorage = subs.map(s => ({
-    ...s,
-    fields: buildCompareFields(s),
-    _source: 'storage'
-  })).filter(s => !pendingApps.value.find(p => p.id === s.id && p._source === 'storage'))
-  pendingApps.value = [...sampleApps]
-}
-
-function buildCompareFields(submission) {
-  const fields = []
-  const b = submission.basic || {}
-  const defaultData = {
-    '张建国': { phone:'13800138000', education:'硕士研究生', degree:'硕士', address:'鼓楼区中山路100号' },
-    '李秀英': { phone:'13900139001', education:'博士研究生', degree:'博士', address:'江宁区天元路88号' },
-    '王志强': { phone:'13800138001', education:'博士研究生', degree:'博士', address:'秦淮区健康路50号' },
-    '刘德明': { phone:'13800138002', education:'硕士研究生', degree:'硕士', address:'浦口区文德路100号' },
-    '陈丽华': { phone:'13800138003', education:'硕士研究生', degree:'硕士', address:'建邺区梦都大街200号' }
-  }
-  const old = defaultData[submission.applicant] || {}
-  if (b.phone && b.phone !== old.phone) fields.push({ label:'联系电话', oldValue: old.phone||'(空)', newValue: b.phone, changed: true })
-  if (b.education && b.education !== old.education) fields.push({ label:'最高学历', oldValue: old.education||'(空)', newValue: b.education, changed: true })
-  if (b.degree && b.degree !== old.degree) fields.push({ label:'最高学位', oldValue: old.degree||'(空)', newValue: b.degree, changed: true })
-  if (b.address && b.address !== old.address) fields.push({ label:'家庭住址', oldValue: old.address||'(空)', newValue: b.address, changed: true })
-  if (fields.length === 0) fields.push({ label:'全部字段', oldValue:'无变更', newValue:'无变更', changed: false })
-  return fields
-}
-
-onMounted(() => {
-  pendingApps.value = [...sampleApps]
+const page = ref({ current: 1, size: 10, total: 0 })
+const pagedPending = computed(() => {
+  const start = (page.value.current - 1) * page.value.size
+  return filteredPending.value.slice(start, start + page.value.size)
 })
 
-const filteredApps = computed(() => {
-  let data = pendingApps.value
-  if (searchName.value) data = data.filter(d => d.applicant.includes(searchName.value))
-  if (searchType.value) data = data.filter(d => d.type === searchType.value || searchType.value === 'basic' && d.type === '个人基础信息')
-  return data
-})
+function syncTotal() {
+  page.value.total = filteredPending.value.length
+}
 
-function filterApps() {}
+function handleSearch() {
+  page.value.current = 1
+  syncTotal()
+}
+function resetSearch() {
+  searchName.value = ''
+  page.value.current = 1
+  syncTotal()
+}
+
+async function loadPending() {
+  loading.value = true
+  try {
+    const res = await getSelfApplicationPage({ current: 1, size: 500 })
+    pendingAll.value = (res.data.records || []).filter(d => d.applicationType === 'INFO_UPDATE' && d.applyStatus === 'SUBMITTED')
+    syncTotal()
+  } finally { loading.value = false }
+}
+
+async function loadDone() {
+  doneLoading.value = true
+  try {
+    const res = await getSelfApplicationPage({ current: 1, size: 500 })
+    doneApps.value = (res.data.records || []).filter(d => d.applicationType === 'INFO_UPDATE' && (d.applyStatus === 'APPROVED' || d.applyStatus === 'REJECTED'))
+  } finally { doneLoading.value = false }
+}
+
+async function loadUsers() {
+  try {
+    const res = await request({ url: '/user/page', method: 'get', params: { current: 1, size: 500 } })
+    users.value = res.data.records || []
+  } catch (e) { users.value = [] }
+}
+
+async function loadProfile() {
+  try {
+    const p = await getUserProfile()
+    profile.value = p.data
+  } catch (e) { profile.value = null }
+}
 
 function openReview(row) {
   currentApp.value = row
@@ -203,53 +248,86 @@ function openReview(row) {
   reviewVisible.value = true
 }
 
-function removeSubmission(app) {
-  pendingApps.value = pendingApps.value.filter(d => d.id !== app.id)
-  const subs = loadSubmissions().filter(s => String(s.id) !== String(app.id))
-  saveSubmissions(subs)
-}
-
-function doApprove() {
+async function doApprove() {
   const app = currentApp.value
-  ElMessageBox.confirm(`确认通过 ${app.applicant} 的申报申请吗？通过后变更数据将写入正式干部信息库。`, '确认通过', { type: 'success', confirmButtonText: '确认通过' })
-    .then(() => {
-      doneApps.value.unshift({ applicant: app.applicant, type: app.type, result: '通过', reviewer: '当前审批人', reviewTime: new Date().toLocaleString(), comment: reviewComment.value || '已核实，准予通过' })
-      removeSubmission(app)
-      reviewVisible.value = false
-      ElMessage.success(`已通过 ${app.applicant} 的申报申请，数据已正式入库`)
-    }).catch(() => {})
+  if (!app) return
+  saving.value = true
+  try {
+    await approveSelfApplication(app.id, { approverId: profile.value?.id, comment: reviewComment.value || undefined })
+    ElMessage.success(app.applyField ? '已通过，干部档案已自动更新' : '已通过，档案变更申请审批完成')
+    reviewVisible.value = false
+    loadPending()
+    loadDone()
+  } finally { saving.value = false }
 }
 
-function handleReject(row) {
-  ElMessageBox.prompt('请输入拒绝原因', '拒绝申请', { type: 'warning', confirmButtonText: '确认拒绝' })
-    .then(({ value }) => {
-      doneApps.value.unshift({ applicant: row.applicant, type: row.type, result: '拒绝', reviewer: '当前审批人', reviewTime: new Date().toLocaleString(), comment: value })
-      removeSubmission(row)
-      ElMessage.success(`已拒绝 ${row.applicant} 的申报申请`)
-    }).catch(() => {})
-}
-
-function doReject() {
+async function doReject() {
   const app = currentApp.value
-  ElMessageBox.prompt('请输入拒绝原因', '拒绝申请', { type: 'warning', confirmButtonText: '确认拒绝' })
-    .then(({ value }) => {
-      doneApps.value.unshift({ applicant: app.applicant, type: app.type, result: '拒绝', reviewer: '当前审批人', reviewTime: new Date().toLocaleString(), comment: value })
-      removeSubmission(app)
-      reviewVisible.value = false
-      ElMessage.success(`已拒绝 ${app.applicant} 的申报申请`)
-    }).catch(() => {})
+  if (!app) return
+  let reason = reviewComment.value
+  if (!reason) {
+    try {
+      const { value } = await ElMessageBox.prompt('请输入拒绝原因', '拒绝申请', { type: 'warning', confirmButtonText: '确认拒绝' })
+      reason = value
+    } catch (e) { return }
+  }
+  saving.value = true
+  try {
+    await rejectSelfApplication(app.id, { approverId: profile.value?.id, comment: reason || undefined })
+    ElMessage.success('已拒绝该档案变更申报')
+    reviewVisible.value = false
+    loadPending()
+    loadDone()
+  } finally { saving.value = false }
 }
 
-const compareFields = computed(() => currentApp.value?.fields || [])
+async function handleReject(row) {
+  let reason
+  try {
+    const { value } = await ElMessageBox.prompt('请输入拒绝原因', '拒绝申请', { type: 'warning', confirmButtonText: '确认拒绝' })
+    reason = value
+  } catch (e) { return }
+  saving.value = true
+  try {
+    await rejectSelfApplication(row.id, { approverId: profile.value?.id, comment: reason || undefined })
+    ElMessage.success('已拒绝该档案变更申报')
+    loadPending()
+    loadDone()
+  } finally { saving.value = false }
+}
+
+onMounted(() => {
+  loadUsers()
+  loadProfile()
+  loadPending()
+  loadDone()
+})
 </script>
 
 <style scoped>
-.highlight-changed {
-  background: #FFF9C4;
-  padding: 2px 6px;
-  border-radius: 3px;
-  display: inline-block;
+.search-bar {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-.search-bar { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
 .search-bar .label { font-size: 13px; color: #666; white-space: nowrap; }
+.gov-tabs :deep(.el-tabs__header) {
+  background: #fff;
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid #e0e0e0;
+  border-bottom: 2px solid #1976D2;
+}
+.gov-tabs :deep(.el-tabs__nav-wrap::after) {
+  display: none;
+}
+.gov-tabs :deep(.el-tabs__content) {
+  padding-top: 0;
+}
 </style>

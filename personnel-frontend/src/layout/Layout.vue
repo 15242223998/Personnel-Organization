@@ -9,7 +9,7 @@
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
         </div>
-        <span class="sys-name">辽宁工业大学 - 组织人事档案管理系统</span>
+        <span class="sys-name">辽宁某某大学 - 组织人事档案管理系统</span>
       </div>
       <div class="header-right">
         <el-popover
@@ -26,7 +26,10 @@
           <div class="msg-panel">
             <div class="msg-panel-header">
               <span>消息通知（{{ unreadCount }}条未读）</span>
-              <span class="msg-read-all" @click="markAllRead">全部已读</span>
+              <span class="msg-header-tools">
+                <el-icon class="msg-refresh" title="刷新通知" @click="refreshNotices"><Refresh /></el-icon>
+                <span class="msg-read-all" @click="markAllRead">全部已读</span>
+              </span>
             </div>
             <div class="msg-list">
               <div
@@ -43,9 +46,10 @@
                 <div class="msg-body">
                   <div class="msg-title">{{ item.title }}</div>
                   <div class="msg-desc">{{ item.desc }}</div>
-                  <div class="msg-time">{{ item.time }}</div>
+                  <div class="msg-time">{{ fmtTime(item.time) }}</div>
                 </div>
               </div>
+              <div v-if="!notifications.length" class="msg-empty">暂无通知</div>
             </div>
             <div class="msg-panel-footer" @click="viewAllMessages">查看全部消息</div>
           </div>
@@ -141,13 +145,13 @@
               <el-icon><Setting /></el-icon><span>系统管理</span>
             </template>
             <el-menu-item index="/system/user"><el-icon><User /></el-icon>用户管理</el-menu-item>
-            <el-menu-item index="/system/role"><el-icon><Avatar /></el-icon>角色管理</el-menu-item>
             <el-menu-item index="/system/dict"><el-icon><Collection /></el-icon>字典管理</el-menu-item>
             <el-menu-item index="/system/approval"><el-icon><Finished /></el-icon>审批事项管理</el-menu-item>
             <el-menu-item index="/system/policy"><el-icon><Files /></el-icon>政策法规管理</el-menu-item>
             <el-menu-item index="/system/alert-rule"><el-icon><Bell /></el-icon>预警规则管理</el-menu-item>
             <el-menu-item index="/system/declaration-approval"><el-icon><DocumentChecked /></el-icon>信息申报审批</el-menu-item>
             <el-menu-item v-if="isAdmin" index="/system/register-approval"><el-icon><CircleCheck /></el-icon>注册审批</el-menu-item>
+            <el-menu-item v-if="isAdmin" index="/system/grant"><el-icon><Key /></el-icon>权限授予</el-menu-item>
             <el-menu-item index="/system/log"><el-icon><Tickets /></el-icon>系统日志</el-menu-item>
           </el-sub-menu>
         </el-menu>
@@ -176,7 +180,11 @@
         </div>
         <!-- 内容区 -->
         <el-main class="content-main">
-          <router-view />
+          <div v-if="blocked" class="perm-block">
+            <el-icon class="perm-block-icon" :size="46"><Lock /></el-icon>
+            <div class="perm-block-text">该账号未拥有“{{ permLabel }}”权限，请联系管理员处理</div>
+          </div>
+          <router-view v-else />
         </el-main>
       </el-container>
     </el-container>
@@ -186,11 +194,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, markRaw } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
+import request from '../utils/request'
 import ExportDialog from '../components/ExportDialog.vue'
-import { Bell, UserFilled, ArrowDown, Close, HomeFilled, OfficeBuilding, Switch, Top, Stamp, WarningFilled, DataAnalysis, Calendar, PieChart, Setting, Document, User, CircleCheck, Warning, EditPen, Expand, Grid, Medal, Timer, Star, Sunny, DocumentChecked, Message, Notebook, ChatDotRound, Coin, Avatar, Collection, Finished, Files, Tickets } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { Bell, UserFilled, ArrowDown, Close, HomeFilled, OfficeBuilding, Switch, Top, Stamp, WarningFilled, DataAnalysis, Calendar, PieChart, Setting, Document, User, CircleCheck, Warning, EditPen, Expand, Grid, Medal, Timer, Star, Sunny, DocumentChecked, Message, Notebook, ChatDotRound, Coin, Collection, Finished, Files, Tickets, Key, Lock, Refresh } from '@element-plus/icons-vue'
+import { matchPermKey, PERM_KEYS } from '../utils/perms'
 
 const router = useRouter()
 const route = useRoute()
@@ -198,22 +209,81 @@ const userStore = useUserStore()
 
 const isAdmin = computed(() => userStore.userType === 'admin')
 
+// ====== 模块级权限拦截：菜单可见，进入未授权模块时右侧内容区渲染灰色占位 ======
+const permKey = computed(() => matchPermKey(route.path))
+const permLabel = computed(() => PERM_KEYS.find(p => p.key === permKey.value)?.label || route.meta.title || '')
+const blocked = computed(() => !isAdmin.value && !!permKey.value && !userStore.permissions.includes(permKey.value))
+
 const openedGroups = ['cadre']
 const mobileMenuVisible = ref(false)
 
-const notifications = ref([
-  { id: 1, title: '任免流程待审批', desc: '机械工程学院副院长任免流程进入讨论决定环节，需您审批', time: '10分钟前', read: false, icon: Stamp, color: '#1976D2', path: '/appointment' },
-  { id: 2, title: '考核预警提醒', desc: '电子信息学院3名干部年度考核材料尚未提交', time: '1小时前', read: false, icon: Warning, color: '#E53935', path: '/assessment' },
-  { id: 3, title: '调配申请待处理', desc: '王志强提交轮岗调配申请，请及时处理', time: '2小时前', read: false, icon: Switch, color: '#FB8C00', path: '/transfer' },
-  { id: 4, title: '证照到期提醒', desc: '刘德明等2人的因公护照将于30日内到期', time: '昨天', read: true, icon: Document, color: '#43A047', path: '/daily' },
-  { id: 5, title: '休假审批通过', desc: '您提交的年休假申请已审批通过', time: '2天前', read: true, icon: CircleCheck, color: '#9C27B0', path: '/daily' }
-])
+// ========== 消息通知（实时汇总自真实业务数据） ==========
+const notifications = ref([])
 
-// 从 localStorage 恢复已读状态
-const readIds = JSON.parse(localStorage.getItem('msg_read_ids') || '[]')
-notifications.value.forEach(n => {
-  if (readIds.includes(n.id)) n.read = true
-})
+const msgStyleMap = {
+  register: { icon: CircleCheck, color: '#9C27B0', path: '/system/register-approval' },
+  scheme: { icon: DataAnalysis, color: '#1976D2', path: '/assessment' },
+  leave: { icon: Stamp, color: '#1976D2', path: '/daily' },
+  cert: { icon: Document, color: '#FB8C00', path: '/daily' },
+  abroad: { icon: Switch, color: '#E53935', path: '/daily' },
+  alert: { icon: WarningFilled, color: '#E53935', path: '/dashboard' },
+  application: { icon: DocumentChecked, color: '#2E7D32', path: '/cadre/declaration' }
+}
+
+// 从 localStorage 恢复已读状态（按通知 id）
+const readIds = new Set(JSON.parse(localStorage.getItem('msg_read_ids') || '[]'))
+
+async function loadNotices() {
+  try {
+    const res = await request({ url: '/notice/list', method: 'get' })
+    // 未读永远排最前；同读状态下按时间倒序
+    notifications.value = (res.data || []).map(n => {
+      const style = msgStyleMap[n.type] || msgStyleMap.leave
+      return {
+        id: n.id,
+        title: n.title,
+        desc: n.desc,
+        time: n.time,
+        type: n.type,
+        path: n.path || style.path,
+        read: readIds.has(n.id),
+        icon: style.icon,
+        color: style.color
+      }
+    }).sort((a, b) => {
+      if (a.read !== b.read) return a.read ? 1 : -1
+      return (new Date(String(b.time).replace(' ', 'T')).getTime() || 0)
+        - (new Date(String(a.time).replace(' ', 'T')).getTime() || 0)
+    })
+  } catch {
+    notifications.value = []
+  }
+}
+
+onMounted(loadNotices)
+
+// 手动刷新消息通知
+async function refreshNotices() {
+  await loadNotices()
+  ElMessage.success('通知已刷新')
+}
+
+// 由真实时间计算友好展示：刚刚/xx分钟前/xx小时前/xx天前，超过7天显示日期
+function fmtTime(t) {
+  if (!t) return ''
+  const date = new Date(String(t).replace(' ', 'T'))
+  if (isNaN(date.getTime())) return String(t)
+  const diff = Date.now() - date.getTime()
+  const minute = 60 * 1000
+  const hour = 60 * minute
+  const day = 24 * hour
+  if (diff < minute) return '刚刚'
+  if (diff < hour) return Math.floor(diff / minute) + '分钟前'
+  if (diff < day) return Math.floor(diff / hour) + '小时前'
+  if (diff < 7 * day) return Math.floor(diff / day) + '天前'
+  const p = n => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${p(date.getMonth() + 1)}-${p(date.getDate())}`
+}
 
 const unreadCount = computed(() => notifications.value.filter(n => !n.read).length)
 
@@ -248,11 +318,13 @@ function closeTab(tab) {
 function markAllRead() {
   notifications.value.forEach(n => n.read = true)
   localStorage.setItem('msg_read_ids', JSON.stringify(notifications.value.map(n => n.id)))
+  sortNoticesOrder()
 }
 
 function handleMsgClick(item) {
   item.read = true
   localStorage.setItem('msg_read_ids', JSON.stringify(notifications.value.filter(n => n.read).map(n => n.id)))
+  sortNoticesOrder()
   if (item.path) {
     router.push(item.path)
   }
@@ -316,6 +388,20 @@ body {
   color: #333;
   font-size: 14px;
 }
+.msg-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.msg-refresh {
+  font-size: 15px;
+  color: #1976D2;
+  cursor: pointer;
+  font-weight: normal;
+}
+.msg-refresh:hover {
+  color: #42A5F5;
+}
 .msg-read-all {
   font-size: 12px;
   color: #1976D2;
@@ -327,8 +413,13 @@ body {
   text-decoration: underline;
 }
 .msg-list {
-  max-height: 380px;
+  max-height: 320px;
   overflow-y: auto;
+}
+.msg-empty {
+  padding: 24px 0;
+  text-align: center;
+  color: #999;
 }
 .msg-item {
   display: flex;
@@ -600,6 +691,28 @@ body {
 }
 .content-main > div {
   min-width: 0;
+}
+
+/* ====== 无权限灰色占位 ====== */
+.perm-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  min-height: 420px;
+  background: #eceff3;
+  border-radius: 6px;
+  color: #999;
+}
+.perm-block-icon {
+  color: #bfbfbf;
+}
+.perm-block-text {
+  font-size: 15px;
+  color: #999;
+  letter-spacing: 0.5px;
 }
 
 /* ====== 移动端适配 ====== */

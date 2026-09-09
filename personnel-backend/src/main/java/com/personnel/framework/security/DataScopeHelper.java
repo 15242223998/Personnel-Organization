@@ -1,13 +1,8 @@
 package com.personnel.framework.security;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.personnel.modules.organization.entity.Organization;
 import com.personnel.modules.organization.mapper.OrganizationMapper;
-import com.personnel.system.entity.SysRole;
 import com.personnel.system.entity.SysUser;
-import com.personnel.system.entity.SysUserRole;
-import com.personnel.system.mapper.SysRoleMapper;
-import com.personnel.system.mapper.SysUserRoleMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -21,18 +16,28 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 数据权限助手：按当前用户角色的 dataScope 计算可访问部门范围
- * dataScope：1全部 2自定义(暂按下级处理) 3本级及下级 4本级
- * 返回 null 表示不限制；返回空集合表示无任何可见数据；否则为可见部门ID集合
+ * 数据权限助手：按当前用户的 userType 计算可访问部门范围（全系统唯一口径）。
+ *
+ * <p>权限收敛决策：不再读取 sys_user_role / sys_role 的 data_scope，改为用户类型常量映射：</p>
+ * <ul>
+ *   <li>userType=1 系统管理员 / 2 校级领导 / 3 组织部部长 / 4 组织员 → 全部（全校范围，不限制）；</li>
+ *   <li>userType=5 二级学院领导 → 本级及下级（以其本人所属部门为锚）；</li>
+ *   <li>userType=6 普通干部（及非法/缺省类型兜底）→ 仅本部门本级。</li>
+ * </ul>
+ *
+ * <p>返回 null 表示不限制；返回空集合表示无任何可见数据；否则为可见部门ID集合。</p>
  */
 @Component
 public class DataScopeHelper {
 
-    @Resource
-    private SysUserRoleMapper sysUserRoleMapper;
+    /** 全部：不做任何部门限制 */
+    private static final int SCOPE_ALL = 1;
 
-    @Resource
-    private SysRoleMapper sysRoleMapper;
+    /** 本级及下级（以本人部门为锚，含本人部门及其子孙机构） */
+    private static final int SCOPE_SELF_AND_CHILDREN = 3;
+
+    /** 仅本部门本级 */
+    private static final int SCOPE_SELF = 4;
 
     @Resource
     private OrganizationMapper organizationMapper;
@@ -43,9 +48,9 @@ public class DataScopeHelper {
             return null;
         }
         SysUser user = loginUser.getUser();
-        Integer scope = resolveDataScope(user.getId());
+        Integer scope = resolveDataScope(user);
         // 全部数据，不做限制
-        if (scope == null || scope == 1) {
+        if (scope == null || scope == SCOPE_ALL) {
             return null;
         }
         Long deptId = user.getDeptId();
@@ -54,39 +59,31 @@ public class DataScopeHelper {
             // 非“全部”范围却未归属部门，安全起见不返回任何数据
             return result;
         }
-        if (scope == 4) {
+        if (scope == SCOPE_SELF) {
             result.add(deptId);
             return result;
         }
-        // scope 2/3：本级及下级机构
+        // SCOPE_SELF_AND_CHILDREN：本级及下级机构
         collectSelfAndDescendants(deptId, result);
         return result;
     }
 
-    private Integer resolveDataScope(Long userId) {
-        List<SysUserRole> userRoles = sysUserRoleMapper.selectList(
-                new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
-        if (userRoles == null || userRoles.isEmpty()) {
-            return 4;
+    /**
+     * 由用户类型映射数据范围：
+     * 系统管理员/校级领导/组织部部长/组织员为全校(全部)；二级学院领导为本人部门及下级；普通干部仅本部门。
+     */
+    private Integer resolveDataScope(SysUser user) {
+        Integer userType = user.getUserType();
+        if (userType == null) {
+            return SCOPE_SELF;
         }
-        List<Long> roleIds = userRoles.stream()
-                .map(SysUserRole::getRoleId)
-                .filter(id -> id != null)
-                .distinct()
-                .toList();
-        if (roleIds.isEmpty()) {
-            return 4;
-        }
-        List<SysRole> roles = sysRoleMapper.selectBatchIds(roleIds);
-        int scope = 4;
-        if (roles != null) {
-            for (SysRole role : roles) {
-                if (role.getDataScope() != null && role.getDataScope() < scope) {
-                    scope = role.getDataScope();
-                }
-            }
-        }
-        return scope;
+        return switch (userType) {
+            case 1, 2, 3, 4 -> SCOPE_ALL;
+            case 5 -> SCOPE_SELF_AND_CHILDREN;
+            case 6 -> SCOPE_SELF;
+            // 低于1/大于6视为非法，安全兜底为仅本部门
+            default -> SCOPE_SELF;
+        };
     }
 
     private void collectSelfAndDescendants(Long rootId, Set<Long> out) {

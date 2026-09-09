@@ -22,6 +22,11 @@ export function getAbroadPage(params) {
   return request({ url: '/abroad/page', method: 'get', params })
 }
 
+// 供证照领用选择：该干部已批准且尚未出发的出国(境)记录
+export function getApprovedTrips(cadreId) {
+  return request({ url: '/abroad/approved', method: 'get', params: { cadreId } })
+}
+
 export function addAbroad(data) {
   return request({ url: '/abroad', method: 'post', data })
 }

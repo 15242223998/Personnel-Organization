@@ -8,8 +8,8 @@
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
           </div>
-          <h1>辽宁工业大学 - 组织人事档案管理系统</h1>
-          <p>辽宁工业大学 · 智慧组织人事管理平台</p>
+          <h1>辽宁某某大学 - 组织人事档案管理系统</h1>
+          <p>辽宁某某大学 · 智慧组织人事管理平台</p>
         </div>
         <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form">
           <el-form-item prop="username">
@@ -29,7 +29,7 @@
         <div class="register-link">
           <span @click="openRegister">没有账号？立即注册</span>
         </div>
-        <div class="login-footer">© 2026 辽宁工业大学 - 组织人事档案管理系统 版权所有</div>
+        <div class="login-footer">© 2026 辽宁某某大学 - 组织人事档案管理系统 版权所有</div>
       </div>
     </div>
 
@@ -91,7 +91,7 @@ function handleLogin() {
         const user = res.data
         const isAdmin = user.userType === 1
         localStorage.setItem('token', user.token)
-        userStore.setUser(user.username, String(user.id), user.realName, isAdmin ? 'admin' : 'cadre')
+        userStore.setUser(user.username, String(user.id), user.realName, isAdmin ? 'admin' : 'cadre', user.permissions)
         ElMessage.success(`欢迎，${user.realName || user.username}`)
         router.push('/')
       })

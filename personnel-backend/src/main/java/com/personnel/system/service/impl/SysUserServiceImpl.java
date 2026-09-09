@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.personnel.common.BusinessException;
 import com.personnel.framework.security.JwtUtil;
+import com.personnel.system.UserTypePermTemplate;
 import com.personnel.system.entity.SysUser;
 import com.personnel.system.mapper.SysUserMapper;
 import com.personnel.system.service.SysUserService;
@@ -44,8 +45,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         updateById(user);
         // 登录成功签发 JWT
         user.setToken(jwtUtil.generateToken(user.getId(), user.getUsername()));
-        // 不回传密码
+        // 不回传密码；permissions 返回"生效权限"（用户级覆盖优先，空则回退用户类型内置模板）
         user.setPassword(null);
+        user.setPermissions(resolveEffectivePermissions(user));
         return user;
     }
 
@@ -140,5 +142,36 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         user.setCadreId(null);
         updateById(user);
+    }
+
+    @Override
+    public void updateUserType(Long userId, Integer userType) {
+        if (userType == null || userType < 1 || userType > 6) {
+            throw new BusinessException("用户类型取值不合法");
+        }
+        SysUser user = getById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        user.setUserType(userType);
+        updateById(user);
+    }
+
+    @Override
+    public String resolveEffectivePermissions(SysUser user) {
+        if (user == null || user.getId() == null) {
+            return "";
+        }
+        // 系统管理员全通（不落库，仅返回值）
+        if (user.getUserType() != null && user.getUserType() == 1) {
+            return UserTypePermTemplate.ALL;
+        }
+        // 用户级权限覆盖优先（非空即视为管理员已单独授权）
+        if (StringUtils.hasText(user.getPermissions())) {
+            return user.getPermissions();
+        }
+        // 回退：用户类型内置默认模板（不再读取 sys_user_role / sys_role）
+        String template = UserTypePermTemplate.templateOf(user.getUserType());
+        return template == null ? "" : template;
     }
 }

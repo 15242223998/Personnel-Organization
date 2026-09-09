@@ -2,283 +2,529 @@
   <div>
     <div class="page-header">班子管理</div>
 
-    <div class="search-bar">
-      <span class="label">机构名称：</span>
-      <el-input v-model="search.deptName" placeholder="请输入机构名称" size="default" style="width:180px" clearable />
-      <span class="label">班子届次：</span>
-      <el-select v-model="search.term" placeholder="请选择" size="default" style="width:120px" clearable>
-        <el-option label="2026届" value="2026届" />
-        <el-option label="2025届" value="2025届" />
-        <el-option label="2024届" value="2024届" />
-      </el-select>
-      <el-button type="primary" @click="fetchData"><el-icon><Search /></el-icon> 查询</el-button>
-      <el-button @click="handleReset">重置</el-button>
-    </div>
+    <el-alert type="info" :closable="false" style="margin-bottom:12px" show-icon
+      title="数据说明：本页以真实组织树为骨架展示机构班子。已登记机构展示 org_team_member 班子登记数据（支持新增/编辑/删除）；尚未登记的机构保留“按在职校级/处级干部档案派生预览”作为参考（标注数据来源），并提供“登记班子”入口。" />
 
-    <div class="toolbar">
-      <el-button type="primary" @click="handleAdd"><el-icon><Plus /></el-icon> 新增班子</el-button>
-      <el-button @click="handleExport"><el-icon><Download /></el-icon> 导出</el-button>
-    </div>
-
-    <div class="table-wrap">
-      <el-table :data="tableData" border size="small">
-        <el-table-column type="index" label="序号" width="55" align="center" />
-        <el-table-column prop="deptName" label="机构名称" min-width="180" show-overflow-tooltip sortable />
-        <el-table-column prop="term" label="班子届次" width="100" align="center" sortable />
-        <el-table-column prop="leaderName" label="主要负责人" width="120" align="center" sortable />
-        <el-table-column prop="memberCount" label="班子人数" width="110" align="center" sortable />
-        <el-table-column prop="memberList" label="班子成员" min-width="300" show-overflow-tooltip />
-        <el-table-column prop="startDate" label="任期起始" width="110" align="center" sortable />
-        <el-table-column prop="endDate" label="任期届满" width="110" align="center" sortable />
-        <el-table-column prop="status" label="状态" width="100" align="center" sortable>
-          <template #default="{ row }">
-            <el-tag :type="row.status === '在任' ? 'success' : 'info'" size="small">{{ row.status }}</el-tag>
+    <div class="team-layout">
+      <!-- 左：组织树 -->
+      <div class="team-tree-panel" v-loading="loading">
+        <div class="tree-head">机构列表</div>
+        <el-input v-model="treeFilter" placeholder="输入机构名称过滤" clearable size="small" style="margin:8px 10px;width:calc(100% - 20px)" :prefix-icon="Search" @input="onTreeFilter" />
+        <el-tree
+          ref="treeRef"
+          :data="deptTree"
+          node-key="id"
+          :props="{ label: 'deptName', children: 'children' }"
+          :filter-node-method="filterNode"
+          highlight-current
+          default-expand-all
+          :expand-on-click-node="false"
+          @node-click="selectDept"
+        >
+          <template #default="{ data }">
+            <div class="tree-node">
+              <span class="tree-name">{{ data.deptName }}</span>
+              <el-tag v-if="regCount(data.id) > 0" type="success" size="small">班子{{ regCount(data.id) }}</el-tag>
+              <el-tag v-else-if="prevCount(data.id) > 0" type="primary" size="small" effect="plain">参考{{ prevCount(data.id) }}</el-tag>
+              <el-tag v-else type="info" size="small" effect="plain">空</el-tag>
+            </div>
           </template>
-        </el-table-column>
-        <el-table-column label="操作" width="180" align="center" fixed="right">
-          <template #default="{ row }">
-            <span class="link-blue" @click="handleEdit(row)">编辑</span>
-            <el-divider direction="vertical" />
-            <span class="link-blue" @click="handleView(row)">查看成员</span>
-            <el-divider direction="vertical" />
-            <span class="link-blue" style="color:#E53935" @click="handleDelete(row)">删除</span>
+        </el-tree>
+      </div>
+
+      <!-- 右：当前机构班子详情 -->
+      <div class="team-detail-panel" v-loading="loading">
+        <template v-if="currentDept">
+          <div class="detail-head">
+            <div class="detail-title">
+              <span class="dept-name">{{ currentDept.deptName }}</span>
+              <el-tag v-if="currentDept.deptLevel" size="small" effect="plain" style="margin-left:8px">{{ currentDept.deptLevel }}机构</el-tag>
+              <el-tag v-if="currentMembers.length" type="success" size="small" style="margin-left:8px">已登记 {{ currentMembers.length }} 人</el-tag>
+              <el-tag v-else type="primary" size="small" effect="plain" style="margin-left:8px">未登记（展示参考）</el-tag>
+            </div>
+            <div class="detail-actions">
+              <el-button type="primary" size="small" @click="openAddDialog"><el-icon><Plus /></el-icon> 登记班子/新增成员</el-button>
+              <el-button size="small" @click="handleExport"><el-icon><Download /></el-icon> 导出</el-button>
+            </div>
+          </div>
+
+          <!-- 已登记班子成员 -->
+          <template v-if="currentMembers.length">
+            <div class="source-line">
+              <span>数据来源：</span>
+              <el-tag type="success" size="small">班子成员登记表（org_team_member）</el-tag>
+            </div>
+            <el-table :data="currentMembers" border size="small" max-height="520">
+              <el-table-column prop="sortOrder" label="排序" width="60" align="center" />
+              <el-table-column prop="cadreName" label="姓名" width="90" align="center">
+                <template #default="{ row }"><b>{{ row.cadreName || '#' + row.cadreId }}</b></template>
+              </el-table-column>
+              <el-table-column prop="cadrePosition" label="现任职务" min-width="140" show-overflow-tooltip>
+                <template #default="{ row }">{{ row.cadrePosition || '-' }}</template>
+              </el-table-column>
+              <el-table-column prop="cadreDeptName" label="干部所在机构" min-width="150" show-overflow-tooltip>
+                <template #default="{ row }">{{ row.cadreDeptName || (row.deptName || '-') }}</template>
+              </el-table-column>
+              <el-table-column prop="leaderPost" label="班子职务" min-width="110" align="center">
+                <template #default="{ row }">
+                  <el-tag :type="row.isLeader === 1 ? 'danger' : ''" size="small">{{ row.leaderPost || '-' }}</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="主要负责人" width="100" align="center">
+                <template #default="{ row }">
+                  <el-tag :type="row.isLeader === 1 ? 'success' : 'info'" size="small">{{ row.isLeader === 1 ? '是' : '否' }}</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="任职起止" width="180" align="center">
+                <template #default="{ row }">
+                  {{ fmtDate(row.startDate) }} ~ {{ row.endDate ? fmtDate(row.endDate) : '现任' }}
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="120" align="center" fixed="right">
+                <template #default="{ row }">
+                  <span class="link-blue" @click="openEditDialog(row)" style="margin-right:10px">编辑</span>
+                  <span class="link-blue" style="color:#f56c6c" @click="handleDelete(row)">删除</span>
+                </template>
+              </el-table-column>
+            </el-table>
           </template>
-        </el-table-column>
-      </el-table>
+
+          <!-- 未登记：派生预览（参考） -->
+          <template v-else>
+            <div class="source-line">
+              <span>数据来源：</span>
+              <el-tag type="primary" size="small">干部档案派生预览（/cadre/page，在职 · 职务层次为校级/处级）</el-tag>
+              <span style="margin-left:8px;color:#999;font-size:12px">该机构尚未在班子成员登记表中登记，以下为参考数据，不可编辑；请点击右上角“登记班子”录入正式班子。</span>
+            </div>
+            <template v-if="previewMembers.length">
+              <el-table :data="previewMembers" border size="small" max-height="520">
+                <el-table-column type="index" label="序号" width="55" align="center" />
+                <el-table-column prop="name" label="姓名" width="90" align="center" />
+                <el-table-column prop="position" label="现任职务" min-width="160" show-overflow-tooltip>
+                  <template #default="{ row }">{{ row.position || '-' }}</template>
+                </el-table-column>
+                <el-table-column prop="positionLevel" label="职务层次" width="90" align="center" />
+                <el-table-column label="主要负责人(参考)" width="140" align="center">
+                  <template #default="{ row }">
+                    <el-tag :type="isPrincipalCadre(row) ? 'success' : 'info'" size="small">{{ isPrincipalCadre(row) ? '是' : '否' }}</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="positionStartDateText" label="任现职时间" width="110" align="center">
+                  <template #default="{ row }">{{ fmtDate(row.positionStartDate) }}</template>
+                </el-table-column>
+              </el-table>
+            </template>
+            <el-empty v-else :image-size="70" description="该机构暂无“校级/处级在职”干部档案可供参考，可直接点击右上角“登记班子”录入成员" />
+          </template>
+        </template>
+        <el-empty v-else :image-size="80" description="请在左侧选择机构" />
+      </div>
     </div>
 
-    <div class="pagination-wrap">
-      <el-pagination
-        v-model:current-page="page.current"
-        v-model:page-size="page.size"
-        :page-sizes="[10,20,50]"
-        :total="page.total"
-        layout="total,sizes,prev,pager,next,jumper"
-        background
-        small
-        @size-change="handleSizeChange"
-        @current-change="fetchData"
-      />
-    </div>
-
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="600px" @close="resetForm">
-      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="所属机构" prop="deptName">
-          <el-select v-model="form.deptName" placeholder="请选择机构" style="width:100%" filterable>
-            <el-option label="机械工程学院" value="机械工程学院" />
-            <el-option label="电子信息学院" value="电子信息学院" />
-            <el-option label="经济管理学院" value="经济管理学院" />
-            <el-option label="计算机科学与技术学院" value="计算机科学与技术学院" />
-            <el-option label="外国语学院" value="外国语学院" />
-            <el-option label="马克思主义学院" value="马克思主义学院" />
-            <el-option label="体育教学部" value="体育教学部" />
-            <el-option label="继续教育学院" value="继续教育学院" />
+    <!-- 新增/编辑班子成员弹窗 -->
+    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="620px" destroy-on-close @close="resetForm">
+      <el-form ref="formRef" :model="form" :rules="formRules" label-width="120px">
+        <el-form-item label="机构" prop="deptId">
+          <el-tree-select
+            v-model="form.deptId"
+            :data="deptTree"
+            :props="{ label: 'deptName', value: 'id', children: 'children' }"
+            placeholder="请选择机构（可搜索）"
+            check-strictly
+            filterable
+            style="width:100%"
+            @change="onDeptChange"
+          />
+        </el-form-item>
+        <el-form-item label="干部" prop="cadreId">
+          <el-select v-model="form.cadreId" placeholder="请选择在职干部（真实档案 /cadre/page）" filterable style="width:100%">
+            <el-option v-for="c in onJobCadres" :key="c.id" :label="cadreLabel(c)" :value="c.id" />
+          </el-select>
+          <div style="font-size:12px;color:#999;line-height:1.5;margin-top:2px">仅展示档案状态为“在职”的干部，选项格式：姓名-部门-现任职务</div>
+        </el-form-item>
+        <el-form-item label="班子职务" prop="leaderPost">
+          <el-select v-model="form.leaderPost" placeholder="请选择班子职务" filterable allow-create style="width:100%">
+            <el-option v-for="p in leaderPostOptions" :key="p" :label="p" :value="p" />
           </el-select>
         </el-form-item>
-        <el-form-item label="班子届次" prop="term">
-          <el-input v-model="form.term" placeholder="如：2026届" />
+        <el-form-item label="是否主要负责人">
+          <el-radio-group v-model="form.isLeader">
+            <el-radio :value="1">是（正职）</el-radio>
+            <el-radio :value="0">否</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="主要负责人" prop="leaderName">
-          <el-input v-model="form.leaderName" placeholder="请输入主要负责人姓名" />
+        <el-form-item label="排序">
+          <el-input-number v-model="form.sortOrder" :min="0" style="width:100%" />
         </el-form-item>
-        <el-form-item label="班子人数" prop="memberCount">
-          <el-input-number v-model="form.memberCount" :min="1" :max="20" style="width:100%" />
+        <el-form-item label="任职起始">
+          <el-date-picker v-model="form.startDate" type="date" value-format="YYYY-MM-DD" placeholder="任职开始日期（可空）" style="width:100%" />
         </el-form-item>
-        <el-form-item label="任期起始" prop="startDate">
-          <el-date-picker v-model="form.startDate" type="date" placeholder="选择日期" style="width:100%" value-format="YYYY-MM-DD" />
-        </el-form-item>
-        <el-form-item label="任期届满" prop="endDate">
-          <el-date-picker v-model="form.endDate" type="date" placeholder="选择日期" style="width:100%" value-format="YYYY-MM-DD" />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="form.status" style="width:100%">
-            <el-option label="在任" value="在任" />
-            <el-option label="届满" value="届满" />
-            <el-option label="调整中" value="调整中" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="班子分工" prop="dutyDesc">
-          <el-input v-model="form.dutyDesc" type="textarea" :rows="3" placeholder="描述班子成员分工情况" />
+        <el-form-item label="任职结束">
+          <el-date-picker v-model="form.endDate" type="date" value-format="YYYY-MM-DD" placeholder="任职结束日期（空=现任）" style="width:100%" />
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button type="primary" :loading="saving" @click="handleSubmit">确定</el-button>
       </template>
-    </el-dialog>
-
-    <el-dialog title="班子成员" v-model="memberDialogVisible" width="800px">
-      <el-table :data="memberTable" border size="small">
-        <el-table-column type="index" label="序号" width="55" align="center" />
-        <el-table-column prop="name" label="姓名" width="90" align="center" />
-        <el-table-column prop="position" label="职务" min-width="160" show-overflow-tooltip />
-        <el-table-column prop="duty" label="分工职责" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="phone" label="联系电话" width="130" align="center" />
-        <el-table-column prop="isPrincipal" label="是否正职" width="90" align="center">
-          <template #default="{ row }">
-            <el-tag :type="row.isPrincipal ? 'success' : 'info'" size="small">{{ row.isPrincipal ? '是' : '否' }}</el-tag>
-          </template>
-        </el-table-column>
-      </el-table>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, nextTick } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Plus, Download } from '@element-plus/icons-vue'
 import { showExportDialog } from '@/utils/export-store'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import request from '@/utils/request'
 
-const search = reactive({ deptName: '', term: '' })
-const page = reactive({ current: 1, size: 10, total: 0 })
+const loading = ref(false)
+const saving = ref(false)
+const treeRef = ref(null)
+const formRef = ref(null)
+const treeFilter = ref('')
+
+const deptTree = ref([])
+const allDepts = ref([])          // 扁平机构节点
+const teamAll = ref([])           // 已登记班子（/org-team/list 全部）
+const onJobCadres = ref([])       // 在职干部（/cadre/page）
+const currentDept = ref(null)
+const currentDeptId = ref(null)
+
 const dialogVisible = ref(false)
-const memberDialogVisible = ref(false)
-const dialogTitle = ref('')
 const isEdit = ref(false)
 const editId = ref(null)
-const formRef = ref(null)
-const memberTable = ref([])
 
 const form = reactive({
-  deptName: '', term: '', leaderName: '', memberCount: 5,
-  startDate: '', endDate: '', status: '在任', dutyDesc: ''
+  deptId: null,
+  cadreId: null,
+  leaderPost: '',
+  isLeader: 0,
+  sortOrder: 0,
+  startDate: '',
+  endDate: ''
 })
 
-const rules = {
-  deptName: [{ required: true, message: '请选择机构', trigger: 'change' }],
-  term: [{ required: true, message: '请输入班子届次', trigger: 'blur' }],
-  leaderName: [{ required: true, message: '请输入主要负责人', trigger: 'blur' }],
-  memberCount: [{ required: true, message: '请输入班子人数', trigger: 'blur' }],
-  startDate: [{ required: true, message: '请选择任期起始', trigger: 'change' }],
+const formRules = {
+  deptId: [{ required: true, message: '请选择机构', trigger: 'change' }],
+  cadreId: [{ required: true, message: '请选择干部', trigger: 'change' }],
+  leaderPost: [{ required: true, message: '请选择班子职务', trigger: 'change' }]
 }
 
-const mockData = [
-  { id: 1, deptName: '机械工程学院', term: '2026届', leaderName: '张建国', memberCount: 7, memberList: '张建国(院长)、李永强(书记)、王海峰(副院长)、陈志远(副院长)、赵文博(副书记)、刘明辉(教学秘书)、孙晓东(科研秘书)', startDate: '2026-06-01', endDate: '2028-05-31', status: '在任' },
-  { id: 2, deptName: '电子信息学院', term: '2026届', leaderName: '王志强', memberCount: 9, memberList: '王志强(院长)、赵国栋(书记)、钱伟强(副院长)、周海涛(副院长)、吴玉芬(副书记)、郑建国(系主任)、王丽华(系主任)、张明辉(教学秘书)、李新宇(科研秘书)', startDate: '2026-06-01', endDate: '2028-05-31', status: '在任' },
-  { id: 3, deptName: '经济管理学院', term: '2025届', leaderName: '刘德明', memberCount: 5, memberList: '刘德明(院长)、孙红梅(书记)、陈丽华(副院长)、李国强(副书记)、王建民(系主任)', startDate: '2025-09-01', endDate: '2027-08-31', status: '在任' },
-  { id: 4, deptName: '计算机科学与技术学院', term: '2026届', leaderName: '郑海涛', memberCount: 7, memberList: '郑海涛(院长)、钱淑华(书记)、李伟民(副院长)、赵建国(副院长)、孙玉芬(副书记)、王海峰(系主任)、陈志远(系主任)', startDate: '2026-03-01', endDate: '2028-02-28', status: '在任' },
-  { id: 5, deptName: '外国语学院', term: '2025届', leaderName: '周伟民', memberCount: 6, memberList: '周伟民(院长)、吴玉芬(书记)、刘德明(副院长)、李秀英(副书记)、王芳(系主任)、张丽(教学秘书)', startDate: '2025-09-01', endDate: '2027-08-31', status: '在任' },
-  { id: 6, deptName: '马克思主义学院', term: '2024届', leaderName: '赵建国', memberCount: 5, memberList: '赵建国(院长)、陈志远(书记)、刘明辉(副院长)、孙晓东(副书记)、王丽华(系主任)', startDate: '2024-09-01', endDate: '2026-08-31', status: '届满' },
-  { id: 7, deptName: '体育教学部', term: '2026届', leaderName: '钱伟强', memberCount: 4, memberList: '钱伟强(主任)、李国强(副主任)、王建民(教学组长)、张明辉(行政秘书)', startDate: '2026-06-01', endDate: '2028-05-31', status: '在任' },
-  { id: 8, deptName: '继续教育学院', term: '2025届', leaderName: '李伟民', memberCount: 5, memberList: '李伟民(院长)、孙玉芬(书记)、赵文博(副院长)、王海峰(副书记)、陈志远(教学主任)', startDate: '2025-09-01', endDate: '2027-08-31', status: '在任' },
-  { id: 9, deptName: '党委办公室、校长办公室', term: '2026届', leaderName: '王海峰', memberCount: 3, memberList: '王海峰(主任)、张丽(副主任)、刘明辉(副主任)', startDate: '2026-06-01', endDate: '2028-05-31', status: '在任' },
-  { id: 10, deptName: '组织部（党校）', term: '2026届', leaderName: '李秀英', memberCount: 3, memberList: '李秀英(部长)、王芳(副部长)、赵文博(党校办公室主任)', startDate: '2026-06-01', endDate: '2028-05-31', status: '在任' },
-  { id: 11, deptName: '人事处（教师工作部）', term: '2025届', leaderName: '陈丽华', memberCount: 4, memberList: '陈丽华(处长)、李国强(副处长)、王建民(副处长)、孙晓东(科长)', startDate: '2025-09-01', endDate: '2027-08-31', status: '在任' },
+const leaderPostOptions = [
+  '党委书记', '校长', '院长', '校长助理', '党委副书记', '纪委书记', '副校长', '副院长',
+  '部长', '处长', '副处长', '主任', '副主任', '主席', '副主席', '团委书记', '其他'
 ]
 
-const allData = ref([...mockData])
+const dialogTitle = computed(() => (isEdit.value ? '编辑班子成员' : '登记班子（新增成员）'))
 
-const filteredData = computed(() => {
-  let list = allData.value
-  if (search.deptName) list = list.filter(d => d.deptName.includes(search.deptName))
-  if (search.term) list = list.filter(d => d.term === search.term)
-  return list
-})
-
-const tableData = computed(() => {
-  const start = (page.current - 1) * page.size
-  return filteredData.value.slice(start, start + page.size)
-})
-
-function fetchData() {
-  page.total = filteredData.value.length
+function fmtDate(v) {
+  if (v === null || v === undefined || v === '') return '-'
+  return String(v).slice(0, 10)
 }
 
-function handleReset() {
-  search.deptName = ''
-  search.term = ''
-  page.current = 1
-  fetchData()
+function cadreLabel(c) {
+  return c.name + '-' + (c.deptName || '-') + '-' + (c.position || '无职务')
 }
 
-function handleSizeChange() {
-  page.current = 1
-  fetchData()
+// ---------- 数据加载 ----------
+async function loadTree() {
+  const res = await request({ url: '/organization/tree', method: 'get' })
+  deptTree.value = res.data || []
+  allDepts.value = []
+  const walk = (list) => {
+    ;(list || []).forEach(n => {
+      allDepts.value.push(n)
+      if (n.children && n.children.length) walk(n.children)
+    })
+  }
+  walk(deptTree.value)
 }
 
+async function loadTeams() {
+  const res = await request({ url: '/org-team/list', method: 'get' })
+  teamAll.value = (res.data || []).slice().sort((a, b) => (a.deptId || 0) - (b.deptId || 0) || (a.sortOrder || 0) - (b.sortOrder || 0))
+}
+
+async function loadCadres() {
+  // 在职干部一次拉取（分页 size=2000），用于登记选择与派生预览
+  const res = await request({
+    url: '/cadre/page',
+    method: 'post',
+    params: { current: 1, size: 2000 },
+    data: { cadreStatus: 'ON_JOB' }
+  })
+  const records = (res.data && res.data.records) || []
+  const dmap = {}
+  allDepts.value.forEach(d => { dmap[d.id] = d.deptName })
+  onJobCadres.value = records.map(c => ({
+    ...c,
+    deptName: dmap[c.deptId] || '-'
+  }))
+}
+
+// 主要负责人（派生预览用推断）：职务字段含负责人/领导/书记/正职/主任且非副职
+function isPrincipalCadre(c) {
+  const pos = c.position || ''
+  const hasVice = pos.indexOf('副') >= 0
+  return (pos.indexOf('负责人') >= 0 || pos.indexOf('领导') >= 0 || pos.indexOf('书记') >= 0 || pos.indexOf('正职') >= 0 || pos.indexOf('主任') >= 0) && !hasVice
+}
+
+// 各机构：已登记成员 / 派生参考成员
+function currentMembersOf(deptId) {
+  return teamAll.value.filter(t => String(t.deptId) === String(deptId))
+}
+
+function previewMembersOf(deptId) {
+  return onJobCadres.value.filter(c => {
+    if (String(c.deptId) !== String(deptId)) return false
+    return c.positionLevel === '校级' || c.positionLevel === '处级'
+  }).sort((a, b) => (isPrincipalCadre(a) ? 0 : 1) - (isPrincipalCadre(b) ? 0 : 1))
+}
+
+const currentMembers = computed(() => currentDeptId.value == null ? [] : currentMembersOf(currentDeptId.value))
+const previewMembers = computed(() => currentDeptId.value == null ? [] : previewMembersOf(currentDeptId.value))
+
+function regCount(deptId) {
+  return teamAll.value.filter(t => String(t.deptId) === String(deptId)).length
+}
+
+function prevCount(deptId) {
+  return onJobCadres.value.filter(c => String(c.deptId) === String(deptId) && (c.positionLevel === '校级' || c.positionLevel === '处级')).length
+}
+
+async function selectDept(node) {
+  currentDept.value = node
+  currentDeptId.value = node.id
+}
+
+function filterNode(value, data) {
+  if (!value) return true
+  return (data.deptName || '').includes(value)
+}
+
+function onTreeFilter() {
+  treeRef.value?.filter(treeFilter.value)
+}
+
+// ---------- 新增/编辑 ----------
 function resetForm() {
   formRef.value?.resetFields()
+  Object.assign(form, {
+    deptId: currentDeptId.value,
+    cadreId: null,
+    leaderPost: '',
+    isLeader: 0,
+    sortOrder: 0,
+    startDate: '',
+    endDate: ''
+  })
   isEdit.value = false
   editId.value = null
-  Object.assign(form, { deptName: '', term: '', leaderName: '', memberCount: 5, startDate: '', endDate: '', status: '在任', dutyDesc: '' })
 }
 
-function handleAdd() {
-  dialogTitle.value = '新增班子'
+function openAddDialog() {
+  resetForm()
   dialogVisible.value = true
 }
 
-function handleEdit(row) {
-  dialogTitle.value = '编辑班子'
+function openEditDialog(row) {
+  resetForm()
   isEdit.value = true
   editId.value = row.id
   Object.assign(form, {
-    deptName: row.deptName, term: row.term, leaderName: row.leaderName,
-    memberCount: row.memberCount, startDate: row.startDate, endDate: row.endDate,
-    status: row.status, dutyDesc: row.dutyDesc || ''
+    deptId: row.deptId,
+    cadreId: row.cadreId,
+    leaderPost: row.leaderPost || '',
+    isLeader: row.isLeader === 1 ? 1 : 0,
+    sortOrder: row.sortOrder ?? 0,
+    startDate: row.startDate || '',
+    endDate: row.endDate || ''
   })
   dialogVisible.value = true
 }
 
-function handleView(row) {
-  const names = row.memberList.split('、')
-  memberTable.value = names.map((n, i) => {
-    const match = n.match(/^(.+?)\((.+?)\)$/)
-    return {
-      name: match ? match[1] : n,
-      position: match ? match[2] : '',
-      duty: '负责相关工作',
-      phone: '138xxxx' + String(1000 + i).slice(-4),
-      isPrincipal: i === 0
-    }
-  })
-  memberDialogVisible.value = true
+function onDeptChange() {
+  // 切换机构后清空已选干部，避免串机构
+  form.cadreId = null
 }
 
-function handleSubmit() {
-  formRef.value.validate((valid) => {
+async function handleSubmit() {
+  formRef.value.validate(async (valid) => {
     if (!valid) return
-    const memberList = form.deptName + '班子成员名单'
-    if (isEdit.value) {
-      const item = allData.value.find(d => d.id === editId.value)
-      if (item) {
-        Object.assign(item, { ...form, memberList: item.memberList })
-      }
-      ElMessage.success('班子信息更新成功')
-    } else {
-      allData.value.push({
-        id: Date.now(),
-        ...form,
-        memberList: memberList
-      })
-      ElMessage.success('班子创建成功')
+    saving.value = true
+    const payload = {
+      deptId: form.deptId,
+      cadreId: form.cadreId,
+      leaderPost: form.leaderPost,
+      isLeader: form.isLeader === 1 ? 1 : 0,
+      sortOrder: form.sortOrder ?? 0,
+      startDate: form.startDate || null,
+      endDate: form.endDate || null
     }
-    dialogVisible.value = false
-    fetchData()
+    try {
+      if (isEdit.value) {
+        await request({ url: '/org-team', method: 'put', data: { ...payload, id: editId.value } })
+        ElMessage.success('班子记录已更新')
+      } else {
+        await request({ url: '/org-team', method: 'post', data: payload })
+        ElMessage.success('班子登记成功')
+      }
+      dialogVisible.value = false
+      await refresh()
+    } catch (e) {
+      // 拦截器已提示业务错误（如机构/干部不存在、同一机构干部重复登记）
+    } finally {
+      saving.value = false
+    }
   })
 }
 
-function handleDelete(row) {
-  ElMessageBox.confirm('确定删除该班子记录吗？', '提示', { type: 'warning' }).then(() => {
-    allData.value = allData.value.filter(d => d.id !== row.id)
+async function handleDelete(row) {
+  try {
+    await ElMessageBox.confirm(`确定删除 ${row.cadreName || ('#' + row.cadreId)} 的“${row.leaderPost || '班子'}”登记吗？`, '提示', { type: 'warning' })
+  } catch (e) {
+    return
+  }
+  try {
+    await request({ url: `/org-team/${row.id}`, method: 'delete' })
     ElMessage.success('删除成功')
-    fetchData()
-  }).catch(() => {})
+    await refresh()
+  } catch (e) {
+    ElMessage.error('删除失败')
+  }
+}
+
+async function refresh() {
+  await loadTeams()
+}
+
+async function init() {
+  loading.value = true
+  try {
+    await loadTree()
+    await Promise.all([loadTeams(), loadCadres()])
+    // 默认选中根节点
+    if (allDepts.value.length) {
+      const root = deptTree.value[0]
+      currentDept.value = root
+      currentDeptId.value = root.id
+      await nextTick()
+      treeRef.value?.setCurrentKey(root.id)
+    }
+  } catch (e) {
+    teamAll.value = []
+    onJobCadres.value = []
+  } finally {
+    loading.value = false
+  }
 }
 
 function handleExport() {
-  showExportDialog(filteredData.value, [
+  if (!currentMembers.value.length) {
+    ElMessage.warning('当前机构尚无已登记班子数据，登记后才能导出')
+    return
+  }
+  showExportDialog(currentMembers.value.map(m => ({
+    deptName: currentDept.value.deptName,
+    cadreName: m.cadreName,
+    cadrePosition: m.cadrePosition || '-',
+    cadreDeptName: m.cadreDeptName || '-',
+    leaderPost: m.leaderPost || '-',
+    isLeaderText: m.isLeader === 1 ? '是' : '否',
+    startDate: fmtDate(m.startDate),
+    endDate: m.endDate ? fmtDate(m.endDate) : '现任',
+    sortOrder: m.sortOrder ?? 0
+  })), [
     { prop: 'deptName', label: '机构名称' },
-    { prop: 'term', label: '班子届次' },
-    { prop: 'leaderName', label: '主要负责人' },
-    { prop: 'memberCount', label: '班子人数' },
-    { prop: 'memberList', label: '班子成员' },
-    { prop: 'startDate', label: '任期起始' },
-    { prop: 'endDate', label: '任期届满' },
-    { prop: 'status', label: '状态' }
+    { prop: 'cadreName', label: '姓名' },
+    { prop: 'cadrePosition', label: '现任职务' },
+    { prop: 'cadreDeptName', label: '干部所在机构' },
+    { prop: 'leaderPost', label: '班子职务' },
+    { prop: 'isLeaderText', label: '主要负责人' },
+    { prop: 'startDate', label: '任职开始' },
+    { prop: 'endDate', label: '任职结束' },
+    { prop: 'sortOrder', label: '排序' }
   ], '班子管理')
 }
 
-fetchData()
+init()
 </script>
+
+<style scoped>
+.team-layout {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+.team-tree-panel {
+  width: 340px;
+  flex: 0 0 340px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+  padding-bottom: 8px;
+}
+.tree-head {
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #1976D2;
+  border-bottom: 2px solid #1976D2;
+  background: #fafbfc;
+}
+.tree-node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 6px;
+}
+.tree-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.team-detail-panel {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  padding: 12px 14px;
+  min-height: 480px;
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+}
+.detail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.detail-title {
+  display: flex;
+  align-items: center;
+}
+.dept-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+.source-line {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #555;
+  background: #f7fafd;
+  border: 1px solid #e3ecf5;
+  border-radius: 2px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+}
+.link-blue {
+  color: #1976D2;
+  cursor: pointer;
+}
+</style>

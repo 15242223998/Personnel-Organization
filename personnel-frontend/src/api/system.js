@@ -33,6 +33,16 @@ export function resetUserPwd(id) {
   return request({ url: `/sys/user/${id}/reset-pwd`, method: 'put' })
 }
 
+// 用户模块级权限保存：body 传 { permissions: ["cadre", ...] }
+export function putUserPermissions(id, data) {
+  return request({ url: `/user/${id}/permissions`, method: 'put', data })
+}
+
+// 修改用户类型（1系统管理员 ~ 6普通干部）
+export function putUserType(id, userType) {
+  return request({ url: `/user/${id}/type`, method: 'put', params: { userType } })
+}
+
 export function getRoleList(params) {
   return request({ url: '/sys/role/list', method: 'get', params })
 }
@@ -105,4 +115,29 @@ export function deleteLoginLog(id) {
 }
 export function cleanLoginLog() {
   return request({ url: '/login-log/clean', method: 'delete' })
+}
+
+// ===== 政策法规管理（policy_document） =====
+export function getPolicyDocumentPage(params) {
+  return request({ url: '/policy-document/page', method: 'get', params })
+}
+
+export function getPolicyDocumentList() {
+  return request({ url: '/policy-document/list', method: 'get' })
+}
+
+export function getPolicyDocument(id) {
+  return request({ url: `/policy-document/${id}`, method: 'get' })
+}
+
+export function addPolicyDocument(data) {
+  return request({ url: '/policy-document', method: 'post', data })
+}
+
+export function updatePolicyDocument(data) {
+  return request({ url: '/policy-document', method: 'put', data })
+}
+
+export function deletePolicyDocument(id) {
+  return request({ url: `/policy-document/${id}`, method: 'delete' })
 }

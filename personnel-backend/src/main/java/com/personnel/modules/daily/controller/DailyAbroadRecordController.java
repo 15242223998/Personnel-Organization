@@ -32,6 +32,24 @@ public class DailyAbroadRecordController {
         return Result.success(dailyAbroadRecordService.list());
     }
 
+    /** 供证照领用选择：某干部已批准且尚未出发（或进行中）的出国(境)记录 */
+    @GetMapping("/approved")
+    public Result<List<DailyAbroadRecord>> approvedOptions(@RequestParam Long cadreId) {
+        List<DailyAbroadRecord> all = dailyAbroadRecordService.list(
+                new LambdaQueryWrapper<DailyAbroadRecord>()
+                        .eq(DailyAbroadRecord::getCadreId, cadreId)
+                        .eq(DailyAbroadRecord::getIsApproved, 1)
+                        .orderByAsc(DailyAbroadRecord::getDepartDate));
+        java.time.LocalDate today = java.time.LocalDate.now();
+        List<DailyAbroadRecord> result = new java.util.ArrayList<>();
+        for (DailyAbroadRecord r : all) {
+            if (r.getDepartDate() != null && !r.getDepartDate().isBefore(today)) {
+                result.add(r);
+            }
+        }
+        return Result.success(result);
+    }
+
     @PostMapping
     public Result<Void> create(@RequestBody DailyAbroadRecord record) {
         dailyAbroadRecordService.save(record);

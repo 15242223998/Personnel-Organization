@@ -16,19 +16,20 @@
 
     <div class="toolbar">
       <el-button type="primary" @click="openAdd"><el-icon><Plus /></el-icon> 新增职级</el-button>
+      <el-button @click="handleExport"><el-icon><Download /></el-icon> 导出</el-button>
     </div>
 
     <div class="table-wrap">
       <el-table :data="tableData" border size="small" v-loading="loading">
-        <el-table-column prop="rankName" label="职级名称" min-width="180" show-overflow-tooltip sortable />
-        <el-table-column prop="rankType" label="职级类型" min-width="110" align="center" sortable>
+        <el-table-column prop="rankName" label="职级名称" min-width="200" show-overflow-tooltip sortable />
+        <el-table-column prop="rankType" label="职级类型" min-width="120" align="center" sortable>
           <template #default="{ row }">
             <el-tag :type="row.rankType === '管理岗' ? 'primary' : 'success'" size="small">{{ row.rankType }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="promotionYears" label="晋升所需年限" width="130" sortable />
-        <el-table-column prop="rankSort" label="排序" width="80" sortable />
-        <el-table-column prop="status" label="状态" width="80" sortable>
+        <el-table-column prop="promotionYears" label="晋升所需年限" width="130" align="center" sortable />
+        <el-table-column prop="sortOrder" label="排序" width="90" align="center" sortable />
+        <el-table-column prop="status" label="状态" width="90" align="center" sortable>
           <template #default="{ row }">
             <el-tag :type="row.status === 1 ? 'success' : 'info'" size="small">{{ row.status === 1 ? '启用' : '停用' }}</el-tag>
           </template>
@@ -43,14 +44,15 @@
       <el-pagination
         v-model:current-page="page.current"
         v-model:page-size="page.size"
-        :total="page.total"
+        :total="pageTotal"
         :page-sizes="[10, 20, 50]"
         layout="total, sizes, prev, pager, next"
+        @size-change="handleSizeChange"
       />
     </div>
 
     <el-dialog :title="dialogTitle" v-model="dialogVisible" width="500px" @close="resetForm">
-      <el-form ref="formRef" :model="form" :rules="rules" label-width="120px">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="130px">
         <el-form-item label="职级名称" prop="rankName">
           <el-input v-model="form.rankName" placeholder="请输入职级名称" />
         </el-form-item>
@@ -63,8 +65,8 @@
         <el-form-item label="晋升所需年限" prop="promotionYears">
           <el-input-number v-model="form.promotionYears" :min="0" style="width:100%" />
         </el-form-item>
-        <el-form-item label="排序" prop="rankSort">
-          <el-input-number v-model="form.rankSort" :min="0" style="width:100%" />
+        <el-form-item label="排序" prop="sortOrder">
+          <el-input-number v-model="form.sortOrder" :min="0" style="width:100%" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -82,10 +84,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
-import { Search, Plus } from '@element-plus/icons-vue'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { Search, Plus, Download } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { showExportDialog } from '@/utils/export-store'
+import request from '@/utils/request'
 
 const loading = ref(false)
 const dialogVisible = ref(false)
@@ -99,26 +102,49 @@ const searchForm = reactive({
   rankType: ''
 })
 
-const tableData = ref([
-  { id: 1, rankName: '一级调研员', rankType: '管理岗', promotionYears: 4, rankSort: 1, status: 1 },
-  { id: 2, rankName: '二级调研员', rankType: '管理岗', promotionYears: 3, rankSort: 2, status: 1 },
-  { id: 3, rankName: '三级调研员', rankType: '管理岗', promotionYears: 2, rankSort: 3, status: 1 },
-  { id: 4, rankName: '教授', rankType: '专业技术岗', promotionYears: 5, rankSort: 4, status: 1 },
-  { id: 5, rankName: '副教授', rankType: '专业技术岗', promotionYears: 4, rankSort: 5, status: 1 },
-  { id: 6, rankName: '讲师', rankType: '专业技术岗', promotionYears: 3, rankSort: 6, status: 1 }
-])
+const allData = ref([])
 
-const page = reactive({
-  current: 1,
-  size: 10,
-  total: 6
+const page = reactive({ current: 1, size: 10 })
+
+async function fetchData() {
+  loading.value = true
+  try {
+    const res = await request({ url: '/rank/list', method: 'get' })
+    allData.value = (res.data || []).slice().sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+  } catch (e) {
+    allData.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+const filteredData = computed(() => {
+  let list = allData.value
+  if (searchForm.rankName) list = list.filter(d => (d.rankName || '').includes(searchForm.rankName))
+  if (searchForm.rankType) list = list.filter(d => d.rankType === searchForm.rankType)
+  return list
 })
+
+const pageTotal = computed(() => filteredData.value.length)
+
+const tableData = computed(() => {
+  const start = (page.current - 1) * page.size
+  return filteredData.value.slice(start, start + page.size)
+})
+
+function handleSearch() { page.current = 1 }
+function handleReset() {
+  searchForm.rankName = ''
+  searchForm.rankType = ''
+  page.current = 1
+}
+function handleSizeChange() { page.current = 1 }
 
 const form = reactive({
   rankName: '',
   rankType: '',
   promotionYears: 0,
-  rankSort: 0,
+  sortOrder: 0,
   status: 1
 })
 
@@ -129,20 +155,11 @@ const rules = {
 
 const dialogTitle = computed(() => isEdit.value ? '编辑职级' : '新增职级')
 
-function handleSearch() {
-  ElMessage.success('查询完成')
-}
-
-function handleReset() {
-  searchForm.rankName = ''
-  searchForm.rankType = ''
-}
-
 function resetForm() {
   formRef.value?.resetFields()
   isEdit.value = false
   editId.value = null
-  Object.assign(form, { rankName: '', rankType: '', promotionYears: 0, rankSort: 0, status: 1 })
+  Object.assign(form, { rankName: '', rankType: '', promotionYears: 0, sortOrder: 0, status: 1 })
 }
 
 function openAdd() {
@@ -154,38 +171,69 @@ function openEdit(row) {
   resetForm()
   isEdit.value = true
   editId.value = row.id
-  Object.assign(form, row)
+  Object.assign(form, {
+    rankName: row.rankName || '',
+    rankType: row.rankType || '',
+    promotionYears: row.promotionYears || 0,
+    sortOrder: row.sortOrder || 0,
+    status: row.status === 0 ? 0 : 1
+  })
   dialogVisible.value = true
 }
 
-function handleSubmit() {
-  formRef.value.validate((valid) => {
+async function handleSubmit() {
+  formRef.value.validate(async (valid) => {
     if (!valid) return
     submitLoading.value = true
-    setTimeout(() => {
-      ElMessage.success(isEdit.value ? '更新成功' : '添加成功')
+    try {
+      const body = {
+        rankName: form.rankName,
+        rankType: form.rankType,
+        promotionYears: form.promotionYears || 0,
+        sortOrder: form.sortOrder || 0,
+        status: form.status === 0 ? 0 : 1
+      }
+      if (isEdit.value) {
+        await request({ url: '/rank', method: 'put', data: { ...body, id: editId.value } })
+        ElMessage.success('更新成功')
+      } else {
+        await request({ url: '/rank', method: 'post', data: body })
+        ElMessage.success('添加成功')
+      }
       dialogVisible.value = false
+      await fetchData()
+    } catch (e) {
+      // 拦截器已提示
+    } finally {
       submitLoading.value = false
-    }, 500)
+    }
   })
 }
 
-function handleDelete(row) {
-  ElMessageBox.confirm('确定删除该职级吗？', '提示', { type: 'warning' }).then(() => {
+async function handleDelete(row) {
+  try {
+    await ElMessageBox.confirm('确定删除该职级吗？若已有干部使用该职级将删除失败。', '提示', { type: 'warning' })
+  } catch (e) {
+    return
+  }
+  try {
+    await request({ url: `/rank/${row.id}`, method: 'delete' })
     ElMessage.success('删除成功')
-  }).catch(() => {})
+    await fetchData()
+  } catch (e) {
+    ElMessage.error('删除失败，请确认无干部使用该职级')
+  }
 }
 
 function handleExport() {
-  showExportDialog(tableData.value, [
+  showExportDialog(filteredData.value, [
     { prop: 'rankName', label: '职级名称' },
     { prop: 'rankType', label: '职级类型' },
     { prop: 'promotionYears', label: '晋升所需年限' },
-    { prop: 'rankSort', label: '排序' },
+    { prop: 'sortOrder', label: '排序' },
     { prop: 'status', label: '状态' }
   ], '职级管理')
 }
-</script>
 
-<style scoped>
-</style>
+onMounted(fetchData)
+</script>

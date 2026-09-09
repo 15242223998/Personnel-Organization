@@ -1,24 +1,33 @@
 package com.personnel.modules.daily.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.personnel.common.BusinessException;
 import com.personnel.modules.cadre.entity.CadreInfo;
 import com.personnel.modules.cadre.service.CadreInfoService;
 import com.personnel.modules.daily.entity.DailyAbroadRecord;
+import com.personnel.modules.daily.entity.DailyCertificate;
 import com.personnel.modules.daily.mapper.DailyAbroadRecordMapper;
+import com.personnel.modules.daily.mapper.DailyCertificateMapper;
 import com.personnel.modules.daily.service.DailyAbroadRecordService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+
 /**
- * 出境记录台账：规范校验
+ * 出境记录台账：规范校验 + 证照联动（回国自动交回临时领用的证照）
  */
 @Service
 public class DailyAbroadRecordServiceImpl extends ServiceImpl<DailyAbroadRecordMapper, DailyAbroadRecord> implements DailyAbroadRecordService {
 
     @Resource
     private CadreInfoService cadreInfoService;
+
+    @Resource
+    private DailyCertificateMapper certificateMapper;
 
     @Override
     public boolean save(DailyAbroadRecord record) {
@@ -29,7 +38,16 @@ public class DailyAbroadRecordServiceImpl extends ServiceImpl<DailyAbroadRecordM
     @Override
     public boolean updateById(DailyAbroadRecord record) {
         validate(record);
-        return super.updateById(record);
+        boolean updated = super.updateById(record);
+        // 出境记录 → 证照管理：行程有返回日期后，将关联的"在借"证照自动交回
+        if (updated && record.getReturnDate() != null && record.getId() != null) {
+            certificateMapper.update(null, new UpdateWrapper<DailyCertificate>()
+                    .eq("abroad_id", record.getId())
+                    .eq("cert_status", "在借")
+                    .set("cert_status", "已归还")
+                    .set("return_date", record.getReturnDate()));
+        }
+        return updated;
     }
 
     private void validate(DailyAbroadRecord record) {

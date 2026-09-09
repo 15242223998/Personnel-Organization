@@ -73,6 +73,10 @@ public class CadreInfo extends BaseEntity {
 
     private String annualAssessment;
 
+    private String homeAddress;
+
+    private String emergencyContact;
+
     private String cadreStatus;
 
     private LocalDate retirementDate;

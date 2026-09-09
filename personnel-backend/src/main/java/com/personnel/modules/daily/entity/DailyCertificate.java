@@ -24,4 +24,6 @@ public class DailyCertificate extends BaseEntity {
     private LocalDate returnDate;
     private LocalDate expectedReturnDate;
     private String remark;
+    /** 关联的已批准出境记录ID（因公出国(境)临时领用来源） */
+    private Long abroadId;
 }

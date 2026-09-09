@@ -4,265 +4,278 @@
 
     <div class="search-bar">
       <span class="label">标题：</span>
-      <el-input v-model="search.title" placeholder="请输入标题" size="default" style="width:180px" clearable />
-      <span class="label">类别：</span>
+      <el-input v-model="search.title" placeholder="请输入文档标题" size="default" style="width:220px" clearable />
+      <span class="label">分类：</span>
       <el-select v-model="search.category" placeholder="请选择" size="default" style="width:140px" clearable>
-        <el-option label="干部选拔任用" value="干部选拔任用" />
-        <el-option label="干部教育培训" value="干部教育培训" />
-        <el-option label="干部考核管理" value="干部考核管理" />
-        <el-option label="干部监督管理" value="干部监督管理" />
-        <el-option label="干部档案管理" value="干部档案管理" />
-        <el-option label="干部待遇与退出" value="干部待遇与退出" />
-        <el-option label="综合政策" value="综合政策" />
+        <el-option v-for="c in categoryOptions" :key="c" :label="c" :value="c" />
       </el-select>
-      <span class="label">发文单位：</span>
-      <el-input v-model="search.issuer" placeholder="请输入发文单位" size="default" style="width:140px" clearable />
-      <el-button type="primary" @click="fetchData"><el-icon><Search /></el-icon> 查询</el-button>
-      <el-button @click="handleReset">重置</el-button>
+      <el-button type="primary" @click="handleSearch"><el-icon><Search /></el-icon> 查询</el-button>
+      <el-button @click="resetSearch">重置</el-button>
+      <span style="margin-left:12px;font-size:12px;color:#999">数据来源：政策法规库（/api/policy-document）</span>
     </div>
 
     <div class="toolbar">
-      <el-button type="primary" @click="handleAdd"><el-icon><Plus /></el-icon> 新增法规</el-button>
-      <el-button @click="handleExport"><el-icon><Download /></el-icon> 导出</el-button>
+      <el-button type="primary" @click="openDialog(null)"><el-icon><Plus /></el-icon> 新增政策文件</el-button>
+      <el-button @click="exportList"><el-icon><Download /></el-icon> 导出当前页</el-button>
     </div>
 
     <div class="table-wrap">
-      <el-table :data="tableData" border size="small" @sort-change="handleSortChange">
+      <el-table v-loading="loading" :data="pagedList" border size="small">
         <el-table-column type="index" label="序号" width="55" align="center" />
-        <el-table-column prop="title" label="标题" min-width="280" show-overflow-tooltip sortable="custom" />
-        <el-table-column prop="category" label="类别" width="130" align="center" sortable="custom">
+        <el-table-column prop="title" label="标题" min-width="240" show-overflow-tooltip sortable />
+        <el-table-column prop="docNo" label="文号" min-width="150" align="center" show-overflow-tooltip />
+        <el-table-column prop="publishUnit" label="发布单位" min-width="160" align="center" show-overflow-tooltip />
+        <el-table-column label="分类" width="100" align="center">
           <template #default="{ row }">
-            <el-tag size="small">{{ row.category }}</el-tag>
+            <el-tag :type="categoryTag(row.category)" size="small">{{ row.category || '-' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="issuer" label="发文单位" min-width="180" show-overflow-tooltip sortable="custom" />
-        <el-table-column prop="docNo" label="文号" min-width="160" show-overflow-tooltip sortable="custom" />
-        <el-table-column prop="issueDate" label="发布日期" width="110" align="center" sortable="custom" />
-        <el-table-column prop="effectiveDate" label="施行日期" width="110" align="center" sortable="custom" />
-        <el-table-column prop="status" label="状态" width="100" align="center" sortable="custom">
-          <template #default="{ row }">
-            <el-tag :type="row.status === '现行有效' ? 'success' : 'info'" size="small">{{ row.status }}</el-tag>
-          </template>
+        <el-table-column label="发布日期" width="110" align="center">
+          <template #default="{ row }">{{ row.issueDate || '-' }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="140" align="center" fixed="right">
+        <el-table-column label="施行日期" width="110" align="center">
+          <template #default="{ row }">{{ row.effectiveDate || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="附件" min-width="130" show-overflow-tooltip>
+          <template #default="{ row }">{{ row.attachmentName || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="190" align="center" fixed="right">
           <template #default="{ row }">
-            <span class="link-blue" @click="handleView(row)">查看</span>
+            <span class="link-blue" @click="openView(row)">查看正文</span>
             <el-divider direction="vertical" />
-            <span class="link-blue" @click="handleEdit(row)">编辑</span>
+            <span class="link-blue" @click="openDialog(row)">编辑</span>
             <el-divider direction="vertical" />
             <span class="link-blue" style="color:#E53935" @click="handleDelete(row)">删除</span>
           </template>
         </el-table-column>
       </el-table>
+      <div class="pagination-wrap">
+        <el-pagination
+          v-model:current-page="page.current"
+          v-model:page-size="page.size"
+          :page-sizes="[10, 20, 50]"
+          :total="page.total"
+          layout="total, sizes, prev, pager, next, jumper"
+          background small
+          @size-change="page.current = 1"
+        />
+      </div>
     </div>
 
-    <div class="pagination-wrap">
-      <el-pagination
-        v-model:current-page="page.current"
-        v-model:page-size="page.size"
-        :page-sizes="[10,20,50]"
-        :total="page.total"
-        layout="total,sizes,prev,pager,next,jumper"
-        background
-        small
-        @size-change="handleSizeChange"
-        @current-change="fetchData"
-      />
-    </div>
-
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="700px" @close="resetForm">
-      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="法规标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入法规标题" />
-        </el-form-item>
-        <el-row :gutter="12">
-          <el-col :span="12">
-            <el-form-item label="类别" prop="category">
-              <el-select v-model="form.category" style="width:100%">
-                <el-option label="干部选拔任用" value="干部选拔任用" />
-                <el-option label="干部教育培训" value="干部教育培训" />
-                <el-option label="干部考核管理" value="干部考核管理" />
-                <el-option label="干部监督管理" value="干部监督管理" />
-                <el-option label="干部档案管理" value="干部档案管理" />
-                <el-option label="干部待遇与退出" value="干部待遇与退出" />
-                <el-option label="综合政策" value="综合政策" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="发文单位" prop="issuer">
-              <el-input v-model="form.issuer" placeholder="请输入发文单位" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="文号" prop="docNo">
-          <el-input v-model="form.docNo" placeholder="如：中办发〔2019〕3号" />
-        </el-form-item>
-        <el-row :gutter="12">
-          <el-col :span="12">
-            <el-form-item label="发布日期" prop="issueDate">
-              <el-date-picker v-model="form.issueDate" type="date" placeholder="选择日期" style="width:100%" value-format="YYYY-MM-DD" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="施行日期" prop="effectiveDate">
-              <el-date-picker v-model="form.effectiveDate" type="date" placeholder="选择日期" style="width:100%" value-format="YYYY-MM-DD" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio label="现行有效">现行有效</el-radio>
-            <el-radio label="已废止">已废止</el-radio>
-            <el-radio label="已修订">已修订</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="内容摘要" prop="summary">
-          <el-input v-model="form.summary" type="textarea" :rows="3" placeholder="请输入法规内容摘要" />
-        </el-form-item>
-        <el-form-item label="全文内容" prop="content">
-          <el-input v-model="form.content" type="textarea" :rows="6" placeholder="请输入法规全文" />
-        </el-form-item>
-      </el-form>
+    <!-- ============ 正文查看弹窗 ============ -->
+    <el-dialog v-model="view.visible" title="政策文件详情" width="760px" align-center destroy-on-close>
+      <el-descriptions :column="2" border size="small" v-if="view.row">
+        <el-descriptions-item label="标题" :span="2">{{ view.row.title || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="文号">{{ view.row.docNo || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="发布单位">{{ view.row.publishUnit || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="分类">
+          <el-tag :type="categoryTag(view.row.category)" size="small">{{ view.row.category || '-' }}</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="施行日期">{{ view.row.effectiveDate || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="发布日期">{{ view.row.issueDate || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="附件" :span="2">
+          <template v-if="view.row.attachmentUrl">
+            <a :href="view.row.attachmentUrl" target="_blank" rel="noopener" style="color:#1976D2">{{ view.row.attachmentName || '点击下载' }}</a>
+          </template>
+          <span v-else>{{ view.row.attachmentName || '-' }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item label="正文" :span="2">
+          <div class="doc-content">{{ view.row.content || '-' }}</div>
+        </el-descriptions-item>
+      </el-descriptions>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="view.visible = false">关闭</el-button>
       </template>
     </el-dialog>
 
-    <el-dialog title="法规详情" v-model="detailVisible" width="750px">
-      <el-descriptions :column="2" border size="small">
-        <el-descriptions-item label="法规标题" :span="2"><strong>{{ detail.title }}</strong></el-descriptions-item>
-        <el-descriptions-item label="类别"><el-tag size="small">{{ detail.category }}</el-tag></el-descriptions-item>
-        <el-descriptions-item label="状态">
-          <el-tag :type="detail.status === '现行有效' ? 'success' : 'info'" size="small">{{ detail.status }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="发文单位">{{ detail.issuer }}</el-descriptions-item>
-        <el-descriptions-item label="文号">{{ detail.docNo }}</el-descriptions-item>
-        <el-descriptions-item label="发布日期">{{ detail.issueDate }}</el-descriptions-item>
-        <el-descriptions-item label="施行日期">{{ detail.effectiveDate }}</el-descriptions-item>
-        <el-descriptions-item label="内容摘要" :span="2">{{ detail.summary }}</el-descriptions-item>
-        <el-descriptions-item label="全文内容" :span="2"><div style="white-space:pre-wrap">{{ detail.content }}</div></el-descriptions-item>
-      </el-descriptions>
+    <!-- ============ 新增/编辑弹窗 ============ -->
+    <el-dialog v-model="dialog.visible" :title="dialog.id ? '编辑政策文件' : '新增政策文件'" width="680px" align-center destroy-on-close>
+      <el-form label-width="90px">
+        <el-form-item label="标题" required>
+          <el-input v-model="dialog.form.title" placeholder="请输入文档标题" />
+        </el-form-item>
+        <el-form-item label="文号">
+          <el-input v-model="dialog.form.docNo" placeholder="如：辽工大党发〔2026〕4号" />
+        </el-form-item>
+        <el-form-item label="分类" required>
+          <el-select v-model="dialog.form.category" style="width:100%">
+            <el-option v-for="c in categoryOptions" :key="c" :label="c" :value="c" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发布单位">
+          <el-input v-model="dialog.form.publishUnit" placeholder="如：中共辽宁某某大学委员会" />
+        </el-form-item>
+        <el-form-item label="发布日期">
+          <el-date-picker v-model="dialog.form.issueDate" type="date" value-format="YYYY-MM-DD" style="width:100%" placeholder="选择日期" />
+        </el-form-item>
+        <el-form-item label="施行日期">
+          <el-date-picker v-model="dialog.form.effectiveDate" type="date" value-format="YYYY-MM-DD" style="width:100%" placeholder="选择日期" />
+        </el-form-item>
+        <el-form-item label="附件名称">
+          <el-input v-model="dialog.form.attachmentName" placeholder="选填，如：办法全文（示例）.pdf" />
+        </el-form-item>
+        <el-form-item label="附件地址">
+          <el-input v-model="dialog.form.attachmentUrl" placeholder="选填，附件访问地址" />
+        </el-form-item>
+        <el-form-item label="正文">
+          <el-input v-model="dialog.form.content" type="textarea" :rows="10" placeholder="请输入政策文件正文内容" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="dialog.visible = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="submit">保存</el-button>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import { Search, Plus, Download } from '@element-plus/icons-vue'
-import { showExportDialog } from '@/utils/export-store'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { showExportDialog } from '@/utils/export-store'
+import { getPolicyDocumentPage, addPolicyDocument, updatePolicyDocument, deletePolicyDocument } from '@/api/system'
 
-const search = reactive({ title: '', category: '', issuer: '' })
+const categoryOptions = ['党内法规', '干部选拔', '干部监督', '教育培训', '其他']
+
+function categoryTag(c) {
+  if (c === '党内法规') return 'danger'
+  if (c === '干部选拔') return 'primary'
+  if (c === '干部监督') return 'warning'
+  if (c === '教育培训') return 'success'
+  return 'info'
+}
+
+const loading = ref(false)
+const saving = ref(false)
+const allList = ref([])
+const search = reactive({ title: '', category: '' })
 const page = reactive({ current: 1, size: 10, total: 0 })
-const dialogVisible = ref(false)
-const detailVisible = ref(false)
-const dialogTitle = ref('')
-const isEdit = ref(false)
-const editId = ref(null)
-const formRef = ref(null)
-const detail = ref({})
 
-const form = reactive({
-  title: '', category: '', issuer: '', docNo: '',
-  issueDate: '', effectiveDate: '', status: '现行有效', summary: '', content: ''
+const filteredList = computed(() => allList.value.filter(d =>
+  (!search.title || (d.title || '').includes(search.title)) &&
+  (!search.category || d.category === search.category)))
+
+const pagedList = computed(() => {
+  const p = page
+  const start = (p.current - 1) * p.size
+  return filteredList.value.slice(start, start + p.size)
 })
 
-const rules = {
-  title: [{ required: true, message: '请输入法规标题', trigger: 'blur' }],
-  category: [{ required: true, message: '请选择类别', trigger: 'change' }],
-  issuer: [{ required: true, message: '请输入发文单位', trigger: 'blur' }],
-  issueDate: [{ required: true, message: '请选择发布日期', trigger: 'change' }],
-  summary: [{ required: true, message: '请输入内容摘要', trigger: 'blur' }],
+watch(filteredList, () => { page.total = filteredList.value.length })
+watch(page, () => { page.total = filteredList.value.length })
+
+function handleSearch() { page.current = 1 }
+function resetSearch() { Object.assign(search, { title: '', category: '' }); page.current = 1 }
+
+async function loadList() {
+  loading.value = true
+  try {
+    const res = await getPolicyDocumentPage({ current: 1, size: 500 })
+    allList.value = (res.data && res.data.records) || []
+  } catch (e) { allList.value = [] } finally { loading.value = false }
 }
 
-const mockData = [
-  { id: 1, title: '党政领导干部选拔任用工作条例', category: '干部选拔任用', issuer: '中共中央', docNo: '中发〔2019〕8号', issueDate: '2019-03-03', effectiveDate: '2019-03-03', status: '现行有效', summary: '规范党政领导干部选拔任用工作，建立健全科学的选拔任用机制，防止和纠正选人用人上的不正之风', content: '第一章 总则\n第一条 为了坚持和加强党的全面领导，深入贯彻新时代党的组织路线和干部工作方针政策...' },
-  { id: 2, title: '推进领导干部能上能下规定', category: '干部选拔任用', issuer: '中共中央办公厅', docNo: '中办发〔2022〕40号', issueDate: '2022-09-08', effectiveDate: '2022-09-08', status: '现行有效', summary: '健全能上能下的选人用人机制，推动形成能者上、优者奖、庸者下、劣者汰的用人导向', content: '第一条 为了全面推进党的政治建设、思想建设、组织建设、作风建设、纪律建设...' },
-  { id: 3, title: '干部教育培训工作条例', category: '干部教育培训', issuer: '中共中央', docNo: '中发〔2015〕8号', issueDate: '2015-10-14', effectiveDate: '2015-10-14', status: '现行有效', summary: '推进干部教育培训工作科学化、制度化、规范化，培养造就高素质干部队伍', content: '第一章 总则\n第一条 为了推进干部教育培训工作科学化、制度化、规范化...' },
-  { id: 4, title: '领导干部报告个人有关事项规定', category: '干部监督管理', issuer: '中共中央办公厅、国务院办公厅', docNo: '中办发〔2017〕12号', issueDate: '2017-04-19', effectiveDate: '2017-04-19', status: '现行有效', summary: '加强对领导干部的管理和监督，促进领导干部廉洁从政', content: '第一条 为加强对领导干部的管理和监督...' },
-  { id: 5, title: '事业单位领导人员管理规定', category: '干部选拔任用', issuer: '中共中央办公厅', docNo: '中办发〔2022〕6号', issueDate: '2022-01-14', effectiveDate: '2022-01-14', status: '现行有效', summary: '加强和改进事业单位领导人员管理，健全选拔任用机制和管理监督机制', content: '第一章 总则\n第一条 为了加强和改进事业单位领导人员管理...' },
-  { id: 6, title: '党政领导干部考核工作条例', category: '干部考核管理', issuer: '中共中央办公厅', docNo: '中办发〔2019〕9号', issueDate: '2019-04-12', effectiveDate: '2019-04-12', status: '现行有效', summary: '坚持严管和厚爱结合、激励和约束并重，完善干部考核评价机制', content: '第一章 总则\n第一条 为了坚持和加强党的全面领导...' },
-  { id: 7, title: '干部人事档案工作条例', category: '干部档案管理', issuer: '中共中央办公厅', docNo: '中办发〔2018〕60号', issueDate: '2018-11-20', effectiveDate: '2018-11-20', status: '现行有效', summary: '全面规范干部人事档案的建立、接收、保管、转递和利用工作', content: '第一章 总则\n第一条 为了贯彻新时代党的组织路线...' },
-  { id: 8, title: '关于实行党政领导干部问责的暂行规定', category: '干部监督管理', issuer: '中共中央办公厅、国务院办公厅', docNo: '中办发〔2009〕25号', issueDate: '2009-06-30', effectiveDate: '2009-06-30', status: '已修订', summary: '加强对党政领导干部的管理和监督，增强责任意识和大局意识', content: '第一条 为加强对党政领导干部的管理和监督...' },
-  { id: 9, title: '高等学校领导人员管理暂行办法', category: '综合政策', issuer: '中组部、教育部', docNo: '中组发〔2017〕2号', issueDate: '2017-06-21', effectiveDate: '2017-06-21', status: '现行有效', summary: '加强和改进高等学校领导人员管理，推进中国特色现代大学制度建设', content: '第一章 总则\n第一条 为加强和改进高等学校领导人员管理...' },
-  { id: 10, title: '干部兼职管理规定', category: '干部监督管理', issuer: '中组部', docNo: '中组发〔2013〕18号', issueDate: '2013-10-19', effectiveDate: '2013-10-19', status: '现行有效', summary: '规范党政领导干部在企业兼职（任职）行为', content: '第一条 为规范党政领导干部在企业兼职（任职）...' },
-  { id: 11, title: '关于进一步激励广大干部新时代新担当新作为的意见', category: '综合政策', issuer: '中共中央办公厅', docNo: '中办发〔2018〕30号', issueDate: '2018-05-20', effectiveDate: '2018-05-20', status: '现行有效', summary: '建立激励机制和容错纠错机制，激励干部担当作为', content: '为深入贯彻习近平新时代中国特色社会主义思想和党的十九大精神...' },
-  { id: 12, title: '公务员职务与职级并行规定', category: '干部待遇与退出', issuer: '中共中央办公厅', docNo: '中办发〔2019〕21号', issueDate: '2019-03-19', effectiveDate: '2019-06-01', status: '现行有效', summary: '推行公务员职务与职级并行、职级与待遇挂钩制度', content: '第一条 为了深化公务员分类改革...' },
-]
+// ---------- 新增/编辑 ----------
+const dialog = reactive({ visible: false, id: null, form: {} })
+const emptyForm = () => ({ title: '', docNo: '', publishUnit: '', issueDate: null, effectiveDate: null, category: '', content: '', attachmentName: '', attachmentUrl: '' })
 
-const allData = ref([...mockData])
-
-const filteredData = computed(() => {
-  let list = allData.value
-  if (search.title) list = list.filter(d => d.title.includes(search.title))
-  if (search.category) list = list.filter(d => d.category === search.category)
-  if (search.issuer) list = list.filter(d => d.issuer.includes(search.issuer))
-  return list
-})
-
-const tableData = computed(() => filteredData.value.slice((page.current - 1) * page.size, page.current * page.size))
-
-function fetchData() { page.total = filteredData.value.length }
-function handleReset() { search.title = ''; search.category = ''; search.issuer = ''; page.current = 1; fetchData() }
-function handleSizeChange() { page.current = 1; fetchData() }
-
-function handleSortChange({ prop, order }) {
-  if (!order) { allData.value = [...mockData]; return }
-  allData.value.sort((a, b) => {
-    const va = a[prop] || ''; const vb = b[prop] || ''
-    return order === 'ascending' ? String(va).localeCompare(String(vb), 'zh-CN') : String(vb).localeCompare(String(va), 'zh-CN')
-  })
+function openDialog(row) {
+  dialog.id = row ? row.id : null
+  dialog.form = row
+    ? {
+        title: row.title || '',
+        docNo: row.docNo || '',
+        publishUnit: row.publishUnit || '',
+        issueDate: row.issueDate || null,
+        effectiveDate: row.effectiveDate || null,
+        category: row.category || '',
+        content: row.content || '',
+        attachmentName: row.attachmentName || '',
+        attachmentUrl: row.attachmentUrl || ''
+      }
+    : emptyForm()
+  dialog.visible = true
 }
 
-function resetForm() {
-  formRef.value?.resetFields()
-  isEdit.value = false; editId.value = null
-  Object.assign(form, { title: '', category: '', issuer: '', docNo: '', issueDate: '', effectiveDate: '', status: '现行有效', summary: '', content: '' })
-}
-
-function handleAdd() { dialogTitle.value = '新增政策法规'; dialogVisible.value = true }
-
-function handleEdit(row) {
-  dialogTitle.value = '编辑政策法规'; isEdit.value = true; editId.value = row.id
-  Object.assign(form, row)
-  dialogVisible.value = true
-}
-
-function handleView(row) { detail.value = row; detailVisible.value = true }
-
-function handleSubmit() {
-  formRef.value.validate((valid) => {
-    if (!valid) return
-    if (isEdit.value) {
-      const item = allData.value.find(d => d.id === editId.value)
-      if (item) Object.assign(item, { ...form })
+async function submit() {
+  const f = dialog.form
+  if (!f.title || !String(f.title).trim()) return ElMessage.warning('请填写文档标题')
+  if (!f.category) return ElMessage.warning('请选择文档分类')
+  saving.value = true
+  try {
+    const payload = {
+      title: f.title,
+      docNo: f.docNo || null,
+      publishUnit: f.publishUnit || null,
+      issueDate: f.issueDate || null,
+      effectiveDate: f.effectiveDate || null,
+      category: f.category,
+      content: f.content || null,
+      attachmentName: f.attachmentName || null,
+      attachmentUrl: f.attachmentUrl || null
+    }
+    if (dialog.id) {
+      await updatePolicyDocument({ id: dialog.id, ...payload })
       ElMessage.success('更新成功')
     } else {
-      allData.value.push({ id: Date.now(), ...form })
+      await addPolicyDocument(payload)
       ElMessage.success('新增成功')
     }
-    dialogVisible.value = false
-    fetchData()
-  })
+    dialog.visible = false
+    loadList()
+  } finally { saving.value = false }
 }
 
 function handleDelete(row) {
-  ElMessageBox.confirm('确定删除该法规记录吗？', '提示', { type: 'warning' }).then(() => {
-    allData.value = allData.value.filter(d => d.id !== row.id)
+  ElMessageBox.confirm('确定删除该份政策文件吗？删除后不可恢复。', '提示', { type: 'warning' }).then(async () => {
+    await deletePolicyDocument(row.id)
     ElMessage.success('删除成功')
-    fetchData()
+    loadList()
   }).catch(() => {})
 }
 
-function handleExport() {
-  showExportDialog(filteredData.value, [
-    { prop: 'title', label: '标题' }, { prop: 'category', label: '类别' }, { prop: 'issuer', label: '发文单位' },
-    { prop: 'docNo', label: '文号' }, { prop: 'issueDate', label: '发布日期' }, { prop: 'effectiveDate', label: '施行日期' },
-    { prop: 'status', label: '状态' }, { prop: 'summary', label: '内容摘要' }
-  ], '政策法规')
+// ---------- 正文查看 ----------
+const view = reactive({ visible: false, row: null })
+function openView(row) {
+  view.row = row
+  view.visible = true
 }
 
-fetchData()
+// ---------- 导出当前页 ----------
+function exportList() {
+  showExportDialog(pagedList.value.map(d => ({
+    title: d.title, docNo: d.docNo, publishUnit: d.publishUnit, category: d.category,
+    issueDate: d.issueDate || '-', effectiveDate: d.effectiveDate || '-', attachmentName: d.attachmentName || '-'
+  })), [
+    { prop: 'title', label: '标题' }, { prop: 'docNo', label: '文号' }, { prop: 'publishUnit', label: '发布单位' },
+    { prop: 'category', label: '分类' }, { prop: 'issueDate', label: '发布日期' },
+    { prop: 'effectiveDate', label: '施行日期' }, { prop: 'attachmentName', label: '附件' }
+  ], '政策法规清单')
+}
+
+loadList()
 </script>
+
+<style scoped>
+.pagination-wrap {
+  padding: 10px 14px;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+}
+.doc-content {
+  max-height: 46vh;
+  overflow: auto;
+  background: #fafbfc;
+  border: 1px solid #e8e8e8;
+  border-radius: 2px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #333;
+}
+</style>

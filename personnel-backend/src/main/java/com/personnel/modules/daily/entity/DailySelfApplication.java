@@ -20,6 +20,12 @@ public class DailySelfApplication extends BaseEntity {
     private String applicationType;
     private String applicationTitle;
     private String applicationContent;
+    /** 档案信息更正：申请变更字段 key（白名单见 com.personnel.modules.cadre.constant.CadreInfoMapperKeys） */
+    private String applyField;
+    /** 档案信息更正：变更前档案值（提交时按申请人绑定的干部档案读取真实值落库） */
+    private String oldValue;
+    /** 档案信息更正：变更后档案值 */
+    private String newValue;
     private String applyStatus;
     private Long approverId;
     private LocalDateTime approveTime;

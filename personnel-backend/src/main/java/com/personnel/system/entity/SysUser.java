@@ -39,6 +39,9 @@ public class SysUser {
     /** 关联干部档案ID（干部自助申报归属） */
     private Long cadreId;
 
+    /** 模块级权限，逗号分隔多个key；userType=1系统管理员不受限 */
+    private String permissions;
+
     private String ipBound;
 
     private Integer loginFailCount;

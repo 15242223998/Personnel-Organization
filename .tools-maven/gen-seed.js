@@ -1,4 +1,4 @@
-// 生成 sql/seed-demo.sql：机构树 + 编制 + 干部档案示例数据（辽宁工业大学背景）
+// 生成 sql/seed-demo.sql：机构树 + 编制 + 干部档案示例数据（辽宁某某大学背景）
 const fs = require('fs')
 
 // 简单 LCG 保证确定性
@@ -20,7 +20,7 @@ const schools = ['清华大学','北京大学','哈尔滨工业大学','大连�
 const places = ['辽宁沈阳','辽宁大连','辽宁鞍山','辽宁抚顺','辽宁本溪','辽宁丹东','辽宁锦州','辽宁营口','辽宁阜新','辽宁辽阳','辽宁盘锦','辽宁铁岭','辽宁朝阳','辽宁葫芦岛','黑龙江哈尔滨','吉林长春','河北石家庄','山东青岛','江苏南京','河南郑州']
 
 const depts = [
-  { id: 1, name: '辽宁工业大学', short: '学校机关', level: '校级', parent: 0, quota: 24, lq: 11, type: 'root' },
+  { id: 1, name: '辽宁某某大学', short: '学校机关', level: '校级', parent: 0, quota: 24, lq: 11, type: 'root' },
   { id: 2, name: '党委组织部', short: '组织部', level: '处级', parent: 1, quota: 14, lq: 3, type: 'office' },
   { id: 3, name: '人事处', short: '人事处', level: '处级', parent: 1, quota: 18, lq: 4, type: 'office' },
   { id: 4, name: '党委宣传部', short: '宣传部', level: '处级', parent: 1, quota: 13, lq: 3, type: 'office' },
@@ -55,7 +55,7 @@ const collegeRoles = ['学院负责人','学院党组织负责人','学院副职
 
 const out = []
 out.push('-- ============================================')
-out.push('-- 辽宁工业大学 · 干部人事系统 - 演示/示例数据')
+out.push('-- 辽宁某某大学 · 干部人事系统 - 演示/示例数据')
 out.push('-- 机构树 + 编制 + 干部档案（可重复执行，先清空相关业务表）')
 out.push('-- 提示：以下姓名均为虚构，职位均为示例占位，不含真实人员信息')
 out.push('-- ============================================')

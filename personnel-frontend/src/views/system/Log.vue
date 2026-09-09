@@ -157,36 +157,8 @@ const loginData = ref([])
 const loginPage = reactive({ current: 1, size: 10, total: 0 })
 const loginSearch = reactive({ username: '', loginResult: '', dateRange: [] })
 
-// Mock数据兜底
-const mockOperData = [
-  { id: 1, username: 'admin', operType: 'INSERT', operModule: '用户管理', operDesc: '新增用户：wangzq（王志强）', operIp: '192.168.1.100', operTime: '2026-08-10T09:15:23', operResult: 'SUCCESS' },
-  { id: 2, username: 'liudm', operType: 'UPDATE', operModule: '干部信息', operDesc: '修改干部张建国的职务信息', operIp: '192.168.1.105', operTime: '2026-08-10T08:45:12', operResult: 'SUCCESS' },
-  { id: 3, username: 'admin', operType: 'DELETE', operModule: '角色管理', operDesc: '删除角色：临时访客', operIp: '192.168.1.100', operTime: '2026-08-09T17:30:05', operResult: 'SUCCESS' },
-  { id: 4, username: 'wangzq', operType: 'QUERY', operModule: '干部考核', operDesc: '查询2025年度考核结果列表', operIp: '192.168.1.108', operTime: '2026-08-09T16:20:45', operResult: 'SUCCESS' },
-  { id: 5, username: 'lixy', operType: 'EXPORT', operModule: '统计分析', operDesc: '导出干部队伍年龄结构统计表', operIp: '192.168.1.112', operTime: '2026-08-09T15:10:33', operResult: 'SUCCESS' },
-  { id: 6, username: 'zhangjg', operType: 'APPROVE', operModule: '日常事务', operDesc: '审批休假申请：刘德明年休假', operIp: '192.168.1.120', operTime: '2026-08-09T14:05:18', operResult: 'SUCCESS' },
-  { id: 7, username: 'admin', operType: 'INSERT', operModule: '字典管理', operDesc: '新增字典项：政治面貌-民主促进会会员', operIp: '192.168.1.100', operTime: '2026-08-09T11:30:22', operResult: 'SUCCESS' },
-  { id: 8, username: 'chenlh', operType: 'DELETE', operModule: '日常事务', operDesc: '删除证照记录：E99999999', operIp: '192.168.1.115', operTime: '2026-08-08T16:45:10', operResult: 'FAIL' },
-  { id: 9, username: 'admin', operType: 'UPDATE', operModule: '系统配置', operDesc: '修改系统参数：密码有效期', operIp: '192.168.1.100', operTime: '2026-08-08T10:20:05', operResult: 'SUCCESS' },
-  { id: 10, username: 'zhaogd', operType: 'QUERY', operModule: '个人事项', operDesc: '查询个人事项报告记录', operIp: '192.168.1.125', operTime: '2026-08-08T09:30:41', operResult: 'SUCCESS' }
-]
-
-const mockLoginData = [
-  { id: 1, username: 'admin', loginIp: '192.168.1.100', deviceType: 'PC', browser: 'Chrome 128', os: 'Windows 11', loginTime: '2026-08-10T08:30:15', loginResult: 'SUCCESS', failReason: '' },
-  { id: 2, username: 'liudm', loginIp: '192.168.1.105', deviceType: 'PC', browser: 'Chrome 128', os: 'Windows 10', loginTime: '2026-08-10T08:25:03', loginResult: 'SUCCESS', failReason: '' },
-  { id: 3, username: 'zhangjg', loginIp: '192.168.1.120', deviceType: 'PC', browser: 'Edge 128', os: 'Windows 11', loginTime: '2026-08-10T08:15:42', loginResult: 'SUCCESS', failReason: '' },
-  { id: 4, username: 'unknown', loginIp: '45.33.32.156', deviceType: 'PC', browser: 'Unknown', os: 'Linux', loginTime: '2026-08-10T07:55:11', loginResult: 'FAIL', failReason: '用户名不存在' },
-  { id: 5, username: 'lixy', loginIp: '192.168.1.112', deviceType: 'PHONE', browser: 'Safari', os: 'iOS 17', loginTime: '2026-08-09T22:30:05', loginResult: 'SUCCESS', failReason: '' },
-  { id: 6, username: 'chenlh', loginIp: '192.168.1.115', deviceType: 'PC', browser: 'Firefox 129', os: 'Windows 10', loginTime: '2026-08-09T16:30:18', loginResult: 'FAIL', failReason: '密码错误' },
-  { id: 7, username: 'chenlh', loginIp: '192.168.1.115', deviceType: 'PC', browser: 'Firefox 129', os: 'Windows 10', loginTime: '2026-08-09T16:32:05', loginResult: 'SUCCESS', failReason: '' },
-  { id: 8, username: 'zhaogd', loginIp: '192.168.1.125', deviceType: 'PC', browser: 'Chrome 128', os: 'Windows 11', loginTime: '2026-08-09T14:15:33', loginResult: 'SUCCESS', failReason: '' },
-  { id: 9, username: 'sunhm', loginIp: '10.0.0.55', deviceType: 'PAD', browser: 'Safari', os: 'iPadOS 17', loginTime: '2026-08-09T10:05:47', loginResult: 'SUCCESS', failReason: '' },
-  { id: 10, username: 'test01', loginIp: '203.0.113.50', deviceType: 'PC', browser: 'Chrome 128', os: 'Windows 10', loginTime: '2026-08-08T23:45:00', loginResult: 'FAIL', failReason: '账户已被禁用' }
-]
-
-function useMock() {
-  // 后端未启动时使用mock数据
-  return !window.__backendReady
+function failTips(name) {
+  ElMessage.warning(`后端未连接，无法加载${name}`)
 }
 
 async function fetchOperLog() {
@@ -206,17 +178,10 @@ async function fetchOperLog() {
     operData.value = res.data.records
     operPage.total = res.data.total
   } catch (e) {
-    // 后端未连接，使用mock
-    let data = [...mockOperData]
-    if (operSearch.username) {
-      data = data.filter(d => d.username.includes(operSearch.username))
-    }
-    if (operSearch.operType) {
-      data = data.filter(d => d.operType === operSearch.operType)
-    }
-    operPage.total = data.length
-    const start = (operPage.current - 1) * operPage.size
-    operData.value = data.slice(start, start + operPage.size)
+    // 后端未连接：不渲染任何兜底数据，直接空态并提示
+    operData.value = []
+    operPage.total = 0
+    failTips('操作日志')
   } finally {
     operLoading.value = false
   }
@@ -239,16 +204,9 @@ async function fetchLoginLog() {
     loginData.value = res.data.records
     loginPage.total = res.data.total
   } catch (e) {
-    let data = [...mockLoginData]
-    if (loginSearch.username) {
-      data = data.filter(d => d.username.includes(loginSearch.username))
-    }
-    if (loginSearch.loginResult) {
-      data = data.filter(d => d.loginResult === loginSearch.loginResult)
-    }
-    loginPage.total = data.length
-    const start = (loginPage.current - 1) * loginPage.size
-    loginData.value = data.slice(start, start + loginPage.size)
+    loginData.value = []
+    loginPage.total = 0
+    failTips('登录日志')
   } finally {
     loginLoading.value = false
   }
@@ -271,59 +229,74 @@ function resetLoginSearch() {
 }
 
 function handleTabChange() {
-  // 切换tab时加载对应数据
+  if (activeTab.value === 'operation') fetchOperLog()
+  else fetchLoginLog()
 }
 
 async function handleDeleteOper(id) {
   try {
     await ElMessageBox.confirm('确定删除该条日志吗？', '提示', { type: 'warning' })
-    try {
-      await deleteOperLog(id)
-      ElMessage.success('删除成功')
-    } catch (e) {
-      // mock
-    }
+  } catch (e) {
+    return
+  }
+  try {
+    await deleteOperLog(id)
+    ElMessage.success('删除成功')
     const idx = operData.value.findIndex(d => d.id === id)
     if (idx > -1) operData.value.splice(idx, 1)
-    operPage.total--
-  } catch {}
+    if (operPage.total > 0) operPage.total--
+  } catch (e) {
+    ElMessage.error('删除失败：后端未连接')
+  }
 }
 
 async function handleDeleteLogin(id) {
   try {
     await ElMessageBox.confirm('确定删除该条日志吗？', '提示', { type: 'warning' })
-    try {
-      await deleteLoginLog(id)
-      ElMessage.success('删除成功')
-    } catch (e) {}
+  } catch (e) {
+    return
+  }
+  try {
+    await deleteLoginLog(id)
+    ElMessage.success('删除成功')
     const idx = loginData.value.findIndex(d => d.id === id)
     if (idx > -1) loginData.value.splice(idx, 1)
-    loginPage.total--
-  } catch {}
+    if (loginPage.total > 0) loginPage.total--
+  } catch (e) {
+    ElMessage.error('删除失败：后端未连接')
+  }
 }
 
 async function handleCleanOper() {
   try {
     await ElMessageBox.confirm('确定清空所有操作日志吗？此操作不可恢复！', '警告', { type: 'warning' })
-    try {
-      await cleanOperLog()
-      ElMessage.success('清空成功')
-    } catch (e) {}
+  } catch (e) {
+    return
+  }
+  try {
+    await cleanOperLog()
+    ElMessage.success('清空成功')
     operData.value = []
     operPage.total = 0
-  } catch {}
+  } catch (e) {
+    ElMessage.error('清空失败：后端未连接')
+  }
 }
 
 async function handleCleanLogin() {
   try {
     await ElMessageBox.confirm('确定清空所有登录日志吗？此操作不可恢复！', '警告', { type: 'warning' })
-    try {
-      await cleanLoginLog()
-      ElMessage.success('清空成功')
-    } catch (e) {}
+  } catch (e) {
+    return
+  }
+  try {
+    await cleanLoginLog()
+    ElMessage.success('清空成功')
     loginData.value = []
     loginPage.total = 0
-  } catch {}
+  } catch (e) {
+    ElMessage.error('清空失败：后端未连接')
+  }
 }
 
 function operIndexMethod(index) {
@@ -368,6 +341,7 @@ onMounted(() => {
 })
 
 function exportOperLog() {
+  if (operData.value.length === 0) { ElMessage.warning('当前没有可导出的日志数据'); return }
   showExportDialog(operData.value, [
     { prop: 'username', label: '用户名' },
     { prop: 'operType', label: '操作类型' },
@@ -379,6 +353,7 @@ function exportOperLog() {
   ], '操作日志')
 }
 function exportLoginLog() {
+  if (loginData.value.length === 0) { ElMessage.warning('当前没有可导出的日志数据'); return }
   showExportDialog(loginData.value, [
     { prop: 'username', label: '用户名' },
     { prop: 'loginIp', label: 'IP地址' },
