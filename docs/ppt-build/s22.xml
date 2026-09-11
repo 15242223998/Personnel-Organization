@@ -1,0 +1,42 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="linear-gradient(135deg,rgba(15,32,56,1) 0%,rgba(31,58,95,1) 100%)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="44" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(201,166,107,1)" letterSpacing="1.5" wrap="false"><p>05　收获与总结　·　SUMMARY</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="66" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(255,255,255,1)" wrap="false"><p>项目收获、不足与展望</p></content>
+    </shape>
+    <line startX="64" startY="112" endX="896" endY="112"><border color="rgba(255,255,255,0.16)" width="1"/></line>
+
+    <line startX="64" startY="134" endX="460" endY="134"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="64" topLeftY="144" width="400" height="22"><content textType="body" fontSize="13.5" bold="true" color="rgba(255,255,255,1)" wrap="false"><p>① 全栈工程能力</p></content></shape>
+    <shape type="text" topLeftX="64" topLeftY="170" width="396" height="62"><content textType="caption" fontSize="11" color="rgba(196,208,224,1)" lineSpacing="multiple:1.5"><p>独立完成前后端分离系统，熟练掌握 Spring Boot 3、Vue 3、MyBatis-Plus、JWT 等主流技术与协作流程。</p></content></shape>
+
+    <line startX="496" startY="134" endX="896" endY="134"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="496" topLeftY="144" width="400" height="22"><content textType="body" fontSize="13.5" bold="true" color="rgba(255,255,255,1)" wrap="false"><p>② 复杂业务建模能力</p></content></shape>
+    <shape type="text" topLeftX="496" topLeftY="170" width="400" height="62"><content textType="caption" fontSize="11" color="rgba(196,208,224,1)" lineSpacing="multiple:1.5"><p>把干部“选、育、管、用”制度抽象为数据模型与状态流转，真正体会到业务驱动设计的含义。</p></content></shape>
+
+    <line startX="64" startY="246" endX="460" endY="246"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="64" topLeftY="256" width="400" height="22"><content textType="body" fontSize="13.5" bold="true" color="rgba(255,255,255,1)" wrap="false"><p>③ 工程化与容错思维</p></content></shape>
+    <shape type="text" topLeftX="64" topLeftY="282" width="396" height="62"><content textType="caption" fontSize="11" color="rgba(196,208,224,1)" lineSpacing="multiple:1.5"><p>通过单一数据源一致性、缓存降级、热切换防误操作等设计，学会为“异常情况”和长期可维护性而设计。</p></content></shape>
+
+    <line startX="496" startY="246" endX="896" endY="246"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="496" topLeftY="256" width="400" height="22"><content textType="body" fontSize="13.5" bold="true" color="rgba(255,255,255,1)" wrap="false"><p>④ 安全与规范意识</p></content></shape>
+    <shape type="text" topLeftX="496" topLeftY="282" width="400" height="62"><content textType="caption" fontSize="11" color="rgba(196,208,224,1)" lineSpacing="multiple:1.5"><p>系统实践认证授权、行级数据权限、操作留痕与接口文档，形成了较规范的分层开发习惯。</p></content></shape>
+
+    <shape type="rect" topLeftX="64" topLeftY="362" width="832" height="86">
+      <fill><fillColor color="rgba(255,255,255,0.06)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="84" topLeftY="374" width="800" height="22"><content textType="body" fontSize="13" bold="true" color="rgba(201,166,107,1)" wrap="false"><p>不足与后续展望</p></content></shape>
+    <shape type="text" topLeftX="84" topLeftY="402" width="792" height="40"><content textType="caption" fontSize="11.5" color="rgba(214,224,236,1)" lineSpacing="multiple:1.5"><p>审批流程仍以固定阶段为主，后续可向可配置工作流演进；并计划补充 Redis 集群、国产化数据库适配与移动端体验优化。</p></content></shape>
+
+    <line startX="64" startY="470" endX="896" endY="470"><border color="rgba(255,255,255,0.16)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="484" width="832" height="34">
+      <content textType="body" fontSize="17" bold="true" color="rgba(255,255,255,1)" textAlign="center" wrap="false"><p>我的汇报到此结束，恳请各位老师批评指正！</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>最后是收获。通过这个项目，我在四个方面有明显成长：一是全栈工程能力，二是复杂业务建模能力，三是工程化和容错思维，四是安全与规范意识。当然系统还有不足，比如审批流程可以进一步做成可配置工作流，未来还计划做国产化数据库适配和移动端优化。我的汇报到此结束，恳请各位老师批评指正，谢谢。</p></content></note>
+</slide>

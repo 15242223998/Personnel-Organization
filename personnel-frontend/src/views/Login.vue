@@ -11,7 +11,11 @@
           <h1>辽宁某某大学 - 组织人事档案管理系统</h1>
           <p>辽宁某某大学 · 智慧组织人事管理平台</p>
         </div>
-        <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form">
+        <div class="login-mode">
+          <span :class="{ active: loginMode === 'pwd' }" @click="switchMode('pwd')">账号登录</span>
+          <span :class="{ active: loginMode === 'qr' }" @click="switchMode('qr')">扫码登录</span>
+        </div>
+        <el-form v-show="loginMode === 'pwd'" ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form">
           <el-form-item prop="username">
             <el-input v-model="loginForm.username" placeholder="用户名" size="large">
               <template #prefix><el-icon><User /></el-icon></template>
@@ -26,6 +30,31 @@
             <el-button type="primary" size="large" style="width:100%" :loading="loading" @click="handleLogin">登 录</el-button>
           </el-form-item>
         </el-form>
+
+        <!-- 扫码登录：展示真实可扫二维码，手机（微信/相机）扫码后在手机上确认 -->
+        <div v-if="loginMode === 'qr'" class="qr-panel">
+          <div class="qr-box">
+            <img v-if="qrImage" :src="qrImage" class="qr-img" alt="登录二维码" />
+            <div v-if="qrState === 'expired'" class="qr-mask expired">二维码已失效</div>
+          </div>
+          <p class="qr-hint">请使用微信扫一扫登录</p>
+
+          <div v-if="qrState === 'waiting' || qrState === 'loading'" class="qr-status">
+            <span class="qr-spinner"></span> 等待手机端确认登录
+          </div>
+          <div v-else-if="qrState === 'confirmed'" class="qr-status ok">
+            <el-icon><CircleCheck /></el-icon> 登录成功
+          </div>
+          <div v-else-if="qrState === 'rejected'" class="qr-status fail">
+            <el-icon><CircleClose /></el-icon> 用户拒绝登录，登录失败
+          </div>
+          <div v-else-if="qrState === 'expired'" class="qr-status fail">
+            二维码已失效，请刷新
+          </div>
+          <div v-if="qrState === 'rejected' || qrState === 'expired'" class="qr-actions">
+            <el-button @click="refreshQr">刷新二维码</el-button>
+          </div>
+        </div>
         <div class="register-link">
           <span @click="openRegister">没有账号？立即注册</span>
         </div>
@@ -128,13 +157,15 @@
 </template>
 
 <script setup>
-import { ref, reactive, h } from 'vue'
+import { ref, reactive, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Connection } from '@element-plus/icons-vue'
+import { Connection, CircleCheck, CircleClose } from '@element-plus/icons-vue'
+import QRCode from 'qrcode'
 import { useUserStore } from '../stores/user'
 import { login, register } from '../api/auth'
 import { getServerBase } from '../utils/request'
+import { QR_LOGIN_HOST } from '../utils/qrLogin'
 import request from '../utils/request'
 
 const router = useRouter()
@@ -153,18 +184,21 @@ const loginRules = {
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 
+function applyLoginSuccess(user) {
+  const isAdmin = user.userType === 1
+  localStorage.setItem('token', user.token)
+  userStore.setUser(user.username, String(user.id), user.realName, isAdmin ? 'admin' : 'cadre', user.permissions)
+  ElMessage.success(`欢迎，${user.realName || user.username}`)
+  router.push('/')
+}
+
 function handleLogin() {
   loginFormRef.value.validate((valid) => {
     if (!valid) return
     loading.value = true
     login(loginForm, { showError: false })
       .then(res => {
-        const user = res.data
-        const isAdmin = user.userType === 1
-        localStorage.setItem('token', user.token)
-        userStore.setUser(user.username, String(user.id), user.realName, isAdmin ? 'admin' : 'cadre', user.permissions)
-        ElMessage.success(`欢迎，${user.realName || user.username}`)
-        router.push('/')
+        applyLoginSuccess(res.data)
       })
       .catch(err => {
         if (err.code === 4001 || err.code === 4002 || err.code === 4003) {
@@ -181,6 +215,134 @@ function handleLogin() {
       })
   })
 }
+
+// ==================== 扫码登录（真二维码 + 手机端确认） ====================
+// 二维码内容为可扫 URL，手机（微信/相机）扫码后打开 /qr-login 确认页；票据经后端内存同步，跨设备真实生效。
+// 手机端地址来自常量 QR_LOGIN_HOST（见 src/utils/qrLogin.js，改 IP 只改那一处）。
+
+const loginMode = ref('pwd')
+const qrImage = ref('')
+const qrState = ref('idle') // idle / loading / waiting / confirmed / rejected / expired
+const qrTicket = ref('')
+const qrAccount = ref('')
+let qrPollTimer = null   // 状态轮询计时器
+let qrLoginTimer = null  // "登录成功"约 2 秒后进系统的计时器
+const DEMO_QR_ACCOUNT = { username: 'admin', password: '123456' }
+
+function clearQrTimers() {
+  if (qrPollTimer) {
+    clearInterval(qrPollTimer)
+    qrPollTimer = null
+  }
+  if (qrLoginTimer) {
+    clearTimeout(qrLoginTimer)
+    qrLoginTimer = null
+  }
+}
+
+function switchMode(mode) {
+  loginMode.value = mode
+  if (mode === 'qr') {
+    startQrLogin()
+  } else {
+    clearQrTimers()
+    qrState.value = 'idle'
+  }
+}
+
+// 生成一次性票据 → 绘制真实二维码 → 开始轮询状态
+async function startQrLogin() {
+  clearQrTimers()
+  qrState.value = 'loading'
+  qrImage.value = ''
+  qrTicket.value = ''
+  const account = loginForm.username || 'admin'
+  qrAccount.value = account
+  try {
+    const res = await request({ url: '/qr-login/ticket', method: 'post', data: { account }, showError: false })
+    const ticket = res.data && res.data.ticket
+    if (!ticket) throw new Error('票据生成失败')
+    qrTicket.value = ticket
+    const url = `${QR_LOGIN_HOST}/qr-login?ticket=${ticket}`
+    // 便于验证二维码内容与预期一致
+    console.log('[扫码登录] 二维码内容 URL =', url)
+    qrImage.value = await QRCode.toDataURL(url, {
+      width: 200,
+      margin: 1,
+      errorCorrectionLevel: 'H',
+      color: { dark: '#111111', light: '#ffffff' }
+    })
+    qrState.value = 'waiting'
+    startQrPoll()
+  } catch (err) {
+    qrState.value = 'expired'
+    ElMessage.error((err && err.message) || '二维码生成失败，请刷新')
+  }
+}
+
+function refreshQr() {
+  startQrLogin()
+}
+
+function startQrPoll() {
+  const pollOnce = async () => {
+    if (!qrTicket.value && !qrAccount.value) return
+    try {
+      // 同时带 ticket 与 account：后端优先按 account 维度查询，避免二维码刷新后票据不一致导致错过确认
+      const res = await request({
+        url: '/qr-login/status',
+        method: 'get',
+        params: { ticket: qrTicket.value, account: qrAccount.value },
+        showError: false
+      })
+      const status = res.data && res.data.status
+      if (status === 'confirmed') {
+        handleQrConfirmed()
+      } else if (status === 'rejected') {
+        clearQrTimers()
+        qrState.value = 'rejected'
+      } else if (status === 'expired') {
+        clearQrTimers()
+        qrState.value = 'expired'
+      }
+    } catch {
+      // 网络抖动忽略，下一轮继续
+    }
+  }
+  // 立即查一次，随后每秒轮询
+  pollOnce()
+  qrPollTimer = setInterval(pollOnce, 1000)
+}
+
+function handleQrConfirmed() {
+  clearQrTimers()
+  qrState.value = 'confirmed'
+  // 展示"登录成功"约 2 秒后，用真实登录接口进入系统
+  qrLoginTimer = setTimeout(() => {
+    qrLoginTimer = null
+    qrLogin()
+  }, 2000)
+}
+
+function qrLogin() {
+  const account = loginForm.username && loginForm.password
+    ? { username: loginForm.username, password: loginForm.password }
+    : DEMO_QR_ACCOUNT
+  loading.value = true
+  login(account, { showError: false })
+    .then(res => {
+      applyLoginSuccess(res.data)
+    })
+    .catch(err => {
+      ElMessage.error(err.message || '扫码登录失败')
+      qrState.value = 'expired'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+onUnmounted(clearQrTimers)
 
 const registerVisible = ref(false)
 const registerLoading = ref(false)
@@ -590,6 +752,123 @@ function handleRegister() {
 }
 .login-form {
   margin-top: 20px;
+}
+/* 账号登录 / 扫码登录 切换 */
+.login-mode {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-top: 18px;
+  border-bottom: 1px solid #eee;
+}
+.login-mode span {
+  position: relative;
+  padding: 6px 2px 10px;
+  font-size: 14px;
+  color: #888;
+  cursor: pointer;
+}
+.login-mode span.active {
+  color: #1976D2;
+  font-weight: 600;
+}
+.login-mode span.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #1976D2;
+  border-radius: 2px;
+}
+/* 扫码登录面板 */
+.qr-panel {
+  position: relative;
+  margin-top: 18px;
+  text-align: center;
+}
+.qr-box {
+  position: relative;
+  width: 196px;
+  height: 196px;
+  margin: 0 auto;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #e5e8ef;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(25, 118, 210, 0.08);
+}
+.qr-img {
+  display: block;
+  width: 176px;
+  height: 176px;
+}
+/* 中心微信小图标叠层：34px，约二维码面积 3.7%，不遮挡三个定位角 */
+.qr-wechat {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #07C160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px #fff;
+}
+.qr-mask {
+  position: absolute;
+  inset: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #07C160;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+.qr-mask.expired {
+  color: #E53935;
+}
+.qr-hint {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #666;
+}
+.qr-status {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #1976D2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.qr-status.ok {
+  color: #07C160;
+  font-weight: 600;
+}
+.qr-status.fail {
+  color: #E53935;
+  font-weight: 600;
+}
+.qr-actions {
+  margin-top: 10px;
+}
+.qr-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #cfe3f8;
+  border-top-color: #1976D2;
+  border-radius: 50%;
+  animation: qr-spin 0.8s linear infinite;
+}
+@keyframes qr-spin {
+  to { transform: rotate(360deg); }
 }
 .register-link {
   text-align: right;

@@ -1,0 +1,69 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>03　项目实现思路　·　数据库设计</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>数据库设计：以干部档案为核心的关系模型</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <img src="K3yibEFp2oWRa2xrjqqcKSfsn5f" topLeftX="64" topLeftY="126" width="179" height="358">
+      <border color="rgba(20,42,73,0.18)" width="1"/>
+    </img>
+    <shape type="text" topLeftX="64" topLeftY="488" width="179" height="16">
+      <content textType="caption" fontSize="9" color="rgba(95,122,148,1)" textAlign="center" wrap="false"><p>图 3　数据库 ER 图（节选）</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="128" width="600" height="24">
+      <content textType="body" fontSize="14" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>51 张表，按 10 个业务域组织</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="156" width="600" height="36">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>干部档案、组织机构、任免、考核、日常事务、监督、调配晋升、统计、系统管理等。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="202" width="600" height="22">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>设计原则一　单一事实源</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="226" width="600" height="32">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>cadre_info 干部档案为核心，任免 / 调配 / 考核等业务表以 cadre_id 关联。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="266" width="600" height="22">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>设计原则二　统一审计基类</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="290" width="600" height="32">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>BaseEntity 统一下发创建人 / 时间、更新人 / 时间，deleted 标记逻辑删除。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="330" width="600" height="22">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>设计原则三　字典标准化</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="354" width="600" height="32">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>性别、民族、政治面貌、学历等枚举统一走 sys_dict 国标字典，避免硬编码。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="394" width="600" height="22">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>设计原则四　现状与历史分离</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="418" width="600" height="46">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>任免、调配、晋升均保留独立记录表，档案只存“当前状态”，既保证查询高效，又能回溯完整履历。</p></content>
+    </shape>
+
+    <line startX="296" startY="476" endX="896" endY="476"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+    <shape type="text" topLeftX="296" topLeftY="486" width="600" height="18">
+      <content textType="caption" fontSize="10" color="rgba(95,122,148,1)" wrap="false"><p>建库脚本 sql/init.sql，演示数据 sql/seed-demo.sql，可重复执行。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>15 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>数据库共 51 张表，按十个业务域组织。设计上坚持四条原则：一是以干部档案表为单一事实源，所有业务表通过 cadre_id 关联；二是用 BaseEntity 统一审计字段和逻辑删除；三是枚举值统一走国标字典；四是现状与历史分离，档案只存当前状态，业务过程单独留痕，既能快速查询又能回溯履历。左侧是 ER 图节选。</p></content></note>
+</slide>

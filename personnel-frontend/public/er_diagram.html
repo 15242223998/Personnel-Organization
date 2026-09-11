@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>辽宁某某大学干部人事系统 ER 实体图（表数量：51）</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #1f2937;
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+  }
+  .wrap {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    box-sizing: border-box;
+  }
+  h1 {
+    font-size: 26px;
+    line-height: 1.5;
+    text-align: center;
+    margin: 8px 0 6px;
+    color: #111827;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 15px;
+    color: #6b7280;
+    margin-bottom: 22px;
+  }
+  pre.mermaid {
+    background: #ffffff;
+    margin: 0;
+    padding: 8px 0 24px;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+  .footer {
+    margin-top: 26px;
+    padding-top: 14px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 15px;
+    color: #4b5563;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>辽宁某某大学干部人事系统 ER 实体图（表数量：51）</h1>
+  <div class="subtitle">数据来源：sql/init.sql（自动解析生成，仅示意表结构与外键关系）</div>
+  <pre class="mermaid">
+erDiagram
+    sys_user {
+        int id PK
+        string username "用户名"
+        string password "密码"
+        string real_name "真实姓名"
+        string avatar "头像"
+        string email "邮箱"
+        string phone "手机号"
+        int gender "性别 0未知 1男 2女"
+        int user_type "用户类型 1系统管理员 2校级领导 3组织部部长 4组织员 5二级学院领导 6普通干部"
+        int status "状态 0待审核 1正常(已批准) 2已拒绝 3停用"
+        int dept_id "所属部门/学院ID"
+        int cadre_id "关联干部档案ID（干部自助申报归属）"
+        string permissions "模块级权限，逗号分隔多个key，空表示无任何权限（userType=1系统管理员不受限）"
+        string ip_bound "IP绑定"
+        int login_fail_count "登录失败次数"
+        datetime lock_until "锁定截止时间"
+        datetime last_login_time "最后登录时间"
+        string last_login_ip "最后登录IP"
+        int create_by "创建人"
+        int update_by "更新人"
+        datetime create_time
+        datetime update_time
+        int deleted "逻辑删除 0未删 1已删"
+    }
+    sys_role {
+        int id PK
+        string role_name "角色名称"
+        string role_code "角色编码"
+        int data_scope "数据范围 1全部 2自定义 3本级及下级 4本级"
+        int status "状态"
+        string permissions "模块级权限，逗号分隔多个key，空表示无任何权限（userType=1系统管理员不受限）"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    sys_user_role {
+        int id PK
+        int user_id
+        int role_id
+    }
+    sys_dict_type {
+        int id PK
+        string type_name "字典名称"
+        string type_code "字典编码"
+        int status
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    sys_dict_data {
+        int id PK
+        string type_code "字典编码"
+        string dict_label "字典标签"
+        string dict_value "字典值"
+        int sort_order "排序"
+        int status
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    sys_oper_log {
+        int id PK
+        int user_id "操作用户ID"
+        string username "操作用户名"
+        string oper_type "操作类型 INSERT/UPDATE/DELETE/QUERY/APPROVE"
+        string oper_module "操作模块"
+        string oper_desc "操作描述"
+        string oper_ip "操作IP"
+        datetime oper_time "操作时间"
+        string oper_params "操作参数"
+        string oper_result "操作结果 SUCCESS/FAIL"
+    }
+    sys_login_log {
+        int id PK
+        int user_id "用户ID"
+        string username "用户名"
+        string login_ip "登录IP"
+        string device_type "设备类型 PC/PHONE/PAD"
+        string browser "浏览器"
+        string os "操作系统"
+        datetime login_time "登录时间"
+        string login_result "登录结果 SUCCESS/FAIL"
+        string fail_reason "失败原因"
+    }
+    org_department {
+        int id PK
+        int parent_id "上级机构ID"
+        string dept_name "机构全称"
+        string short_name "机构简称"
+        string dept_level "机构级别 校级/处级/科级"
+        int leader_quota "班子职数"
+        datetime established_date "成立时间"
+        int dept_sort "显示排序"
+        int status "状态 0撤销 1正常"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    org_position_level {
+        int id PK
+        string level_name "职务层次名称 校级/处级/科级"
+        int min_lower_years "任低一级职务最低年限"
+        int max_age "年龄上限"
+        string min_education "最低学历要求"
+        string assessment_required "年度考核要求"
+        int penalty_period_restrict "处分影响期(月)内不得提拔"
+        int sort_order
+        int status
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    org_rank {
+        int id PK
+        string rank_name "职级名称"
+        string rank_type "职级类型 管理岗/专业技术岗"
+        int promotion_years "晋升所需任满年限"
+        int sort_order
+        int status
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    org_staffing_quota {
+        int id PK
+        int dept_id "机构ID"
+        int approved_quota "核定编制数"
+        int leader_quota "核定领导职数"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    cadre_info {
+        int id PK
+        string name "姓名"
+        int gender "性别 1男 2女"
+        datetime birth_date "出生年月"
+        string nation "民族"
+        string native_place "籍贯"
+        string political_status "政治面貌"
+        datetime party_join_date "入党时间"
+        datetime work_start_date "参加工作时间"
+        string id_card "身份证号"
+        string phone "联系电话"
+        string email "邮箱"
+        string photo_url "照片地址"
+        string full_time_education "全日制教育学历"
+        string full_time_degree "全日制教育学位"
+        string full_time_school "全日制毕业院校及专业"
+        string part_time_education "在职教育学历"
+        string part_time_degree "在职教育学位"
+        string part_time_school "在职毕业院校及专业"
+        int dept_id "所属机构ID"
+        string position "现任职务"
+        string position_level "现职务层次 校级/处级/科级"
+        int rank_id "职级ID"
+        datetime position_start_date "任现职时间"
+        string position_doc_no "任职文号"
+        string resume_text "简历"
+        string reward_punishment "奖惩情况"
+        string annual_assessment "年度考核历史"
+        string home_address "家庭住址"
+        string emergency_contact "紧急联系人(姓名及联系电话)"
+        string cadre_status "干部状态 ON_JOB在职 RETIRED离退休 TRANSFERRED调出 RESIGNED辞职"
+        datetime retirement_date "退休日期"
+        datetime leave_date "减员日期"
+        string leave_reason "减员原因"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    cadre_family_member {
+        int id PK
+        int cadre_id "干部ID"
+        string member_name "姓名"
+        string relation "关系"
+        string workplace "工作单位及职务"
+        string phone "联系电话"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    cadre_attachment {
+        int id PK
+        int cadre_id "干部ID"
+        string file_name "文件名"
+        string file_path "文件路径"
+        string file_type "文件类型"
+        int file_size "文件大小"
+        string attach_category "材料类别 出生年月/学历学位/其他"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    cadre_reserve {
+        int id PK
+        int cadre_id "干部ID"
+        string reserve_type "后备类型 后备干部/优秀年轻干部"
+        string reserve_level "后备级别"
+        datetime enter_date "入库日期"
+        int status "状态 1在库 0出库"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    transfer_record {
+        int id PK
+        int cadre_id "干部ID"
+        string transfer_type "调配类型 ADD增员 REDUCE减员 RETIRE退休 ROTATE轮岗"
+        datetime transfer_date "调配日期"
+        string transfer_reason "调配原因"
+        int from_dept_id "原机构ID"
+        int to_dept_id "目标机构ID"
+        string from_position "原职务"
+        string to_position "目标职务"
+        string doc_no "相关文号"
+        string remark "备注"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    rank_promotion_record {
+        int id PK
+        int cadre_id "干部ID"
+        int from_rank_id "原职级ID"
+        int to_rank_id "晋升后职级ID"
+        datetime promotion_date "晋升日期"
+        string doc_no "晋升文号"
+        string remark "备注"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    appoint_process {
+        int id PK
+        string position_info "选拔任用职位信息"
+        string current_step "当前环节 MOTION动议 RECOMMEND推荐 INVESTIGATE考察 DECIDE讨论决定 PUBLICITY公示 APPOINT任职 CANCELLED终止"
+        string process_status "流程状态 IN_PROGRESS进行中 PASSED通过 CANCELLED终止 COMPLETED完成"
+        int cadre_id "最终确定人选ID"
+        datetime start_time "启动时间"
+        datetime end_time "结束时间"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    appoint_motion {
+        int id PK
+        int process_id "流程ID"
+        string position_condition "职位条件/范围/方式/程序/人选意向"
+        string candidate_ids "候选干部ID列表"
+        int selected_cadre_id "动议确定人选ID"
+        string motion_status "动议状态 DRAFT草稿 ACTIVE进行中 CANCELLED终止 COMPLETED完成"
+        string meeting_file_url "会议文件扫描件"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    appoint_recommend {
+        int id PK
+        int process_id "流程ID"
+        string recommend_type "推荐方式 谈话调研/会议推荐"
+        datetime recommend_date "推荐日期"
+        string recommend_location "推荐地点"
+        int expected_count "应到人数"
+        int actual_count "实到人数"
+        int vote_count "得票数"
+        int is_passed "是否通过 0未通过 1通过"
+        string meeting_file_url "推荐会议文件扫描件"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    appoint_investigation {
+        int id PK
+        int process_id "流程ID"
+        int archive_check "档案审核 0未通过 1通过 -- 三龄两历一身份"
+        string archive_issue "档案审核问题描述"
+        int personal_report_check "个人事项核查 0未通过 1通过"
+        string personal_report_issue "个人事项核查问题"
+        int discipline_check "纪检意见 0未通过 1通过"
+        string discipline_issue "纪检问题描述"
+        int complaint_check "信访核查 0未通过 1通过"
+        string complaint_issue "信访问题描述"
+        int is_passed "考察是否通过 0未通过 1通过"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    appoint_decision {
+        int id PK
+        int process_id "流程ID"
+        datetime meeting_date "上会日期"
+        int approve_count "赞成票"
+        int oppose_count "反对票"
+        int abstain_count "弃权票"
+        int is_passed "是否通过 0未通过 1通过"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    appoint_publicity {
+        int id PK
+        int process_id "流程ID"
+        datetime publicity_start "公示开始日期"
+        datetime publicity_end "公示结束日期"
+        string publicity_content "公示信息"
+        string report_info "反映信息"
+        string publicity_result "公示结果 PASSED通过 FAILED未通过"
+        string remark "备注"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    appoint_record {
+        int id PK
+        int cadre_id "干部ID"
+        int process_id "关联任免流程ID"
+        string position "职务"
+        int dept_id "所属机构ID"
+        string position_level "职务层次"
+        datetime appoint_date "任职日期"
+        string appoint_doc_no "任命文号"
+        int is_current "是否现任 0否 1是"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    supervise_integrity {
+        int id PK
+        int cadre_id "干部ID"
+        string opinion_type "意见类型 选拔任用/职级晋升/其他"
+        string opinion_content "廉政意见内容"
+        string opinion_source "意见来源单位"
+        datetime opinion_date "出具日期"
+        string opinion_result "意见结果"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    supervise_complaint {
+        int id PK
+        int cadre_id "被举报干部ID"
+        string complaint_source "举报来源"
+        string complaint_type "举报类型"
+        string complaint_content "举报内容"
+        datetime complaint_date "举报日期"
+        string handle_status "处理状态 PENDING待处理 INVESTIGATING查核中 CLOSED已办结"
+        string handle_result "处理结果"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    supervise_personal_report {
+        int id PK
+        int cadre_id "干部ID"
+        string report_year "报告年度"
+        string report_content "报告内容"
+        string check_result "核查结果 NORMAL正常 ABNORMAL异常"
+        string check_issue "核查问题描述"
+        datetime submit_date "提交日期"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    supervise_alert {
+        int id PK
+        string alert_type "预警级别编码 RED红 ORANGE橙 YELLOW黄 (BLUE蓝兼容保留)"
+        string alert_category "预警类别 证件到期/出国超期/休假超时/任职超期/到龄退休"
+        string alert_title "预警标题"
+        string alert_content "预警内容"
+        int target_user_id "提醒对象用户ID"
+        int target_cadre_id "关联干部ID"
+        int rule_id "来源预警规则ID(supervise_alert_rule.id)，规则引擎生成时写入"
+        string ref_id "规则扫描幂等引用(业务类型-业务主键，如 CERT-1/ABROAD-2/LEAVE-3/TEAM-4/RETIRE-5)"
+        int is_read "是否已读 0未读(未处理) 1已读(视为已处理)"
+        datetime read_time "阅读时间"
+        datetime create_time
+        int deleted
+    }
+    supervise_alert_rule {
+        int id PK
+        string rule_name "规则名称"
+        string rule_type "预警类型 证件到期/出国超期/休假超时/任职超期/到龄退休 等"
+        string level "预警级别 红色/橙色/黄色"
+        int threshold "触发阈值(天数或数值)"
+        int is_enabled "是否启用 1启用 0停用"
+        string remark "备注"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    policy_document {
+        int id PK
+        string title "标题"
+        string doc_no "文号"
+        string publish_unit "发布单位"
+        datetime issue_date "发布日期"
+        datetime effective_date "施行日期"
+        string category "分类 党内法规/干部选拔/干部监督/教育培训/其他"
+        string content "正文"
+        string attachment_name "附件名称"
+        string attachment_url "附件地址"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    cadre_investigation {
+        int id PK
+        int cadre_id "干部ID"
+        string investigation_type "考察类型 任前考察/年度考核考察/专项考察/换届考察"
+        datetime investigation_time "考察时间"
+        string investigator "考察组成员"
+        string result "考察结论 优秀/称职/基本称职/其他"
+        string content "考察材料"
+        string org_unit "组织单位"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    supervise_admonish {
+        int id PK
+        int cadre_id "干部ID"
+        string admonish_type "类型 提醒谈话/函询/诫勉"
+        string trigger_type "触发事由"
+        string content "内容"
+        string result "处理结果"
+        string discipline "纪律处分类别"
+        string handle_status "处理状态 待处理/已办结"
+        string handle_user "处理人"
+        datetime handle_time "处理时间"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    supervise_audit {
+        int id PK
+        int cadre_id "干部ID"
+        string audit_scope "审计范围 任期经济责任审计/离任审计/专项审计"
+        datetime audit_period_start "审计期间开始"
+        datetime audit_period_end "审计期间结束"
+        string audit_org "审计机构"
+        datetime start_time "实施开始时间"
+        datetime end_time "实施结束时间"
+        string audit_result "审计结论 无重大问题/基本正常/存在需整改问题/重大问题"
+        string issue "发现问题"
+        string rectify_status "整改状态 待整改/整改中/已整改"
+        string audit_report_url "报告附件地址"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    assessment_annual {
+        int id PK
+        int cadre_id "干部ID"
+        string assessment_year "考核年度"
+        string assessment_result "考核结果 优秀/称职/基本称职/不称职"
+        string assessment_comment "考核评语"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    assessment_scheme {
+        int id PK
+        string scheme_name "方案名称"
+        string scheme_year "方案年度"
+        datetime vote_start_time "投票开始时间"
+        datetime vote_end_time "投票结束时间"
+        int allow_anonymous "允许匿名投票"
+        decimal excellent_max_ratio "优秀占比上限"
+        int forbid_all_excellent "禁止全优评价"
+        string vote_mode "投票方式 SCORE评分式 BALLOT表决式"
+        int need_sign "是否需要签字确认 0否 1是"
+        string status "状态 DRAFT草稿 ACTIVE进行中 FINISHED已结束"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    assessment_dimension {
+        int id PK
+        int scheme_id "方案ID"
+        string dimension_name "维度名称 德/能/勤/绩/廉"
+        decimal dimension_weight "权重"
+        int sort_order
+        int deleted
+    }
+    assessment_indicator {
+        int id PK
+        int dimension_id "维度ID"
+        string indicator_name "指标名称"
+        decimal max_score "最高分"
+        int sort_order
+        int deleted
+    }
+    assessment_target {
+        int id PK
+        int scheme_id "方案ID"
+        int cadre_id "被评干部ID"
+        string material_title "测评材料标题"
+        string material_text "测评材料正文"
+        int deleted
+    }
+    assessment_vote {
+        int id PK
+        int scheme_id "方案ID"
+        int voter_id "投票人ID"
+        int target_cadre_id "被评干部ID"
+        int indicator_id "指标ID"
+        decimal score "评分"
+        datetime vote_time
+    }
+    assessment_ballot {
+        int id PK
+        int scheme_id "方案ID"
+        int voter_id "投票人ID"
+        int target_cadre_id "被表决干部ID"
+        string choice "表决意见 APPROVE赞成/DISAPPROVE反对/ABSTAIN弃权"
+        datetime create_time
+        int deleted "逻辑删除 0未删 1已删"
+    }
+    assessment_signature {
+        int id PK
+        int scheme_id "方案ID"
+        int voter_id "签字人ID"
+        string sign_image "签字图片(PNG)"
+        string sign_md5 "签字图片MD5"
+        string device_ip "设备IP"
+        datetime sign_time "签字时间"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted "逻辑删除 0未删 1已删"
+    }
+    daily_certificate {
+        int id PK
+        int cadre_id "干部ID"
+        string cert_type "证件类型 PASSPORT护照 ENTRY_PERMIT通行证"
+        string cert_number "证件号码"
+        string cert_status "证件状态 STORED存放中 LENT借出 RETURNED已归还 OVERDUE逾期"
+        datetime borrow_date "借出日期"
+        datetime return_date "归还日期"
+        datetime expected_return_date "预计归还日期"
+        int abroad_id "关联已批准出国(境)记录ID（因公临时领用来源）"
+        string remark "备注"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    daily_abroad_record {
+        int id PK
+        int cadre_id "干部ID"
+        string destination "目的地"
+        string purpose "事由"
+        datetime depart_date "出境日期"
+        datetime return_date "入境日期"
+        int approved_days "批准天数"
+        int actual_days "实际天数"
+        int is_overdue "是否超期"
+        int is_approved "是否经批准出国(境) 1已批准 0未批准"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    daily_leave {
+        int id PK
+        int cadre_id "干部ID"
+        string leave_type "假别 ANNUAL年假 PERSONAL事假 SICK病假"
+        datetime start_date "开始日期"
+        datetime end_date "结束日期"
+        decimal leave_days "请假天数"
+        string reason "请假事由"
+        string approve_status "审批状态 DRAFT草稿 SUBMITTED已提交 APPROVED已通过 REJECTED已驳回"
+        int approve_id "审批人ID"
+        datetime approve_time "审批时间"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    daily_training {
+        int id PK
+        string training_name "培训班名称"
+        string training_type "培训类型"
+        datetime start_date "开始日期"
+        datetime end_date "结束日期"
+        string training_location "培训地点"
+        string organizer "主办单位"
+        string description "培训内容描述"
+        string status "状态 ACTIVE进行中 FINISHED已结束"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    daily_training_cadre {
+        int id PK
+        int training_id "培训ID"
+        int cadre_id "干部ID"
+        int is_completed "是否完成"
+        string certificate_url "证书地址"
+    }
+    daily_secondment {
+        int id PK
+        int cadre_id "干部ID"
+        string secondment_unit "挂职单位"
+        string secondment_position "挂职职务"
+        datetime start_date "开始日期"
+        datetime end_date "结束日期"
+        string status "状态 ACTIVE在岗 FINISHED已结束"
+        string remark "备注"
+        int create_by
+        datetime create_time
+        int deleted
+    }
+    daily_self_application {
+        int id PK
+        int applicant_id "申请人ID"
+        string application_type "申报类型 INFO_UPDATE档案信息更正 LEAVE请假 PART_TIME兼职 TRAINING培训 ABROAD出国"
+        string application_title "申报标题"
+        string application_content "申报内容"
+        string apply_field "申请变更字段key(档案信息更正,白名单见CadreInfoMapperKeys)"
+        string old_value "变更前档案值(提交时读取真实档案)"
+        string new_value "变更后档案值"
+        string apply_status "申报状态 DRAFT草稿 SUBMITTED已提交 APPROVED已通过 REJECTED已驳回"
+        int approver_id "审批人ID"
+        datetime approve_time "审批时间"
+        string approve_comment "审批意见"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    sys_roster_template {
+        int id PK
+        string template_name "模板名称"
+        string template_fields "模板包含字段(JSON)"
+        int is_system "是否系统预设"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    sys_print_template {
+        int id PK
+        string template_name "模板名称"
+        string template_type "模板类型 APPOINTMENT任免表 ARCHIVE档案 EXPORT导出"
+        string template_content "模板内容(HTML/Word)"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    org_team_member {
+        int id PK
+        int dept_id "机构ID"
+        int cadre_id "干部ID"
+        string leader_post "班子职务 党委书记/院长/副院长/党委副书记/纪委书记/部长/处长等"
+        int sort_order "排序"
+        int is_leader "是否主要负责人 0否 1是"
+        datetime start_date "任职开始日期"
+        datetime end_date "任职结束日期(空表示现任)"
+        int create_by
+        int update_by
+        datetime create_time
+        datetime update_time
+        int deleted
+    }
+    org_department ||--o{ sys_user : "dept_id"
+    cadre_info ||--o{ sys_user : "cadre_id"
+    sys_user ||--o{ sys_role : "create_by"
+    sys_user ||--o{ sys_role : "update_by"
+    sys_user ||--o{ sys_user_role : "user_id"
+    sys_role ||--o{ sys_user_role : "role_id"
+    sys_user ||--o{ sys_dict_type : "create_by"
+    sys_user ||--o{ sys_dict_type : "update_by"
+    sys_user ||--o{ sys_dict_data : "create_by"
+    sys_user ||--o{ sys_dict_data : "update_by"
+    sys_user ||--o{ sys_oper_log : "user_id"
+    sys_user ||--o{ sys_login_log : "user_id"
+    sys_user ||--o{ org_department : "create_by"
+    sys_user ||--o{ org_department : "update_by"
+    sys_user ||--o{ org_position_level : "create_by"
+    sys_user ||--o{ org_position_level : "update_by"
+    sys_user ||--o{ org_rank : "create_by"
+    sys_user ||--o{ org_rank : "update_by"
+    org_department ||--o{ org_staffing_quota : "dept_id"
+    sys_user ||--o{ org_staffing_quota : "create_by"
+    sys_user ||--o{ org_staffing_quota : "update_by"
+    org_department ||--o{ cadre_info : "dept_id"
+    org_rank ||--o{ cadre_info : "rank_id"
+    sys_user ||--o{ cadre_info : "create_by"
+    sys_user ||--o{ cadre_info : "update_by"
+    cadre_info ||--o{ cadre_family_member : "cadre_id"
+    sys_user ||--o{ cadre_family_member : "create_by"
+    sys_user ||--o{ cadre_family_member : "update_by"
+    cadre_info ||--o{ cadre_attachment : "cadre_id"
+    sys_user ||--o{ cadre_attachment : "create_by"
+    cadre_info ||--o{ cadre_reserve : "cadre_id"
+    sys_user ||--o{ cadre_reserve : "create_by"
+    sys_user ||--o{ cadre_reserve : "update_by"
+    cadre_info ||--o{ transfer_record : "cadre_id"
+    sys_user ||--o{ transfer_record : "create_by"
+    cadre_info ||--o{ rank_promotion_record : "cadre_id"
+    org_rank ||--o{ rank_promotion_record : "from_rank_id"
+    org_rank ||--o{ rank_promotion_record : "to_rank_id"
+    sys_user ||--o{ rank_promotion_record : "create_by"
+    cadre_info ||--o{ appoint_process : "cadre_id"
+    sys_user ||--o{ appoint_process : "create_by"
+    sys_user ||--o{ appoint_process : "update_by"
+    appoint_process ||--o{ appoint_motion : "process_id"
+    cadre_info ||--o{ appoint_motion : "selected_cadre_id"
+    sys_user ||--o{ appoint_motion : "create_by"
+    sys_user ||--o{ appoint_motion : "update_by"
+    appoint_process ||--o{ appoint_recommend : "process_id"
+    sys_user ||--o{ appoint_recommend : "create_by"
+    appoint_process ||--o{ appoint_investigation : "process_id"
+    sys_user ||--o{ appoint_investigation : "create_by"
+    appoint_process ||--o{ appoint_decision : "process_id"
+    sys_user ||--o{ appoint_decision : "create_by"
+    appoint_process ||--o{ appoint_publicity : "process_id"
+    sys_user ||--o{ appoint_publicity : "create_by"
+    cadre_info ||--o{ appoint_record : "cadre_id"
+    appoint_process ||--o{ appoint_record : "process_id"
+    org_department ||--o{ appoint_record : "dept_id"
+    sys_user ||--o{ appoint_record : "create_by"
+    cadre_info ||--o{ supervise_integrity : "cadre_id"
+    sys_user ||--o{ supervise_integrity : "create_by"
+    cadre_info ||--o{ supervise_complaint : "cadre_id"
+    sys_user ||--o{ supervise_complaint : "create_by"
+    sys_user ||--o{ supervise_complaint : "update_by"
+    cadre_info ||--o{ supervise_personal_report : "cadre_id"
+    sys_user ||--o{ supervise_personal_report : "create_by"
+    sys_user ||--o{ supervise_alert : "target_user_id"
+    cadre_info ||--o{ supervise_alert : "target_cadre_id"
+    supervise_alert_rule ||--o{ supervise_alert : "rule_id"
+    sys_user ||--o{ supervise_alert_rule : "create_by"
+    sys_user ||--o{ supervise_alert_rule : "update_by"
+    sys_user ||--o{ policy_document : "create_by"
+    sys_user ||--o{ policy_document : "update_by"
+    cadre_info ||--o{ cadre_investigation : "cadre_id"
+    sys_user ||--o{ cadre_investigation : "create_by"
+    sys_user ||--o{ cadre_investigation : "update_by"
+    cadre_info ||--o{ supervise_admonish : "cadre_id"
+    sys_user ||--o{ supervise_admonish : "create_by"
+    sys_user ||--o{ supervise_admonish : "update_by"
+    cadre_info ||--o{ supervise_audit : "cadre_id"
+    sys_user ||--o{ supervise_audit : "create_by"
+    sys_user ||--o{ supervise_audit : "update_by"
+    cadre_info ||--o{ assessment_annual : "cadre_id"
+    sys_user ||--o{ assessment_annual : "create_by"
+    sys_user ||--o{ assessment_scheme : "create_by"
+    sys_user ||--o{ assessment_scheme : "update_by"
+    assessment_scheme ||--o{ assessment_dimension : "scheme_id"
+    assessment_dimension ||--o{ assessment_indicator : "dimension_id"
+    assessment_scheme ||--o{ assessment_target : "scheme_id"
+    cadre_info ||--o{ assessment_target : "cadre_id"
+    assessment_scheme ||--o{ assessment_vote : "scheme_id"
+    cadre_info ||--o{ assessment_vote : "target_cadre_id"
+    assessment_indicator ||--o{ assessment_vote : "indicator_id"
+    assessment_scheme ||--o{ assessment_ballot : "scheme_id"
+    cadre_info ||--o{ assessment_ballot : "target_cadre_id"
+    assessment_scheme ||--o{ assessment_signature : "scheme_id"
+    sys_user ||--o{ assessment_signature : "create_by"
+    sys_user ||--o{ assessment_signature : "update_by"
+    cadre_info ||--o{ daily_certificate : "cadre_id"
+    daily_abroad_record ||--o{ daily_certificate : "abroad_id"
+    sys_user ||--o{ daily_certificate : "create_by"
+    sys_user ||--o{ daily_certificate : "update_by"
+    cadre_info ||--o{ daily_abroad_record : "cadre_id"
+    sys_user ||--o{ daily_abroad_record : "create_by"
+    cadre_info ||--o{ daily_leave : "cadre_id"
+    sys_user ||--o{ daily_leave : "create_by"
+    sys_user ||--o{ daily_leave : "update_by"
+    sys_user ||--o{ daily_training : "create_by"
+    daily_training ||--o{ daily_training_cadre : "training_id"
+    cadre_info ||--o{ daily_training_cadre : "cadre_id"
+    cadre_info ||--o{ daily_secondment : "cadre_id"
+    sys_user ||--o{ daily_secondment : "create_by"
+    sys_user ||--o{ daily_self_application : "approver_id"
+    sys_user ||--o{ daily_self_application : "create_by"
+    sys_user ||--o{ daily_self_application : "update_by"
+    sys_user ||--o{ sys_roster_template : "create_by"
+    sys_user ||--o{ sys_roster_template : "update_by"
+    sys_user ||--o{ sys_print_template : "create_by"
+    sys_user ||--o{ sys_print_template : "update_by"
+    org_department ||--o{ org_team_member : "dept_id"
+    cadre_info ||--o{ org_team_member : "cadre_id"
+    sys_user ||--o{ org_team_member : "create_by"
+    sys_user ||--o{ org_team_member : "update_by"
+  </pre>
+  <div class="footer">统计：表 51 张 / 字段 609 个 / 关系 122 条　|　生成脚本：.tools-er/gen-er.js</div>
+</div>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'default',
+  er: { layoutDirection: 'TB', entityPadding: 12 },
+  fontSize: 16
+})
+</script>
+</body>
+</html>

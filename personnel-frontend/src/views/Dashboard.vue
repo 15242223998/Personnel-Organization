@@ -63,6 +63,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, onUnmounted, markRaw } from 'vue'
+import { useRouter } from 'vue-router'
 import * as echarts from 'echarts'
 import { useUserStore } from '../stores/user'
 import {
@@ -82,6 +83,7 @@ const statCards = [
 const statNums = reactive({ onjob: 0, org: 0, reserve: 0 })
 
 const userStore = useUserStore()
+const router = useRouter()
 // 管理职能账号（系统管理员/校级领导/部长/组织员）可看全员待办；普通账号后端不推送，显示空态文案
 const isManager = computed(() => userStore.isAdmin || [2, 3, 4].includes(Number(userStore.userType)))
 

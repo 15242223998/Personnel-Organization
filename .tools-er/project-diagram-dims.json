@@ -1,0 +1,32 @@
+{
+  "files": [
+    {
+      "name": "项目-领域实体关系图.svg",
+      "width": 2960,
+      "height": 5948
+    },
+    {
+      "name": "项目-架构图.svg",
+      "width": 3200,
+      "height": 1690
+    },
+    {
+      "name": "项目-模块调用链路图.svg",
+      "width": 2450,
+      "height": 4462
+    }
+  ],
+  "stats": {
+    "entityCount": 51,
+    "entityWithTableName": 51,
+    "moduleCount": 8,
+    "frontPageCount": 31,
+    "apiFileCount": 10,
+    "fieldCount": 651,
+    "relationCount": 96,
+    "relationCandidateFields": 147,
+    "relationMatchedFields": 142,
+    "chainCount": 50,
+    "chainModuleCount": 10
+  }
+}

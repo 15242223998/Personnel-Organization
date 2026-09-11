@@ -1,0 +1,68 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>03　项目实现思路　·　安全与权限</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>认证授权：JWT 无状态认证 + 两级权限</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="64" topLeftY="124" width="600" height="20">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>一次请求的认证链路</p></content>
+    </shape>
+    <shape type="rect" topLeftX="64" topLeftY="150" width="152" height="52"><fill><fillColor color="rgba(20,42,73,0.06)"/></fill></shape>
+    <shape type="text" topLeftX="68" topLeftY="150" width="144" height="52"><content textType="caption" fontSize="11" bold="true" color="rgba(20,42,73,1)" textAlign="center" verticalAlign="middle"><p>账号密码登录</p></content></shape>
+    <shape type="text" topLeftX="216" topLeftY="161" width="18" height="30"><content textType="body" fontSize="14" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+    <shape type="rect" topLeftX="234" topLeftY="150" width="152" height="52"><fill><fillColor color="rgba(20,42,73,0.06)"/></fill></shape>
+    <shape type="text" topLeftX="238" topLeftY="150" width="144" height="52"><content textType="caption" fontSize="11" bold="true" color="rgba(20,42,73,1)" textAlign="center" verticalAlign="middle"><p>签发 JWT（HS256）</p></content></shape>
+    <shape type="text" topLeftX="386" topLeftY="161" width="18" height="30"><content textType="body" fontSize="14" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+    <shape type="rect" topLeftX="404" topLeftY="150" width="152" height="52"><fill><fillColor color="rgba(20,42,73,0.06)"/></fill></shape>
+    <shape type="text" topLeftX="408" topLeftY="150" width="144" height="52"><content textType="caption" fontSize="11" bold="true" color="rgba(20,42,73,1)" textAlign="center" verticalAlign="middle"><p>请求携带 Bearer</p></content></shape>
+    <shape type="text" topLeftX="556" topLeftY="161" width="18" height="30"><content textType="body" fontSize="14" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+    <shape type="rect" topLeftX="574" topLeftY="150" width="152" height="52"><fill><fillColor color="rgba(20,42,73,0.06)"/></fill></shape>
+    <shape type="text" topLeftX="578" topLeftY="150" width="144" height="52"><content textType="caption" fontSize="11" bold="true" color="rgba(20,42,73,1)" textAlign="center" verticalAlign="middle"><p>过滤器校验令牌</p></content></shape>
+    <shape type="text" topLeftX="726" topLeftY="161" width="18" height="30"><content textType="body" fontSize="14" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+    <shape type="rect" topLeftX="744" topLeftY="150" width="152" height="52"><fill><fillColor color="rgba(172,134,74,1)"/></fill></shape>
+    <shape type="text" topLeftX="748" topLeftY="150" width="144" height="52"><content textType="caption" fontSize="11" bold="true" color="rgba(255,255,255,1)" textAlign="center" verticalAlign="middle"><p>写入上下文放行</p></content></shape>
+
+    <shape type="rect" topLeftX="64" topLeftY="228" width="406" height="218"><fill><fillColor color="rgba(20,42,73,0.045)"/></fill></shape>
+    <line startX="64" startY="228" endX="470" endY="228"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="82" topLeftY="242" width="372" height="24"><content textType="body" fontSize="14" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>模块权限　功能级访问控制</p></content></shape>
+    <shape type="text" topLeftX="82" topLeftY="276" width="372" height="160">
+      <content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.7">
+        <p>· 生效顺序：系统管理员全通 → 账号单独授权优先 → 否则回退该用户类型的内置默认模板</p>
+        <p>· 菜单对全员可见，未授权账号进入页面时即被拦截并提示</p>
+        <p>· 收敛原 sys_role 角色层，权限口径唯一，更易维护</p>
+      </content>
+    </shape>
+
+    <shape type="rect" topLeftX="490" topLeftY="228" width="406" height="218"><fill><fillColor color="rgba(20,42,73,0.045)"/></fill></shape>
+    <line startX="490" startY="228" endX="896" endY="228"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="508" topLeftY="242" width="372" height="24"><content textType="body" fontSize="14" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>数据权限　行级可见范围</p></content></shape>
+    <shape type="text" topLeftX="508" topLeftY="276" width="372" height="160">
+      <content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.7">
+        <p>· 按用户类型自动收敛：1~4 看全量 / 5 看本级及下级 / 6 仅本部门</p>
+        <p>· 干部档案的分页、详情、导出均实时套用数据范围</p>
+        <p>· 普通干部只收到本人相关预警与本人申报的审批结果</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="462" width="832" height="34">
+      <content textType="caption" fontSize="11.5" color="rgba(31,58,95,1)" lineSpacing="multiple:1.4">
+        <p>安全加固：同一账号连续输错 5 次锁定 15 分钟（计数存 Redis，无 Redis 自动落内存）；通过 AOP 切面记录操作日志与登录日志。</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>17 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>安全上采用 JWT 无状态认证：登录签发令牌，之后每次请求携带 Bearer，由过滤器校验后放行。授权分两级：模块权限控制能不能进某个功能，按"管理员全通、单独授权优先、用户类型模板兜底"计算；数据权限控制能看到多大范围的数据，按用户类型自动收敛。此外还有登录失败锁定和操作日志，防止暴力破解并保留审计轨迹。</p></content></note>
+</slide>

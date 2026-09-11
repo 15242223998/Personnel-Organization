@@ -1,0 +1,23 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="linear-gradient(120deg,rgba(15,32,56,1) 0%,rgba(31,58,95,1) 100%)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="150" width="320" height="160">
+      <content textType="title" fontSize="120" bold="true" color="rgba(201,166,107,0.9)" wrap="false"><p>02</p></content>
+    </shape>
+    <line startX="360" startY="178" endX="360" endY="300"><border color="rgba(255,255,255,0.22)" width="1"/></line>
+    <shape type="text" topLeftX="400" topLeftY="186" width="460" height="30">
+      <content textType="caption" fontSize="13" color="rgba(201,166,107,1)" letterSpacing="3" wrap="false"><p>TECH STACK</p></content>
+    </shape>
+    <shape type="text" topLeftX="400" topLeftY="218" width="460" height="56">
+      <content textType="title" fontSize="40" bold="true" color="rgba(255,255,255,1)" wrap="false"><p>项目技术栈</p></content>
+    </shape>
+    <shape type="text" topLeftX="400" topLeftY="286" width="466" height="48">
+      <content textType="body" fontSize="14" color="rgba(184,200,220,1)" lineSpacing="multiple:1.4">
+        <p>前后端如何选型、各组件分别承担什么职责，以及为什么这样组合。</p>
+      </content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>第二部分介绍技术栈。系统采用主流的前后端分离架构，我会先给出一张分层选型总览，再分别说明后端和前端每一项关键技术在项目中承担的职责。</p></content></note>
+</slide>

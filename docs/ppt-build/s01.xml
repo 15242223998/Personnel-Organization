@@ -1,0 +1,60 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill>
+      <fillColor color="linear-gradient(135deg,rgba(15,32,56,1) 0%,rgba(31,58,95,1) 100%)"/>
+    </fill>
+  </style>
+  <data>
+    <line startX="64" startY="118" endX="124" endY="118">
+      <border color="rgba(201,166,107,1)" width="3"/>
+    </line>
+    <shape type="text" topLeftX="64" topLeftY="130" width="720" height="26">
+      <content textType="caption" fontSize="13" color="rgba(201,166,107,1)" letterSpacing="2" wrap="false">
+        <p>辽宁某某大学 · 毕业设计（论文）答辩</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="178" width="832" height="72">
+      <content textType="title" fontSize="44" bold="true" color="rgba(255,255,255,1)" wrap="false">
+        <p>高校干部人事组织管理系统</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="256" width="832" height="40">
+      <content textType="sub-headline" fontSize="22" color="rgba(214,224,236,1)" wrap="false">
+        <p>设计与实现 —— 覆盖干部“选、育、管、用”全链条</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="306" width="760" height="24">
+      <content textType="caption" fontSize="12" color="rgba(150,170,192,1)" letterSpacing="1" wrap="false">
+        <p>Spring Boot 3 + Vue 3 前后端分离 · 51 张数据表 · 10 大业务模块</p>
+      </content>
+    </shape>
+    <line startX="64" startY="382" endX="896" endY="382">
+      <border color="rgba(255,255,255,0.16)" width="1"/>
+    </line>
+    <shape type="text" topLeftX="64" topLeftY="404" width="380" height="30">
+      <content textType="body" fontSize="14" color="rgba(214,224,236,1)" wrap="false">
+        <p>答辩人：XXX　　学号：XXXXXXXX</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="516" topLeftY="404" width="380" height="30">
+      <content textType="body" fontSize="14" color="rgba(214,224,236,1)" textAlign="right" wrap="false">
+        <p>指导教师：XXX 教授</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="442" width="380" height="30">
+      <content textType="body" fontSize="14" color="rgba(214,224,236,1)" wrap="false">
+        <p>专业班级：XXXXXXXX</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="516" topLeftY="442" width="380" height="30">
+      <content textType="body" fontSize="14" color="rgba(214,224,236,1)" textAlign="right" wrap="false">
+        <p>答辩日期：2026 年 6 月</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>各位老师好，我答辩的题目是《高校干部人事组织管理系统的设计与实现》。本系统面向学校组织人事工作，以干部档案数据为底座，覆盖干部选拔、培育、管理、使用的完整业务链条。下面我从项目介绍、技术栈、实现思路、问题与解决方案以及个人收获五个方面进行汇报。</p>
+    </content>
+  </note>
+</slide>

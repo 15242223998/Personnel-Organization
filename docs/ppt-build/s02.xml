@@ -1,0 +1,123 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill>
+      <fillColor color="rgba(247,246,242,1)"/>
+    </fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="52" width="600" height="44">
+      <content textType="title" fontSize="30" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>目录</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="140" topLeftY="66" width="300" height="22">
+      <content textType="caption" fontSize="12" color="rgba(140,152,166,1)" letterSpacing="2" wrap="false">
+        <p>CONTENTS</p>
+      </content>
+    </shape>
+    <line startX="64" startY="112" endX="896" endY="112">
+      <border color="rgba(20,42,73,0.12)" width="1"/>
+    </line>
+
+    <shape type="text" topLeftX="70" topLeftY="138" width="70" height="48">
+      <content textType="headline" fontSize="26" bold="true" color="rgba(172,134,74,1)" wrap="false">
+        <p>01</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="150" topLeftY="140" width="300" height="30">
+      <content textType="body" fontSize="19" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>项目介绍</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="470" topLeftY="145" width="426" height="24">
+      <content textType="caption" fontSize="12.5" color="rgba(95,122,148,1)" wrap="false">
+        <p>建设背景、定位目标、功能全景与成果规模</p>
+      </content>
+    </shape>
+    <line startX="70" startY="196" endX="896" endY="196">
+      <border color="rgba(20,42,73,0.08)" width="1"/>
+    </line>
+
+    <shape type="text" topLeftX="70" topLeftY="208" width="70" height="48">
+      <content textType="headline" fontSize="26" bold="true" color="rgba(172,134,74,1)" wrap="false">
+        <p>02</p>
+
+      </content>
+    </shape>
+    <shape type="text" topLeftX="150" topLeftY="210" width="300" height="30">
+      <content textType="body" fontSize="19" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>项目技术栈</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="470" topLeftY="215" width="426" height="24">
+      <content textType="caption" fontSize="12.5" color="rgba(95,122,148,1)" wrap="false">
+        <p>前后端技术选型、数据存储与关键组件</p>
+      </content>
+    </shape>
+    <line startX="70" startY="266" endX="896" endY="266">
+      <border color="rgba(20,42,73,0.08)" width="1"/>
+    </line>
+
+    <shape type="text" topLeftX="70" topLeftY="278" width="70" height="48">
+      <content textType="headline" fontSize="26" bold="true" color="rgba(172,134,74,1)" wrap="false">
+        <p>03</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="150" topLeftY="280" width="300" height="30">
+      <content textType="body" fontSize="19" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>项目实现思路</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="470" topLeftY="285" width="426" height="24">
+      <content textType="caption" fontSize="12.5" color="rgba(95,122,148,1)" wrap="false">
+        <p>总体架构、分层链路、数据模型与核心业务流程</p>
+      </content>
+    </shape>
+    <line startX="70" startY="336" endX="896" endY="336">
+      <border color="rgba(20,42,73,0.08)" width="1"/>
+    </line>
+
+    <shape type="text" topLeftX="70" topLeftY="348" width="70" height="48">
+      <content textType="headline" fontSize="26" bold="true" color="rgba(172,134,74,1)" wrap="false">
+        <p>04</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="150" topLeftY="350" width="300" height="30">
+      <content textType="body" fontSize="19" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>问题及解决方案</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="470" topLeftY="355" width="426" height="24">
+      <content textType="caption" fontSize="12.5" color="rgba(95,122,148,1)" wrap="false">
+        <p>数据一致性、权限模型、缓存降级与现场评审难题</p>
+      </content>
+    </shape>
+    <line startX="70" startY="406" endX="896" endY="406">
+      <border color="rgba(20,42,73,0.08)" width="1"/>
+    </line>
+
+    <shape type="text" topLeftX="70" topLeftY="418" width="70" height="48">
+      <content textType="headline" fontSize="26" bold="true" color="rgba(172,134,74,1)" wrap="false">
+        <p>05</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="150" topLeftY="420" width="300" height="30">
+      <content textType="body" fontSize="19" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>收获与总结</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="470" topLeftY="425" width="426" height="24">
+      <content textType="caption" fontSize="12.5" color="rgba(95,122,148,1)" wrap="false">
+        <p>能力成长、工程沉淀、不足与后续展望</p>
+      </content>
+    </shape>
+    <line startX="70" startY="476" endX="896" endY="476">
+      <border color="rgba(20,42,73,0.08)" width="1"/>
+    </line>
+  </data>
+  <note>
+    <content textType="body">
+      <p>本次汇报分为五个部分。第一部分介绍项目背景、目标和整体功能；第二部分说明用到的技术栈；第三部分是重点，讲清系统的架构设计、分层链路和核心业务是如何实现的；第四部分复盘开发中遇到的六个典型问题和我的解决办法；最后总结个人收获与后续展望。</p>
+    </content>
+  </note>
+</slide>

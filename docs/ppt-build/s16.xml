@@ -1,0 +1,89 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>03　项目实现思路　·　核心业务链路</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>核心链路：干部任免六阶段全流程</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="rect" topLeftX="64" topLeftY="140" width="128" height="66"><fill><fillColor color="rgba(31,58,95,1)"/></fill></shape>
+    <shape type="text" topLeftX="64" topLeftY="150" width="128" height="20"><content textType="caption" fontSize="10" color="rgba(201,166,107,1)" textAlign="center" wrap="false"><p>STEP 1</p></content></shape>
+    <shape type="text" topLeftX="64" topLeftY="170" width="128" height="26"><content textType="body" fontSize="15" bold="true" color="rgba(255,255,255,1)" textAlign="center" wrap="false"><p>动议</p></content></shape>
+    <shape type="text" topLeftX="192" topLeftY="158" width="12" height="30"><content textType="body" fontSize="16" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+
+    <shape type="rect" topLeftX="204" topLeftY="140" width="128" height="66"><fill><fillColor color="rgba(31,58,95,1)"/></fill></shape>
+    <shape type="text" topLeftX="204" topLeftY="150" width="128" height="20"><content textType="caption" fontSize="10" color="rgba(201,166,107,1)" textAlign="center" wrap="false"><p>STEP 2</p></content></shape>
+    <shape type="text" topLeftX="204" topLeftY="170" width="128" height="26"><content textType="body" fontSize="15" bold="true" color="rgba(255,255,255,1)" textAlign="center" wrap="false"><p>民主推荐</p></content></shape>
+    <shape type="text" topLeftX="332" topLeftY="158" width="12" height="30"><content textType="body" fontSize="16" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+
+    <shape type="rect" topLeftX="344" topLeftY="140" width="128" height="66"><fill><fillColor color="rgba(31,58,95,1)"/></fill></shape>
+    <shape type="text" topLeftX="344" topLeftY="150" width="128" height="20"><content textType="caption" fontSize="10" color="rgba(201,166,107,1)" textAlign="center" wrap="false"><p>STEP 3</p></content></shape>
+    <shape type="text" topLeftX="344" topLeftY="170" width="128" height="26"><content textType="body" fontSize="15" bold="true" color="rgba(255,255,255,1)" textAlign="center" wrap="false"><p>组织考察</p></content></shape>
+    <shape type="text" topLeftX="472" topLeftY="158" width="12" height="30"><content textType="body" fontSize="16" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+
+    <shape type="rect" topLeftX="484" topLeftY="140" width="128" height="66"><fill><fillColor color="rgba(31,58,95,1)"/></fill></shape>
+    <shape type="text" topLeftX="484" topLeftY="150" width="128" height="20"><content textType="caption" fontSize="10" color="rgba(201,166,107,1)" textAlign="center" wrap="false"><p>STEP 4</p></content></shape>
+    <shape type="text" topLeftX="484" topLeftY="170" width="128" height="26"><content textType="body" fontSize="15" bold="true" color="rgba(255,255,255,1)" textAlign="center" wrap="false"><p>讨论决定</p></content></shape>
+    <shape type="text" topLeftX="612" topLeftY="158" width="12" height="30"><content textType="body" fontSize="16" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+
+    <shape type="rect" topLeftX="624" topLeftY="140" width="128" height="66"><fill><fillColor color="rgba(31,58,95,1)"/></fill></shape>
+    <shape type="text" topLeftX="624" topLeftY="150" width="128" height="20"><content textType="caption" fontSize="10" color="rgba(201,166,107,1)" textAlign="center" wrap="false"><p>STEP 5</p></content></shape>
+    <shape type="text" topLeftX="624" topLeftY="170" width="128" height="26"><content textType="body" fontSize="15" bold="true" color="rgba(255,255,255,1)" textAlign="center" wrap="false"><p>任前公示</p></content></shape>
+    <shape type="text" topLeftX="752" topLeftY="158" width="12" height="30"><content textType="body" fontSize="16" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content></shape>
+
+    <shape type="rect" topLeftX="764" topLeftY="140" width="128" height="66"><fill><fillColor color="rgba(172,134,74,1)"/></fill></shape>
+    <shape type="text" topLeftX="764" topLeftY="150" width="128" height="20"><content textType="caption" fontSize="10" color="rgba(255,255,255,0.85)" textAlign="center" wrap="false"><p>STEP 6</p></content></shape>
+    <shape type="text" topLeftX="764" topLeftY="170" width="128" height="26"><content textType="body" fontSize="15" bold="true" color="rgba(255,255,255,1)" textAlign="center" wrap="false"><p>任职备案</p></content></shape>
+
+    <shape type="text" topLeftX="64" topLeftY="232" width="832" height="22">
+      <content textType="body" fontSize="13.5" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>流程闭环：前置校验 — 过程留痕 — 结果回写</p></content>
+    </shape>
+
+    <line startX="64" startY="270" endX="326" endY="270"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="64" topLeftY="280" width="262" height="24">
+      <content textType="body" fontSize="13" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>① 前置资格校验</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="308" width="262" height="150">
+      <content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.6">
+        <p>启动任免或职级晋升前，自动核验该干部近三年年度考核结果，未达标直接拦截，把干部选拔的制度规则固化进系统。</p>
+      </content>
+    </shape>
+
+    <line startX="349" startY="270" endX="611" endY="270"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="349" topLeftY="280" width="262" height="24">
+      <content textType="body" fontSize="13" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>② 全过程留痕</p></content>
+    </shape>
+    <shape type="text" topLeftX="349" topLeftY="308" width="262" height="150">
+      <content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.6">
+        <p>六个阶段各自建表，分别保存会议票决、推荐票数、考察材料、公示内容等信息，每一步操作都可回溯、可审计。</p>
+      </content>
+    </shape>
+
+    <line startX="634" startY="270" endX="896" endY="270"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="634" topLeftY="280" width="262" height="24">
+      <content textType="body" fontSize="13" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>③ 结果自动回写</p></content>
+    </shape>
+    <shape type="text" topLeftX="634" topLeftY="308" width="262" height="150">
+      <content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.6">
+        <p>任职备案通过后自动更新干部档案现任职务、职务层次与在岗状态；调配、晋升同此机制，删除记录则按剩余记录重算状态。</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="474" width="832" height="24">
+      <content textType="caption" fontSize="11.5" color="rgba(31,58,95,1)" wrap="false"><p>设计要点：以干部档案为单一事实源，由业务记录驱动档案状态，杜绝多处维护造成的数据不一致。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>16 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>以最复杂的干部任免为例，业务分为动议、民主推荐、组织考察、讨论决定、任前公示、任职备案六个阶段。设计上形成闭环：启动前先做近三年考核的资格校验；过程中六个阶段分别建表、全程留痕；任职备案后自动回写干部档案。调配和晋升也采用同样的"业务记录驱动档案状态"机制，保证全局数据一致。</p></content></note>
+</slide>

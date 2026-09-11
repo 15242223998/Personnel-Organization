@@ -1,0 +1,58 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>02　项目技术栈　·　后端</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>后端关键技术：Spring Boot 生态</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <table topLeftX="64" topLeftY="124" width="832" height="372">
+      <colgroup><col width="286"/><col width="546"/></colgroup>
+      <tr height="32">
+        <td><fill><fillColor color="rgba(20,42,73,1)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>技术（版本）</p></content></td>
+        <td><fill><fillColor color="rgba(20,42,73,1)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>在项目中承担的职责</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Spring Boot 3.2.5 / Java 17</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　后端主体框架，自动装配、内嵌 Tomcat，支撑 Controller-Service-Mapper 分层开发</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Spring Security + JWT</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　无状态登录认证与接口鉴权，过滤器校验令牌，未登录返回 401、越权返回 403</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　MyBatis-Plus 3.5.5</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　单表 CRUD 与分页插件、逻辑删除、MetaObjectHandler 自动填充创建人 / 时间</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　dynamic-datasource 4.3.1</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　运行期数据源路由热切换、库表结构探测与自动对齐，对业务 Mapper 透明</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Redis + CacheStore 门面</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　登录失败节流等缓存；探测不到 Redis 时自动降级为进程内存，无需强制部署</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　EasyExcel + Apache POI</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　干部档案的批量导入导出与 Excel 报表，解决大数据量下的内存占用问题</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Spring AOP + Hutool + Knife4j</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　AOP 切面记录操作日志；Hutool 提供工具集；Knife4j 生成 OpenAPI3 在线接口文档</p></content></td>
+      </tr>
+    </table>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>10 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>后端以 Spring Boot 3 为核心。安全上用 Spring Security 加 JWT 做无状态认证；持久层用 MyBatis-Plus 简化 CRUD，并引入动态数据源实现热切换；缓存通过自建的 CacheStore 门面做到 Redis 可选、自动降级；Excel 处理用 EasyExcel；同时用 AOP 做操作日志、Knife4j 输出接口文档。这些技术组合既保证了开发效率，也兼顾了部署灵活性。</p></content></note>
+</slide>

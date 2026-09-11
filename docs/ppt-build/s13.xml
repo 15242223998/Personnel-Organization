@@ -1,0 +1,29 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>03　项目实现思路　·　总体架构</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>总体架构：前后端分离的六层结构</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <img src="OsBwbDsrRocA7uxG4kvcIu3MnQh" topLeftX="150" topLeftY="124" width="660" height="349">
+      <border color="rgba(20,42,73,0.18)" width="1"/>
+    </img>
+    <shape type="text" topLeftX="64" topLeftY="482" width="832" height="18">
+      <content textType="caption" fontSize="10" color="rgba(95,122,148,1)" textAlign="center" wrap="false"><p>图 1　系统总体技术架构（依据源码目录与依赖自动梳理）：终端层 → 前端层 → 接入层 → 框架层 → 业务模块层 → 数据层</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>13 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>这是系统的总体架构，自上而下分为六层。终端层支持桌面浏览器和平板；前端层是 Vue3 单页应用；接入层通过 Axios 以 /api 通信并携带 JWT；后端框架层负责安全、缓存、异常和数据源；业务模块层按干部业务域分包；最底层是 MySQL 和可选 Redis。各层职责单一、向下依赖，便于独立开发和维护。</p></content></note>
+</slide>

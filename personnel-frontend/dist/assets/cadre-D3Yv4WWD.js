@@ -1,0 +1,1 @@
+import{r}from"./index-MbmQASff.js";function a(e){return r({url:"/cadre/page",method:"post",data:e})}function d(e){return r({url:`/cadre/${e}`,method:"get"})}function o(e){return r({url:"/cadre",method:"post",data:e})}function u(e){return r({url:`/cadre/${e}`,method:"delete"})}export{d as a,o as b,u as d,a as g};

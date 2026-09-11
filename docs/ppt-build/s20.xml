@@ -1,0 +1,46 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>04　问题及解决方案　·　（上）</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>典型问题与解决方案（一）</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <line startX="64" startY="124" endX="896" endY="124"><border color="rgba(20,42,73,0.1)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="134" width="50" height="40"><content textType="headline" fontSize="24" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>01</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="134" width="320" height="18"><content textType="caption" fontSize="10" color="rgba(95,122,148,1)" wrap="false"><p>问题　跨模块数据一致性</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="154" width="312" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>任免、调配、晋升都要改干部档案的现任职务、职级与状态，若分散更新极易出现档案与业务记录不一致。</p></content></shape>
+    <line startX="448" startY="134" endX="448" endY="236"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+    <shape type="text" topLeftX="466" topLeftY="134" width="430" height="18"><content textType="caption" fontSize="10" color="rgba(172,134,74,1)" wrap="false"><p>解决方案　单一事实源 + 统一回写</p></content></shape>
+    <shape type="text" topLeftX="466" topLeftY="154" width="430" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>以干部档案为唯一事实源，业务审批通过后在 Service 层统一回写；调配记录增删改后按剩余记录重算状态；考核结果作为晋升与任免的前置校验。</p></content></shape>
+
+    <line startX="64" startY="248" endX="896" endY="248"><border color="rgba(20,42,73,0.1)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="258" width="50" height="40"><content textType="headline" fontSize="24" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>02</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="258" width="320" height="18"><content textType="caption" fontSize="10" color="rgba(95,122,148,1)" wrap="false"><p>问题　权限模型臃肿、口径混乱</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="278" width="312" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>早期“角色 + 用户类型”双重叠加，授权口径不唯一，既难维护，也存在越权访问隐患。</p></content></shape>
+    <line startX="448" startY="258" endX="448" endY="360"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+    <shape type="text" topLeftX="466" topLeftY="258" width="430" height="18"><content textType="caption" fontSize="10" color="rgba(172,134,74,1)" wrap="false"><p>解决方案　两层权限、口径收敛</p></content></shape>
+    <shape type="text" topLeftX="466" topLeftY="278" width="430" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>收敛为“用户类型内置模板 + 按账号单独授权”，功能权限与行级数据权限两层分离；菜单可见但进入页面即校验，权限口径唯一、可解释。</p></content></shape>
+
+    <line startX="64" startY="372" endX="896" endY="372"><border color="rgba(20,42,73,0.1)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="382" width="50" height="40"><content textType="headline" fontSize="24" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>03</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="382" width="320" height="18"><content textType="caption" fontSize="10" color="rgba(95,122,148,1)" wrap="false"><p>问题　缓存依赖抬高部署门槛</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="402" width="312" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>登录失败节流等功能依赖 Redis，而普通机房或个人电脑未必安装 Redis，系统难以即开即用。</p></content></shape>
+    <line startX="448" startY="382" endX="448" endY="484"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+    <shape type="text" topLeftX="466" topLeftY="382" width="430" height="18"><content textType="caption" fontSize="10" color="rgba(172,134,74,1)" wrap="false"><p>解决方案　缓存门面 + 自动降级</p></content></shape>
+    <shape type="text" topLeftX="466" topLeftY="402" width="430" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>自建 CacheStore 缓存门面，auto 模式优先使用 Redis，探测失败自动降级为进程内存，业务代码无感知，无 Redis 也能完整运行。</p></content></shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>20 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>前三个问题。第一是跨模块数据一致性，解法是把干部档案作为单一事实源、在业务层统一回写并支持状态重算。第二是权限模型臃肿，我把角色和用户类型两套体系收敛成"内置模板加单独授权"，并拆分功能权限和数据权限。第三是 Redis 依赖问题，通过缓存门面做到有 Redis 用 Redis、没有就自动降级到内存，保证系统即开即用。</p></content></note>
+</slide>

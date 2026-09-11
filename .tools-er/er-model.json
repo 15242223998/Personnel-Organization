@@ -1,0 +1,5188 @@
+﻿{
+  "tableCount": 51,
+  "fieldCount": 609,
+  "relationCount": 122,
+  "tables": [
+    {
+      "name": "sys_user",
+      "comment": "系统用户表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "username",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "用户名"
+        },
+        {
+          "name": "password",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "密码"
+        },
+        {
+          "name": "real_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "真实姓名"
+        },
+        {
+          "name": "avatar",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "头像"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "邮箱"
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "手机号"
+        },
+        {
+          "name": "gender",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "性别 0未知 1男 2女"
+        },
+        {
+          "name": "user_type",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "用户类型 1系统管理员 2校级领导 3组织部部长 4组织员 5二级学院领导 6普通干部"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "状态 0待审核 1正常(已批准) 2已拒绝 3停用"
+        },
+        {
+          "name": "dept_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "所属部门/学院ID"
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "关联干部档案ID（干部自助申报归属）"
+        },
+        {
+          "name": "permissions",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "模块级权限，逗号分隔多个key，空表示无任何权限（userType=1系统管理员不受限）"
+        },
+        {
+          "name": "ip_bound",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "IP绑定"
+        },
+        {
+          "name": "login_fail_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "登录失败次数"
+        },
+        {
+          "name": "lock_until",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "锁定截止时间"
+        },
+        {
+          "name": "last_login_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "最后登录时间"
+        },
+        {
+          "name": "last_login_ip",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "最后登录IP"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "创建人"
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "更新人"
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "逻辑删除 0未删 1已删"
+        }
+      ]
+    },
+    {
+      "name": "sys_role",
+      "comment": "角色表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "role_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "角色名称"
+        },
+        {
+          "name": "role_code",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "角色编码"
+        },
+        {
+          "name": "data_scope",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "数据范围 1全部 2自定义 3本级及下级 4本级"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "状态"
+        },
+        {
+          "name": "permissions",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "模块级权限，逗号分隔多个key，空表示无任何权限（userType=1系统管理员不受限）"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "sys_user_role",
+      "comment": "用户角色关联表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "role_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "sys_dict_type",
+      "comment": "字典类型表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "type_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "字典名称"
+        },
+        {
+          "name": "type_code",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "字典编码"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "sys_dict_data",
+      "comment": "字典数据表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "type_code",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "字典编码"
+        },
+        {
+          "name": "dict_label",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "字典标签"
+        },
+        {
+          "name": "dict_value",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "字典值"
+        },
+        {
+          "name": "sort_order",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "排序"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "sys_oper_log",
+      "comment": "操作日志表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作用户ID"
+        },
+        {
+          "name": "username",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作用户名"
+        },
+        {
+          "name": "oper_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作类型 INSERT/UPDATE/DELETE/QUERY/APPROVE"
+        },
+        {
+          "name": "oper_module",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作模块"
+        },
+        {
+          "name": "oper_desc",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作描述"
+        },
+        {
+          "name": "oper_ip",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作IP"
+        },
+        {
+          "name": "oper_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作时间"
+        },
+        {
+          "name": "oper_params",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作参数"
+        },
+        {
+          "name": "oper_result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作结果 SUCCESS/FAIL"
+        }
+      ]
+    },
+    {
+      "name": "sys_login_log",
+      "comment": "登录日志表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "用户ID"
+        },
+        {
+          "name": "username",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "用户名"
+        },
+        {
+          "name": "login_ip",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "登录IP"
+        },
+        {
+          "name": "device_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "设备类型 PC/PHONE/PAD"
+        },
+        {
+          "name": "browser",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "浏览器"
+        },
+        {
+          "name": "os",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "操作系统"
+        },
+        {
+          "name": "login_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "登录时间"
+        },
+        {
+          "name": "login_result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "登录结果 SUCCESS/FAIL"
+        },
+        {
+          "name": "fail_reason",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "失败原因"
+        }
+      ]
+    },
+    {
+      "name": "org_department",
+      "comment": "组织机构表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "上级机构ID"
+        },
+        {
+          "name": "dept_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "机构全称"
+        },
+        {
+          "name": "short_name",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "机构简称"
+        },
+        {
+          "name": "dept_level",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "机构级别 校级/处级/科级"
+        },
+        {
+          "name": "leader_quota",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "班子职数"
+        },
+        {
+          "name": "established_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "成立时间"
+        },
+        {
+          "name": "dept_sort",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "显示排序"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "状态 0撤销 1正常"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "org_position_level",
+      "comment": "职务层次表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "level_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "职务层次名称 校级/处级/科级"
+        },
+        {
+          "name": "min_lower_years",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "任低一级职务最低年限"
+        },
+        {
+          "name": "max_age",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "年龄上限"
+        },
+        {
+          "name": "min_education",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "最低学历要求"
+        },
+        {
+          "name": "assessment_required",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "年度考核要求"
+        },
+        {
+          "name": "penalty_period_restrict",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "处分影响期(月)内不得提拔"
+        },
+        {
+          "name": "sort_order",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "org_rank",
+      "comment": "职级管理表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "rank_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "职级名称"
+        },
+        {
+          "name": "rank_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "职级类型 管理岗/专业技术岗"
+        },
+        {
+          "name": "promotion_years",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "晋升所需任满年限"
+        },
+        {
+          "name": "sort_order",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "org_staffing_quota",
+      "comment": "编制管理表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "dept_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "机构ID"
+        },
+        {
+          "name": "approved_quota",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "核定编制数"
+        },
+        {
+          "name": "leader_quota",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "核定领导职数"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "cadre_info",
+      "comment": "干部基本信息表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "姓名"
+        },
+        {
+          "name": "gender",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "性别 1男 2女"
+        },
+        {
+          "name": "birth_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "出生年月"
+        },
+        {
+          "name": "nation",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "民族"
+        },
+        {
+          "name": "native_place",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "籍贯"
+        },
+        {
+          "name": "political_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "政治面貌"
+        },
+        {
+          "name": "party_join_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "入党时间"
+        },
+        {
+          "name": "work_start_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "参加工作时间"
+        },
+        {
+          "name": "id_card",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "身份证号"
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "联系电话"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "邮箱"
+        },
+        {
+          "name": "photo_url",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "照片地址"
+        },
+        {
+          "name": "full_time_education",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "全日制教育学历"
+        },
+        {
+          "name": "full_time_degree",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "全日制教育学位"
+        },
+        {
+          "name": "full_time_school",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "全日制毕业院校及专业"
+        },
+        {
+          "name": "part_time_education",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "在职教育学历"
+        },
+        {
+          "name": "part_time_degree",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "在职教育学位"
+        },
+        {
+          "name": "part_time_school",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "在职毕业院校及专业"
+        },
+        {
+          "name": "dept_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "所属机构ID"
+        },
+        {
+          "name": "position",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "现任职务"
+        },
+        {
+          "name": "position_level",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "现职务层次 校级/处级/科级"
+        },
+        {
+          "name": "rank_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "职级ID"
+        },
+        {
+          "name": "position_start_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "任现职时间"
+        },
+        {
+          "name": "position_doc_no",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "任职文号"
+        },
+        {
+          "name": "resume_text",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "简历"
+        },
+        {
+          "name": "reward_punishment",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "奖惩情况"
+        },
+        {
+          "name": "annual_assessment",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "年度考核历史"
+        },
+        {
+          "name": "home_address",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "家庭住址"
+        },
+        {
+          "name": "emergency_contact",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "紧急联系人(姓名及联系电话)"
+        },
+        {
+          "name": "cadre_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "干部状态 ON_JOB在职 RETIRED离退休 TRANSFERRED调出 RESIGNED辞职"
+        },
+        {
+          "name": "retirement_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "退休日期"
+        },
+        {
+          "name": "leave_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "减员日期"
+        },
+        {
+          "name": "leave_reason",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "减员原因"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "cadre_family_member",
+      "comment": "干部家庭成员表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "member_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "姓名"
+        },
+        {
+          "name": "relation",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "关系"
+        },
+        {
+          "name": "workplace",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "工作单位及职务"
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "联系电话"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "cadre_attachment",
+      "comment": "佐证材料表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "file_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "文件名"
+        },
+        {
+          "name": "file_path",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "文件路径"
+        },
+        {
+          "name": "file_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "文件类型"
+        },
+        {
+          "name": "file_size",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "文件大小"
+        },
+        {
+          "name": "attach_category",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "材料类别 出生年月/学历学位/其他"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "cadre_reserve",
+      "comment": "后备干部库",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "reserve_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "后备类型 后备干部/优秀年轻干部"
+        },
+        {
+          "name": "reserve_level",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "后备级别"
+        },
+        {
+          "name": "enter_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "入库日期"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "状态 1在库 0出库"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "transfer_record",
+      "comment": "干部调配记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "transfer_type",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "调配类型 ADD增员 REDUCE减员 RETIRE退休 ROTATE轮岗"
+        },
+        {
+          "name": "transfer_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": false,
+          "comment": "调配日期"
+        },
+        {
+          "name": "transfer_reason",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "调配原因"
+        },
+        {
+          "name": "from_dept_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "原机构ID"
+        },
+        {
+          "name": "to_dept_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "目标机构ID"
+        },
+        {
+          "name": "from_position",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "原职务"
+        },
+        {
+          "name": "to_position",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "目标职务"
+        },
+        {
+          "name": "doc_no",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "相关文号"
+        },
+        {
+          "name": "remark",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "备注"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "rank_promotion_record",
+      "comment": "职级晋升记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "from_rank_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "原职级ID"
+        },
+        {
+          "name": "to_rank_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "晋升后职级ID"
+        },
+        {
+          "name": "promotion_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": false,
+          "comment": "晋升日期"
+        },
+        {
+          "name": "doc_no",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "晋升文号"
+        },
+        {
+          "name": "remark",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "备注"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "appoint_process",
+      "comment": "任免流程主表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "position_info",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "选拔任用职位信息"
+        },
+        {
+          "name": "current_step",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "当前环节 MOTION动议 RECOMMEND推荐 INVESTIGATE考察 DECIDE讨论决定 PUBLICITY公示 APPOINT任职 CANCELLED终止"
+        },
+        {
+          "name": "process_status",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "流程状态 IN_PROGRESS进行中 PASSED通过 CANCELLED终止 COMPLETED完成"
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "最终确定人选ID"
+        },
+        {
+          "name": "start_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "启动时间"
+        },
+        {
+          "name": "end_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "结束时间"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "appoint_motion",
+      "comment": "任免动议记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "process_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "流程ID"
+        },
+        {
+          "name": "position_condition",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "职位条件/范围/方式/程序/人选意向"
+        },
+        {
+          "name": "candidate_ids",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "候选干部ID列表"
+        },
+        {
+          "name": "selected_cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "动议确定人选ID"
+        },
+        {
+          "name": "motion_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "动议状态 DRAFT草稿 ACTIVE进行中 CANCELLED终止 COMPLETED完成"
+        },
+        {
+          "name": "meeting_file_url",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "会议文件扫描件"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "appoint_recommend",
+      "comment": "民主推荐记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "process_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "流程ID"
+        },
+        {
+          "name": "recommend_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "推荐方式 谈话调研/会议推荐"
+        },
+        {
+          "name": "recommend_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "推荐日期"
+        },
+        {
+          "name": "recommend_location",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "推荐地点"
+        },
+        {
+          "name": "expected_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "应到人数"
+        },
+        {
+          "name": "actual_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "实到人数"
+        },
+        {
+          "name": "vote_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "得票数"
+        },
+        {
+          "name": "is_passed",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否通过 0未通过 1通过"
+        },
+        {
+          "name": "meeting_file_url",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "推荐会议文件扫描件"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "appoint_investigation",
+      "comment": "组织考察记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "process_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "流程ID"
+        },
+        {
+          "name": "archive_check",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "档案审核 0未通过 1通过 -- 三龄两历一身份"
+        },
+        {
+          "name": "archive_issue",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "档案审核问题描述"
+        },
+        {
+          "name": "personal_report_check",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "个人事项核查 0未通过 1通过"
+        },
+        {
+          "name": "personal_report_issue",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "个人事项核查问题"
+        },
+        {
+          "name": "discipline_check",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "纪检意见 0未通过 1通过"
+        },
+        {
+          "name": "discipline_issue",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "纪检问题描述"
+        },
+        {
+          "name": "complaint_check",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "信访核查 0未通过 1通过"
+        },
+        {
+          "name": "complaint_issue",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "信访问题描述"
+        },
+        {
+          "name": "is_passed",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "考察是否通过 0未通过 1通过"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "appoint_decision",
+      "comment": "讨论决定记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "process_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "流程ID"
+        },
+        {
+          "name": "meeting_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "上会日期"
+        },
+        {
+          "name": "approve_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "赞成票"
+        },
+        {
+          "name": "oppose_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "反对票"
+        },
+        {
+          "name": "abstain_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "弃权票"
+        },
+        {
+          "name": "is_passed",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否通过 0未通过 1通过"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "appoint_publicity",
+      "comment": "任前公示记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "process_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "流程ID"
+        },
+        {
+          "name": "publicity_start",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "公示开始日期"
+        },
+        {
+          "name": "publicity_end",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "公示结束日期"
+        },
+        {
+          "name": "publicity_content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "公示信息"
+        },
+        {
+          "name": "report_info",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "反映信息"
+        },
+        {
+          "name": "publicity_result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "公示结果 PASSED通过 FAILED未通过"
+        },
+        {
+          "name": "remark",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "备注"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "appoint_record",
+      "comment": "干部任职记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "process_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "关联任免流程ID"
+        },
+        {
+          "name": "position",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "职务"
+        },
+        {
+          "name": "dept_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "所属机构ID"
+        },
+        {
+          "name": "position_level",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "职务层次"
+        },
+        {
+          "name": "appoint_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": false,
+          "comment": "任职日期"
+        },
+        {
+          "name": "appoint_doc_no",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "任命文号"
+        },
+        {
+          "name": "is_current",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否现任 0否 1是"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "supervise_integrity",
+      "comment": "廉政意见表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "opinion_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "意见类型 选拔任用/职级晋升/其他"
+        },
+        {
+          "name": "opinion_content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "廉政意见内容"
+        },
+        {
+          "name": "opinion_source",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "意见来源单位"
+        },
+        {
+          "name": "opinion_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "出具日期"
+        },
+        {
+          "name": "opinion_result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "意见结果"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "supervise_complaint",
+      "comment": "信访举报表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "被举报干部ID"
+        },
+        {
+          "name": "complaint_source",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "举报来源"
+        },
+        {
+          "name": "complaint_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "举报类型"
+        },
+        {
+          "name": "complaint_content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "举报内容"
+        },
+        {
+          "name": "complaint_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "举报日期"
+        },
+        {
+          "name": "handle_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "处理状态 PENDING待处理 INVESTIGATING查核中 CLOSED已办结"
+        },
+        {
+          "name": "handle_result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "处理结果"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "supervise_personal_report",
+      "comment": "个人事项报告表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "report_year",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "报告年度"
+        },
+        {
+          "name": "report_content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "报告内容"
+        },
+        {
+          "name": "check_result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "核查结果 NORMAL正常 ABNORMAL异常"
+        },
+        {
+          "name": "check_issue",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "核查问题描述"
+        },
+        {
+          "name": "submit_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "提交日期"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "supervise_alert",
+      "comment": "预警记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "alert_type",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "预警级别编码 RED红 ORANGE橙 YELLOW黄 (BLUE蓝兼容保留)"
+        },
+        {
+          "name": "alert_category",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "预警类别 证件到期/出国超期/休假超时/任职超期/到龄退休"
+        },
+        {
+          "name": "alert_title",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "预警标题"
+        },
+        {
+          "name": "alert_content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "预警内容"
+        },
+        {
+          "name": "target_user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "提醒对象用户ID"
+        },
+        {
+          "name": "target_cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "关联干部ID"
+        },
+        {
+          "name": "rule_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "来源预警规则ID(supervise_alert_rule.id)，规则引擎生成时写入"
+        },
+        {
+          "name": "ref_id",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "规则扫描幂等引用(业务类型-业务主键，如 CERT-1/ABROAD-2/LEAVE-3/TEAM-4/RETIRE-5)"
+        },
+        {
+          "name": "is_read",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否已读 0未读(未处理) 1已读(视为已处理)"
+        },
+        {
+          "name": "read_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "阅读时间"
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "supervise_alert_rule",
+      "comment": "预警规则配置表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "rule_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "规则名称"
+        },
+        {
+          "name": "rule_type",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "预警类型 证件到期/出国超期/休假超时/任职超期/到龄退休 等"
+        },
+        {
+          "name": "level",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "预警级别 红色/橙色/黄色"
+        },
+        {
+          "name": "threshold",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "触发阈值(天数或数值)"
+        },
+        {
+          "name": "is_enabled",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否启用 1启用 0停用"
+        },
+        {
+          "name": "remark",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "备注"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "policy_document",
+      "comment": "政策法规文档表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "标题"
+        },
+        {
+          "name": "doc_no",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "文号"
+        },
+        {
+          "name": "publish_unit",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "发布单位"
+        },
+        {
+          "name": "issue_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "发布日期"
+        },
+        {
+          "name": "effective_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "施行日期"
+        },
+        {
+          "name": "category",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "分类 党内法规/干部选拔/干部监督/教育培训/其他"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "正文"
+        },
+        {
+          "name": "attachment_name",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "附件名称"
+        },
+        {
+          "name": "attachment_url",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "附件地址"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "cadre_investigation",
+      "comment": "干部考察登记表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "investigation_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "考察类型 任前考察/年度考核考察/专项考察/换届考察"
+        },
+        {
+          "name": "investigation_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "考察时间"
+        },
+        {
+          "name": "investigator",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "考察组成员"
+        },
+        {
+          "name": "result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "考察结论 优秀/称职/基本称职/其他"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "考察材料"
+        },
+        {
+          "name": "org_unit",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "组织单位"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "supervise_admonish",
+      "comment": "提醒函询诫勉记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "admonish_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "类型 提醒谈话/函询/诫勉"
+        },
+        {
+          "name": "trigger_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "触发事由"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "内容"
+        },
+        {
+          "name": "result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "处理结果"
+        },
+        {
+          "name": "discipline",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "纪律处分类别"
+        },
+        {
+          "name": "handle_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "处理状态 待处理/已办结"
+        },
+        {
+          "name": "handle_user",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "处理人"
+        },
+        {
+          "name": "handle_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "处理时间"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "supervise_audit",
+      "comment": "经济责任审计记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "audit_scope",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "审计范围 任期经济责任审计/离任审计/专项审计"
+        },
+        {
+          "name": "audit_period_start",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "审计期间开始"
+        },
+        {
+          "name": "audit_period_end",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "审计期间结束"
+        },
+        {
+          "name": "audit_org",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "审计机构"
+        },
+        {
+          "name": "start_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "实施开始时间"
+        },
+        {
+          "name": "end_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "实施结束时间"
+        },
+        {
+          "name": "audit_result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "审计结论 无重大问题/基本正常/存在需整改问题/重大问题"
+        },
+        {
+          "name": "issue",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "发现问题"
+        },
+        {
+          "name": "rectify_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "整改状态 待整改/整改中/已整改"
+        },
+        {
+          "name": "audit_report_url",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "报告附件地址"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "assessment_annual",
+      "comment": "年度考核记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "assessment_year",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "考核年度"
+        },
+        {
+          "name": "assessment_result",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "考核结果 优秀/称职/基本称职/不称职"
+        },
+        {
+          "name": "assessment_comment",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "考核评语"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "assessment_scheme",
+      "comment": "民主测评方案表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "scheme_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "方案名称"
+        },
+        {
+          "name": "scheme_year",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "方案年度"
+        },
+        {
+          "name": "vote_start_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "投票开始时间"
+        },
+        {
+          "name": "vote_end_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "投票结束时间"
+        },
+        {
+          "name": "allow_anonymous",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "允许匿名投票"
+        },
+        {
+          "name": "excellent_max_ratio",
+          "type": "decimal",
+          "pk": false,
+          "nullable": true,
+          "comment": "优秀占比上限"
+        },
+        {
+          "name": "forbid_all_excellent",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "禁止全优评价"
+        },
+        {
+          "name": "vote_mode",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "投票方式 SCORE评分式 BALLOT表决式"
+        },
+        {
+          "name": "need_sign",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否需要签字确认 0否 1是"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "状态 DRAFT草稿 ACTIVE进行中 FINISHED已结束"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "assessment_dimension",
+      "comment": "测评维度表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "scheme_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "方案ID"
+        },
+        {
+          "name": "dimension_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "维度名称 德/能/勤/绩/廉"
+        },
+        {
+          "name": "dimension_weight",
+          "type": "decimal",
+          "pk": false,
+          "nullable": true,
+          "comment": "权重"
+        },
+        {
+          "name": "sort_order",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "assessment_indicator",
+      "comment": "测评指标项",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "dimension_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "维度ID"
+        },
+        {
+          "name": "indicator_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "指标名称"
+        },
+        {
+          "name": "max_score",
+          "type": "decimal",
+          "pk": false,
+          "nullable": true,
+          "comment": "最高分"
+        },
+        {
+          "name": "sort_order",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "assessment_target",
+      "comment": "测评被评对象",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "scheme_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "方案ID"
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "被评干部ID"
+        },
+        {
+          "name": "material_title",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "测评材料标题"
+        },
+        {
+          "name": "material_text",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "测评材料正文"
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "assessment_vote",
+      "comment": "测评投票记录",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "scheme_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "方案ID"
+        },
+        {
+          "name": "voter_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "投票人ID"
+        },
+        {
+          "name": "target_cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "被评干部ID"
+        },
+        {
+          "name": "indicator_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "指标ID"
+        },
+        {
+          "name": "score",
+          "type": "decimal",
+          "pk": false,
+          "nullable": false,
+          "comment": "评分"
+        },
+        {
+          "name": "vote_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "assessment_ballot",
+      "comment": "表决式投票记录表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "scheme_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "方案ID"
+        },
+        {
+          "name": "voter_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "投票人ID"
+        },
+        {
+          "name": "target_cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "被表决干部ID"
+        },
+        {
+          "name": "choice",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "表决意见 APPROVE赞成/DISAPPROVE反对/ABSTAIN弃权"
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "逻辑删除 0未删 1已删"
+        }
+      ]
+    },
+    {
+      "name": "assessment_signature",
+      "comment": "投票签字留证表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "scheme_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "方案ID"
+        },
+        {
+          "name": "voter_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "签字人ID"
+        },
+        {
+          "name": "sign_image",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "签字图片(PNG)"
+        },
+        {
+          "name": "sign_md5",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "签字图片MD5"
+        },
+        {
+          "name": "device_ip",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "设备IP"
+        },
+        {
+          "name": "sign_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "签字时间"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "逻辑删除 0未删 1已删"
+        }
+      ]
+    },
+    {
+      "name": "daily_certificate",
+      "comment": "证照管理表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "cert_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "证件类型 PASSPORT护照 ENTRY_PERMIT通行证"
+        },
+        {
+          "name": "cert_number",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "证件号码"
+        },
+        {
+          "name": "cert_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "证件状态 STORED存放中 LENT借出 RETURNED已归还 OVERDUE逾期"
+        },
+        {
+          "name": "borrow_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "借出日期"
+        },
+        {
+          "name": "return_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "归还日期"
+        },
+        {
+          "name": "expected_return_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "预计归还日期"
+        },
+        {
+          "name": "abroad_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "关联已批准出国(境)记录ID（因公临时领用来源）"
+        },
+        {
+          "name": "remark",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "备注"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "daily_abroad_record",
+      "comment": "出境登记表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "destination",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "目的地"
+        },
+        {
+          "name": "purpose",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "事由"
+        },
+        {
+          "name": "depart_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "出境日期"
+        },
+        {
+          "name": "return_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "入境日期"
+        },
+        {
+          "name": "approved_days",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "批准天数"
+        },
+        {
+          "name": "actual_days",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "实际天数"
+        },
+        {
+          "name": "is_overdue",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否超期"
+        },
+        {
+          "name": "is_approved",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否经批准出国(境) 1已批准 0未批准"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "daily_leave",
+      "comment": "休假管理表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "leave_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "假别 ANNUAL年假 PERSONAL事假 SICK病假"
+        },
+        {
+          "name": "start_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "开始日期"
+        },
+        {
+          "name": "end_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "结束日期"
+        },
+        {
+          "name": "leave_days",
+          "type": "decimal",
+          "pk": false,
+          "nullable": true,
+          "comment": "请假天数"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "请假事由"
+        },
+        {
+          "name": "approve_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "审批状态 DRAFT草稿 SUBMITTED已提交 APPROVED已通过 REJECTED已驳回"
+        },
+        {
+          "name": "approve_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "审批人ID"
+        },
+        {
+          "name": "approve_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "审批时间"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "daily_training",
+      "comment": "教育培训表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "training_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "培训班名称"
+        },
+        {
+          "name": "training_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "培训类型"
+        },
+        {
+          "name": "start_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "开始日期"
+        },
+        {
+          "name": "end_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "结束日期"
+        },
+        {
+          "name": "training_location",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "培训地点"
+        },
+        {
+          "name": "organizer",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "主办单位"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "培训内容描述"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "状态 ACTIVE进行中 FINISHED已结束"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "daily_training_cadre",
+      "comment": "培训学员关联表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "training_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "培训ID"
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "is_completed",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否完成"
+        },
+        {
+          "name": "certificate_url",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "证书地址"
+        }
+      ]
+    },
+    {
+      "name": "daily_secondment",
+      "comment": "挂职锻炼表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "secondment_unit",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "挂职单位"
+        },
+        {
+          "name": "secondment_position",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "挂职职务"
+        },
+        {
+          "name": "start_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "开始日期"
+        },
+        {
+          "name": "end_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "结束日期"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "状态 ACTIVE在岗 FINISHED已结束"
+        },
+        {
+          "name": "remark",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "备注"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "daily_self_application",
+      "comment": "自助申报表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "applicant_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "申请人ID"
+        },
+        {
+          "name": "application_type",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "申报类型 INFO_UPDATE档案信息更正 LEAVE请假 PART_TIME兼职 TRAINING培训 ABROAD出国"
+        },
+        {
+          "name": "application_title",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "申报标题"
+        },
+        {
+          "name": "application_content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "申报内容"
+        },
+        {
+          "name": "apply_field",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "申请变更字段key(档案信息更正,白名单见CadreInfoMapperKeys)"
+        },
+        {
+          "name": "old_value",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "变更前档案值(提交时读取真实档案)"
+        },
+        {
+          "name": "new_value",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "变更后档案值"
+        },
+        {
+          "name": "apply_status",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "申报状态 DRAFT草稿 SUBMITTED已提交 APPROVED已通过 REJECTED已驳回"
+        },
+        {
+          "name": "approver_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "审批人ID"
+        },
+        {
+          "name": "approve_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "审批时间"
+        },
+        {
+          "name": "approve_comment",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "审批意见"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "sys_roster_template",
+      "comment": "名册模板表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "template_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "模板名称"
+        },
+        {
+          "name": "template_fields",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "模板包含字段(JSON)"
+        },
+        {
+          "name": "is_system",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否系统预设"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "sys_print_template",
+      "comment": "打印模板表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "template_name",
+          "type": "string",
+          "pk": false,
+          "nullable": false,
+          "comment": "模板名称"
+        },
+        {
+          "name": "template_type",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "模板类型 APPOINTMENT任免表 ARCHIVE档案 EXPORT导出"
+        },
+        {
+          "name": "template_content",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "模板内容(HTML/Word)"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "name": "org_team_member",
+      "comment": "班子成员登记表",
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "dept_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "机构ID"
+        },
+        {
+          "name": "cadre_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "comment": "干部ID"
+        },
+        {
+          "name": "leader_post",
+          "type": "string",
+          "pk": false,
+          "nullable": true,
+          "comment": "班子职务 党委书记/院长/副院长/党委副书记/纪委书记/部长/处长等"
+        },
+        {
+          "name": "sort_order",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "排序"
+        },
+        {
+          "name": "is_leader",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": "是否主要负责人 0否 1是"
+        },
+        {
+          "name": "start_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "任职开始日期"
+        },
+        {
+          "name": "end_date",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": "任职结束日期(空表示现任)"
+        },
+        {
+          "name": "create_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_by",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "create_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "update_time",
+          "type": "datetime",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        },
+        {
+          "name": "deleted",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "comment": ""
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "sys_user",
+      "to": "org_department",
+      "field": "dept_id"
+    },
+    {
+      "from": "sys_user",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "sys_role",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "sys_role",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "sys_user_role",
+      "to": "sys_user",
+      "field": "user_id"
+    },
+    {
+      "from": "sys_user_role",
+      "to": "sys_role",
+      "field": "role_id"
+    },
+    {
+      "from": "sys_dict_type",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "sys_dict_type",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "sys_dict_data",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "sys_dict_data",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "sys_oper_log",
+      "to": "sys_user",
+      "field": "user_id"
+    },
+    {
+      "from": "sys_login_log",
+      "to": "sys_user",
+      "field": "user_id"
+    },
+    {
+      "from": "org_department",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "org_department",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "org_position_level",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "org_position_level",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "org_rank",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "org_rank",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "org_staffing_quota",
+      "to": "org_department",
+      "field": "dept_id"
+    },
+    {
+      "from": "org_staffing_quota",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "org_staffing_quota",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "cadre_info",
+      "to": "org_department",
+      "field": "dept_id"
+    },
+    {
+      "from": "cadre_info",
+      "to": "org_rank",
+      "field": "rank_id"
+    },
+    {
+      "from": "cadre_info",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "cadre_info",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "cadre_family_member",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "cadre_family_member",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "cadre_family_member",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "cadre_attachment",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "cadre_attachment",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "cadre_reserve",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "cadre_reserve",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "cadre_reserve",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "transfer_record",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "transfer_record",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "rank_promotion_record",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "rank_promotion_record",
+      "to": "org_rank",
+      "field": "from_rank_id"
+    },
+    {
+      "from": "rank_promotion_record",
+      "to": "org_rank",
+      "field": "to_rank_id"
+    },
+    {
+      "from": "rank_promotion_record",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "appoint_process",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "appoint_process",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "appoint_process",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "appoint_motion",
+      "to": "appoint_process",
+      "field": "process_id"
+    },
+    {
+      "from": "appoint_motion",
+      "to": "cadre_info",
+      "field": "selected_cadre_id"
+    },
+    {
+      "from": "appoint_motion",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "appoint_motion",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "appoint_recommend",
+      "to": "appoint_process",
+      "field": "process_id"
+    },
+    {
+      "from": "appoint_recommend",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "appoint_investigation",
+      "to": "appoint_process",
+      "field": "process_id"
+    },
+    {
+      "from": "appoint_investigation",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "appoint_decision",
+      "to": "appoint_process",
+      "field": "process_id"
+    },
+    {
+      "from": "appoint_decision",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "appoint_publicity",
+      "to": "appoint_process",
+      "field": "process_id"
+    },
+    {
+      "from": "appoint_publicity",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "appoint_record",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "appoint_record",
+      "to": "appoint_process",
+      "field": "process_id"
+    },
+    {
+      "from": "appoint_record",
+      "to": "org_department",
+      "field": "dept_id"
+    },
+    {
+      "from": "appoint_record",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "supervise_integrity",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "supervise_integrity",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "supervise_complaint",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "supervise_complaint",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "supervise_complaint",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "supervise_personal_report",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "supervise_personal_report",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "supervise_alert",
+      "to": "sys_user",
+      "field": "target_user_id"
+    },
+    {
+      "from": "supervise_alert",
+      "to": "cadre_info",
+      "field": "target_cadre_id"
+    },
+    {
+      "from": "supervise_alert",
+      "to": "supervise_alert_rule",
+      "field": "rule_id"
+    },
+    {
+      "from": "supervise_alert_rule",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "supervise_alert_rule",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "policy_document",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "policy_document",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "cadre_investigation",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "cadre_investigation",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "cadre_investigation",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "supervise_admonish",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "supervise_admonish",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "supervise_admonish",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "supervise_audit",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "supervise_audit",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "supervise_audit",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "assessment_annual",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "assessment_annual",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "assessment_scheme",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "assessment_scheme",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "assessment_dimension",
+      "to": "assessment_scheme",
+      "field": "scheme_id"
+    },
+    {
+      "from": "assessment_indicator",
+      "to": "assessment_dimension",
+      "field": "dimension_id"
+    },
+    {
+      "from": "assessment_target",
+      "to": "assessment_scheme",
+      "field": "scheme_id"
+    },
+    {
+      "from": "assessment_target",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "assessment_vote",
+      "to": "assessment_scheme",
+      "field": "scheme_id"
+    },
+    {
+      "from": "assessment_vote",
+      "to": "cadre_info",
+      "field": "target_cadre_id"
+    },
+    {
+      "from": "assessment_vote",
+      "to": "assessment_indicator",
+      "field": "indicator_id"
+    },
+    {
+      "from": "assessment_ballot",
+      "to": "assessment_scheme",
+      "field": "scheme_id"
+    },
+    {
+      "from": "assessment_ballot",
+      "to": "cadre_info",
+      "field": "target_cadre_id"
+    },
+    {
+      "from": "assessment_signature",
+      "to": "assessment_scheme",
+      "field": "scheme_id"
+    },
+    {
+      "from": "assessment_signature",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "assessment_signature",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "daily_certificate",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "daily_certificate",
+      "to": "daily_abroad_record",
+      "field": "abroad_id"
+    },
+    {
+      "from": "daily_certificate",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "daily_certificate",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "daily_abroad_record",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "daily_abroad_record",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "daily_leave",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "daily_leave",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "daily_leave",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "daily_training",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "daily_training_cadre",
+      "to": "daily_training",
+      "field": "training_id"
+    },
+    {
+      "from": "daily_training_cadre",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "daily_secondment",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "daily_secondment",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "daily_self_application",
+      "to": "sys_user",
+      "field": "approver_id"
+    },
+    {
+      "from": "daily_self_application",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "daily_self_application",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "sys_roster_template",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "sys_roster_template",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "sys_print_template",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "sys_print_template",
+      "to": "sys_user",
+      "field": "update_by"
+    },
+    {
+      "from": "org_team_member",
+      "to": "org_department",
+      "field": "dept_id"
+    },
+    {
+      "from": "org_team_member",
+      "to": "cadre_info",
+      "field": "cadre_id"
+    },
+    {
+      "from": "org_team_member",
+      "to": "sys_user",
+      "field": "create_by"
+    },
+    {
+      "from": "org_team_member",
+      "to": "sys_user",
+      "field": "update_by"
+    }
+  ]
+}

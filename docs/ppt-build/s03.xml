@@ -1,0 +1,37 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill>
+      <fillColor color="linear-gradient(120deg,rgba(15,32,56,1) 0%,rgba(31,58,95,1) 100%)"/>
+    </fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="150" width="320" height="160">
+      <content textType="title" fontSize="120" bold="true" color="rgba(201,166,107,0.9)" wrap="false">
+        <p>01</p>
+      </content>
+    </shape>
+    <line startX="360" startY="178" endX="360" endY="300">
+      <border color="rgba(255,255,255,0.22)" width="1"/>
+    </line>
+    <shape type="text" topLeftX="400" topLeftY="186" width="460" height="30">
+      <content textType="caption" fontSize="13" color="rgba(201,166,107,1)" letterSpacing="3" wrap="false">
+        <p>PROJECT OVERVIEW</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="400" topLeftY="218" width="460" height="56">
+      <content textType="title" fontSize="40" bold="true" color="rgba(255,255,255,1)" wrap="false">
+        <p>项目介绍</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="400" topLeftY="286" width="466" height="48">
+      <content textType="body" fontSize="14" color="rgba(184,200,220,1)" lineSpacing="multiple:1.4">
+        <p>这是一个什么样的系统，面向谁、解决什么问题，以及目前做到了什么程度。</p>
+      </content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>首先进入第一部分，项目介绍。我会用四页篇幅说明系统的建设背景与意义、定位与目标、完整的功能模块全景，以及最终交付的代码规模。</p>
+    </content>
+  </note>
+</slide>

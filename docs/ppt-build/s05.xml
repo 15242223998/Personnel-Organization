@@ -1,0 +1,112 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false">
+        <p>01　项目介绍　·　定位与目标</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="720" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>项目定位与建设目标</p>
+      </content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="64" topLeftY="128" width="832" height="52">
+      <content textType="body" fontSize="15.5" color="rgba(31,58,95,1)" lineSpacing="multiple:1.5">
+        <p>面向高校组织人事部门的<strong>一体化干部管理平台</strong>：以干部人事档案数据为底座，覆盖干部“选、育、管、用”全生命周期，服务高素质专业化干部队伍建设。</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="196" width="400" height="22">
+      <content textType="body" fontSize="13" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>建设方向：三个“一”</p></content>
+    </shape>
+
+    <shape type="rect" topLeftX="64" topLeftY="228" width="244" height="92">
+      <fill><fillColor color="rgba(20,42,73,0.045)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="80" topLeftY="242" width="216" height="26">
+      <content textType="body" fontSize="16" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>数据一个库</p></content>
+    </shape>
+    <shape type="text" topLeftX="80" topLeftY="272" width="216" height="40">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>51 张表统一建模，干部档案作为唯一事实数据源</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="316" topLeftY="258" width="36" height="30">
+      <content textType="body" fontSize="22" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content>
+    </shape>
+
+    <shape type="rect" topLeftX="358" topLeftY="228" width="244" height="92">
+      <fill><fillColor color="rgba(20,42,73,0.045)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="374" topLeftY="242" width="216" height="26">
+      <content textType="body" fontSize="16" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>业务一条链</p></content>
+    </shape>
+    <shape type="text" topLeftX="374" topLeftY="272" width="216" height="40">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>任免、调配、考核、监督业务协同、状态联动</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="610" topLeftY="258" width="36" height="30">
+      <content textType="body" fontSize="22" color="rgba(172,134,74,1)" textAlign="center" wrap="false"><p>→</p></content>
+    </shape>
+
+    <shape type="rect" topLeftX="652" topLeftY="228" width="244" height="92">
+      <fill><fillColor color="rgba(20,42,73,0.045)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="668" topLeftY="242" width="216" height="26">
+      <content textType="body" fontSize="16" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>审批一个口</p></content>
+    </shape>
+    <shape type="text" topLeftX="668" topLeftY="272" width="216" height="40">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>自助申报统一受理、分级审批，结果自动回写</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="352" width="500" height="22">
+      <content textType="body" fontSize="13" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>覆盖干部“选、育、管、用”业务闭环</p></content>
+    </shape>
+    <line startX="64" startY="382" endX="896" endY="382"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="64" topLeftY="392" width="190" height="24">
+      <content textType="body" fontSize="14" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>选 · 选拔任用</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="420" width="190" height="56">
+      <content textType="caption" fontSize="11" color="rgba(62,76,92,1)" lineSpacing="multiple:1.45"><p>民主推荐、干部任免全流程、后备干部库</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="272" topLeftY="392" width="190" height="24">
+      <content textType="body" fontSize="14" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>育 · 培养锻炼</p></content>
+    </shape>
+    <shape type="text" topLeftX="272" topLeftY="420" width="190" height="56">
+      <content textType="caption" fontSize="11" color="rgba(62,76,92,1)" lineSpacing="multiple:1.45"><p>教育培训、挂职锻炼、后备干部培养跟踪</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="480" topLeftY="392" width="190" height="24">
+      <content textType="body" fontSize="14" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>管 · 考核监督</p></content>
+    </shape>
+    <shape type="text" topLeftX="480" topLeftY="420" width="190" height="56">
+      <content textType="caption" fontSize="11" color="rgba(62,76,92,1)" lineSpacing="multiple:1.45"><p>年度考核、民主测评、平板投票、分级预警</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="688" topLeftY="392" width="208" height="24">
+      <content textType="body" fontSize="14" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>用 · 调配日常</p></content>
+    </shape>
+    <shape type="text" topLeftX="688" topLeftY="420" width="208" height="56">
+      <content textType="caption" fontSize="11" color="rgba(62,76,92,1)" lineSpacing="multiple:1.45"><p>调配、职级晋升、证照出境休假等日常事务</p></content>
+    </shape>
+
+    <line startX="64" startY="500" endX="896" endY="500"><border color="rgba(20,42,73,0.08)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>05 / 22</p></content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>系统定位是面向高校组织人事部门的一体化干部管理平台。建设方向概括为"三个一"：数据一个库、业务一条链、审批一个口。在业务范围上完整覆盖干部"选、育、管、用"闭环：选是选拔任用，育是培养锻炼，管是考核监督，用是调配和日常事务，形成完整的干部管理生命周期。</p>
+    </content>
+  </note>
+</slide>

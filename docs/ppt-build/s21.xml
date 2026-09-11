@@ -1,0 +1,46 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>04　问题及解决方案　·　（下）</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>典型问题与解决方案（二）</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <line startX="64" startY="124" endX="896" endY="124"><border color="rgba(20,42,73,0.1)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="134" width="50" height="40"><content textType="headline" fontSize="24" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>04</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="134" width="320" height="18"><content textType="caption" fontSize="10" color="rgba(95,122,148,1)" wrap="false"><p>问题　多套数据库切换成本高</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="154" width="312" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>演示、联调、迁移要连接不同 MySQL，改配置重启繁琐，新库还要手工创建 51 张表。</p></content></shape>
+    <line startX="448" startY="134" endX="448" endY="236"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+    <shape type="text" topLeftX="466" topLeftY="134" width="430" height="18"><content textType="caption" fontSize="10" color="rgba(172,134,74,1)" wrap="false"><p>解决方案　运行时热切换 + 自动对齐</p></content></shape>
+    <shape type="text" topLeftX="466" topLeftY="154" width="430" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>基于 dynamic-datasource 免重启切换：先探测结构（一致 / 缺表 / 无库三态），无库时一键按 init.sql 自动建表对齐，连接持久化记忆、重启自动恢复。</p></content></shape>
+
+    <line startX="64" startY="248" endX="896" endY="248"><border color="rgba(20,42,73,0.1)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="258" width="50" height="40"><content textType="headline" fontSize="24" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>05</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="258" width="320" height="18"><content textType="caption" fontSize="10" color="rgba(95,122,148,1)" wrap="false"><p>问题　现场投票公信力与防篡改</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="278" width="312" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>纸质票统计慢，电子投票又容易被质疑代投、事后改票，评审结果的公信力难以保证。</p></content></shape>
+    <line startX="448" startY="258" endX="448" endY="360"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+    <shape type="text" topLeftX="466" topLeftY="258" width="430" height="18"><content textType="caption" fontSize="10" color="rgba(172,134,74,1)" wrap="false"><p>解决方案　双模式投票 + 签字锁票留证</p></content></shape>
+    <shape type="text" topLeftX="466" topLeftY="278" width="430" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>平板端支持评分、表决两种票型；提交后手写签名，将签名图像、MD5、设备 IP、时间戳一并存档，签字后锁票不可更改，管理端可核验。</p></content></shape>
+
+    <line startX="64" startY="372" endX="896" endY="372"><border color="rgba(20,42,73,0.1)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="382" width="50" height="40"><content textType="headline" fontSize="24" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>06</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="382" width="320" height="18"><content textType="caption" fontSize="10" color="rgba(95,122,148,1)" wrap="false"><p>问题　敏感档案的水平越权风险</p></content></shape>
+    <shape type="text" topLeftX="120" topLeftY="402" width="312" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>干部档案含身份证号、家庭成员等隐私信息，一旦出现水平越权，后果严重。</p></content></shape>
+    <line startX="448" startY="382" endX="448" endY="484"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+    <shape type="text" topLeftX="466" topLeftY="382" width="430" height="18"><content textType="caption" fontSize="10" color="rgba(172,134,74,1)" wrap="false"><p>解决方案　查询层自动注入数据范围</p></content></shape>
+    <shape type="text" topLeftX="466" topLeftY="402" width="430" height="84"><content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5"><p>用 DataScopeHelper 按用户类型在查询层自动注入可见范围（全量 / 本级及下级 / 仅本部门），分页、详情、导出统一生效，普通用户仅能看到本人数据。</p></content></shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>21 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>后三个问题。第四是多数据库切换成本高，我用动态数据源做运行时热切换和自动建表对齐。第五是现场投票公信力，用评分加表决双模式和手写签名留证，签字即锁票。第六是敏感档案越权，通过数据权限助手在查询层自动注入可见范围，从根上避免水平越权。这些问题都不是教程里的标准题，而是在真实开发中遇到、并逐一解决的。</p></content></note>
+</slide>

@@ -1,0 +1,58 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>02　项目技术栈　·　前端</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>前端关键技术：Vue 3 现代工程化</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <table topLeftX="64" topLeftY="124" width="832" height="372">
+      <colgroup><col width="286"/><col width="546"/></colgroup>
+      <tr height="32">
+        <td><fill><fillColor color="rgba(20,42,73,1)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>技术（版本）</p></content></td>
+        <td><fill><fillColor color="rgba(20,42,73,1)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>在项目中承担的职责</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Vue 3.4（Composition API）</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　以组合式 API 组件化构建 34 个业务页面，响应式数据驱动视图更新</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Vite 5.4</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　极速冷启动与模块热更新的构建工具，开发环境代理 /api 到后端 8080</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Element Plus 2.7</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　表格、表单、弹窗、菜单、日期选择等企业级 UI 组件，统一政务蓝主题</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Pinia 2.1</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　集中管理登录用户、模块权限与菜单状态，token 与服务器地址持久化</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Vue Router 4.3</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　路由表与全局前置守卫校验登录态，/tablet 提供平板免登录投票页</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　ECharts 5.5</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　干部年龄、性别、学历、政治面貌、职务层次等结构分析图表</p></content></td>
+      </tr>
+      <tr height="42">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="11.5" bold="true" color="rgba(20,42,73,1)" textAlign="left"><p>　Axios / xlsx</p></content></td>
+        <td><content textType="body" fontSize="11" color="rgba(62,76,92,1)" textAlign="left"><p>　Axios 拦截器统一注入 Bearer、处理 401 跳登录；xlsx 在前端导出表格</p></content></td>
+      </tr>
+    </table>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>11 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>前端采用 Vue 3 组合式 API 和 Vite 构建，Element Plus 提供企业级组件，Pinia 管理全局状态，Vue Router 做登录守卫并单独开放平板投票页，ECharts 负责统计可视化，Axios 统一处理令牌和异常。整体保持政务蓝的统一视觉，交互体验接近真实办公系统。</p></content></note>
+</slide>

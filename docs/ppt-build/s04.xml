@@ -1,0 +1,86 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false">
+        <p>01　项目介绍　·　建设背景与意义</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="720" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>建设背景与意义</p>
+      </content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="64" topLeftY="128" width="400" height="24">
+      <content textType="body" fontSize="15" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>建设背景</p></content>
+    </shape>
+    <line startX="64" startY="154" endX="104" endY="154"><border color="rgba(201,166,107,1)" width="2"/></line>
+
+    <shape type="text" topLeftX="64" topLeftY="170" width="406" height="22">
+      <content textType="body" fontSize="13.5" bold="true" color="rgba(31,58,95,1)" wrap="false"><p>政策驱动：治理现代化的时代要求</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="196" width="406" height="66">
+      <content textType="body" fontSize="12" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5">
+        <p>紧扣学校“十四五”规划中深化内部治理、推进管理数字化转型的目标，将组织人事工作纳入智慧校园“一张网、一平台、一门户”整体框架。</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="268" width="406" height="22">
+      <content textType="body" fontSize="13.5" bold="true" color="rgba(31,58,95,1)" wrap="false"><p>现实痛点：传统人事管理方式滞后</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="294" width="406" height="66">
+      <content textType="body" fontSize="12" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5">
+        <p>干部档案分散维护、任免依赖纸质流转、考核监督难以留痕，跨部门数据不一致，学校选人用人缺少统一的数据支撑。</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="366" width="406" height="22">
+      <content textType="body" fontSize="13.5" bold="true" color="rgba(31,58,95,1)" wrap="false"><p>技术契机：成熟 Web 技术栈支撑</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="392" width="406" height="66">
+      <content textType="body" fontSize="12" color="rgba(62,76,92,1)" lineSpacing="multiple:1.5">
+        <p>前后端分离、MyBatis-Plus、Spring Security 与 JWT 等技术成熟稳定，使干部业务全流程线上化、全程可追溯成为可能。</p>
+      </content>
+    </shape>
+
+    <line startX="500" startY="132" endX="500" endY="470"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="528" topLeftY="128" width="368" height="24">
+      <content textType="body" fontSize="15" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>建设意义</p></content>
+    </shape>
+    <line startX="528" startY="154" endX="568" endY="154"><border color="rgba(201,166,107,1)" width="2"/></line>
+
+    <shape type="text" topLeftX="528" topLeftY="172" width="368" height="86">
+      <content textType="body" fontSize="12.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.55">
+        <p><strong>党管干部、规范留痕：</strong>把动议、推荐、考察、决定、公示、任职全流程固化到系统，任免过程规范透明、可追溯。</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="528" topLeftY="276" width="368" height="92">
+      <content textType="body" fontSize="12.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.55">
+        <p><strong>一体化协同：</strong>以干部档案为核心打通组织、任免、调配、考核、监督，实现“数据一个库、业务一条链、审批一个口”。</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="528" topLeftY="382" width="368" height="92">
+      <content textType="body" fontSize="12.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.55">
+        <p><strong>辅助科学决策：</strong>实时结构分析与红橙黄分级预警，为学校党委选人用人和干部队伍建设提供数据支撑。</p>
+      </content>
+    </shape>
+
+    <line startX="64" startY="500" endX="896" endY="500"><border color="rgba(20,42,73,0.08)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>04 / 22</p></content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>项目立项有三方面背景：政策上，学校"十四五"规划要求治理体系现代化；现实中，传统干部人事工作存在档案分散、流程纸质、留痕困难等痛点；技术上，成熟的前后端分离技术栈让全流程线上化成为可能。其意义在于落实党管干部原则、实现业务一体化协同，并为学校党委决策提供数据支撑。</p>
+    </content>
+  </note>
+</slide>

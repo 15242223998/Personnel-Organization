@@ -1,0 +1,69 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false">
+        <p>01　项目介绍　·　功能模块全景</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="800" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>七大功能域覆盖干部管理全业务</p>
+      </content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <table topLeftX="64" topLeftY="126" width="832" height="364">
+      <colgroup>
+        <col width="132"/>
+        <col width="700"/>
+      </colgroup>
+      <tr height="34">
+        <td><fill><fillColor color="rgba(20,42,73,1)"/></fill><content textType="body" fontSize="13" bold="true" color="rgba(255,255,255,1)" textAlign="center"><p>功能域</p></content></td>
+        <td><fill><fillColor color="rgba(20,42,73,1)"/></fill><content textType="body" fontSize="13" bold="true" color="rgba(255,255,255,1)" textAlign="left"><p>　核心功能</p></content></td>
+      </tr>
+      <tr height="47">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(20,42,73,1)" textAlign="center"><p>干部管理</p></content></td>
+        <td><content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" textAlign="left" lineSpacing="multiple:1.35"><p>　干部档案增删改查、批量导入导出、多条件筛选排序，在职 / 离退休 / 调出 / 辞职分库，后备干部入库与培养跟踪</p></content></td>
+      </tr>
+      <tr height="47">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(20,42,73,1)" textAlign="center"><p>组织机构</p></content></td>
+        <td><content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" textAlign="left" lineSpacing="multiple:1.35"><p>　机构树形管理、编制数与实有人数实时维护、班子成员任职登记、职务层次与职级统一管理</p></content></td>
+      </tr>
+      <tr height="47">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(20,42,73,1)" textAlign="center"><p>干部业务</p></content></td>
+        <td><content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" textAlign="left" lineSpacing="multiple:1.35"><p>　任免全流程、调动转任、职级晋升、考察登记、政策法规台账，以及干部档案更正自助申报审批闭环</p></content></td>
+      </tr>
+      <tr height="47">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(20,42,73,1)" textAlign="center"><p>监督考核</p></content></td>
+        <td><content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" textAlign="left" lineSpacing="multiple:1.35"><p>　年度考核、民主测评、平板评审投票与手写签字留证、廉政信访、个人事项、红橙黄分级预警</p></content></td>
+      </tr>
+      <tr height="47">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(20,42,73,1)" textAlign="center"><p>日常事务</p></content></td>
+        <td><content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" textAlign="left" lineSpacing="multiple:1.35"><p>　证照、出境记录、休假、教育培训、挂职锻炼，以及请假 / 培训 / 出国（境）等干部自助申报审批</p></content></td>
+      </tr>
+      <tr height="47">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(20,42,73,1)" textAlign="center"><p>统计分析</p></content></td>
+        <td><content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" textAlign="left" lineSpacing="multiple:1.35"><p>　年龄、性别、学历、政治面貌、职务层次结构图表分析，机构干部统计表（基于 ECharts 实现）</p></content></td>
+      </tr>
+      <tr height="47">
+        <td><fill><fillColor color="rgba(20,42,73,0.05)"/></fill><content textType="body" fontSize="12" bold="true" color="rgba(20,42,73,1)" textAlign="center"><p>系统管理</p></content></td>
+        <td><content textType="body" fontSize="11.5" color="rgba(62,76,92,1)" textAlign="left" lineSpacing="multiple:1.35"><p>　用户与注册审批、按账号模块授权、国标字典、操作日志与登录日志、按用户类型的数据权限</p></content></td>
+      </tr>
+    </table>
+
+    <shape type="text" topLeftX="64" topLeftY="498" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="498" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>06 / 22</p></content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>系统功能划分为七大功能域。干部管理和组织机构是数据底座；干部业务承载任免、调配、晋升等核心流程；监督考核覆盖年度考核、民主测评、平板投票和分级预警；日常事务处理证照、出境、休假等；统计分析提供可视化；系统管理负责用户、权限、字典和日志。各模块并非孤立，而是围绕干部档案互相关联。</p>
+    </content>
+  </note>
+</slide>

@@ -1,0 +1,2543 @@
+<presentation id="P99qsvJgelgwOedeN13cHdWXn7c" xmlns="https://www.larkoffice.com/sml/2.0" width="960" height="540">
+  <title>高校干部人事组织管理系统 · 答辩汇报</title>
+  <theme>
+    <textStyles>
+      <headline fontColor="rgba(31, 35, 41, 1)"/>
+      <sub-headline fontColor="rgba(31, 35, 41, 1)"/>
+      <body fontColor="rgba(31, 35, 41, 1)"/>
+      <caption fontColor="rgba(155, 158, 162, 1)" fontSize="14"/>
+    </textStyles>
+  </theme>
+  <slide id="pCC">
+    <style>
+      <fill id="fCC">
+        <fillColor color="linear-gradient(135deg,rgba(15, 32, 56, 1) 0%,rgba(31, 58, 95, 1) 100%)"/>
+      </fill>
+    </style>
+    <data>
+      <line id="bxv" startX="64" startY="118" endX="124.00833275470998" endY="118">
+        <border color="rgba(201, 166, 107, 1)" width="3"/>
+      </line>
+      <shape width="720" height="26" topLeftX="64" topLeftY="130" type="text" id="bxs">
+        <content textType="caption" fontSize="13" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" letterSpacing="2" wrap="false">
+          <p>辽宁某某大学 · 毕业设计（论文）答辩</p>
+        </content>
+      </shape>
+      <shape width="832" height="72" topLeftX="64" topLeftY="178" type="text" id="bxO">
+        <content textType="title" fontSize="44" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>高校干部人事组织管理系统</p>
+        </content>
+      </shape>
+      <shape width="832" height="40" topLeftX="64" topLeftY="256" type="text" id="bxX">
+        <content textType="sub-headline" fontSize="22" fontFamily="思源黑体" color="rgba(214, 224, 236, 1)" bold="true" wrap="false">
+          <p>设计与实现 —— 覆盖干部“选、育、管、用”全链条</p>
+        </content>
+      </shape>
+      <shape width="760" height="24" topLeftX="64" topLeftY="306" type="text" id="bxB">
+        <content textType="caption" fontSize="12" fontFamily="思源黑体" color="rgba(150, 170, 192, 1)" letterSpacing="1" wrap="false">
+          <p>Spring Boot 3 + Vue 3 前后端分离 · 51 张数据表 · 10 大业务模块</p>
+        </content>
+      </shape>
+      <line id="bxf" startX="64" startY="382" endX="896.0006009613214" endY="382">
+        <border color="rgba(255, 255, 255, 0.16)" width="1"/>
+      </line>
+      <shape width="380" height="30" topLeftX="64" topLeftY="404" type="text" id="bxY">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(214, 224, 236, 1)" wrap="false">
+          <p>答辩人：XXX　　学号：XXXXXXXX</p>
+        </content>
+      </shape>
+      <shape width="380" height="30" topLeftX="516" topLeftY="404" type="text" id="bxn">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(214, 224, 236, 1)" textAlign="right" wrap="false">
+          <p>指导教师：XXX 教授</p>
+        </content>
+      </shape>
+      <shape width="380" height="30" topLeftX="64" topLeftY="442" type="text" id="bxI">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(214, 224, 236, 1)" wrap="false">
+          <p>专业班级：XXXXXXXX</p>
+        </content>
+      </shape>
+      <shape width="380" height="30" topLeftX="516" topLeftY="442" type="text" id="bxS">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(214, 224, 236, 1)" textAlign="right" wrap="false">
+          <p>答辩日期：2026 年 6 月</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bxt">
+      <content>
+        <p>各位老师好，我答辩的题目是《高校干部人事组织管理系统的设计与实现》。本系统面向学校组织人事工作，以干部档案数据为底座，覆盖干部选拔、培育、管理、使用的完整业务链条。下面我从项目介绍、技术栈、实现思路、问题与解决方案以及个人收获五个方面进行汇报。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCa">
+    <style>
+      <fill id="fCa">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="600" height="44" topLeftX="64" topLeftY="52" type="text" id="bxN">
+        <content textType="title" fontSize="30" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>目录</p>
+        </content>
+      </shape>
+      <shape width="300" height="22" topLeftX="140" topLeftY="66" type="text" id="bxW">
+        <content textType="caption" fontSize="12" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" letterSpacing="2" wrap="false">
+          <p>CONTENTS</p>
+        </content>
+      </shape>
+      <line id="bxL" startX="64" startY="112" endX="896.0006009613214" endY="112">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="70" height="48" topLeftX="70" topLeftY="138" type="text" id="bxF">
+        <content textType="headline" fontSize="26" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>01</p>
+        </content>
+      </shape>
+      <shape width="300" height="30" topLeftX="150" topLeftY="140" type="text" id="bxi">
+        <content fontSize="19" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>项目介绍</p>
+        </content>
+      </shape>
+      <shape width="426" height="24" topLeftX="470" topLeftY="145" type="text" id="bxH">
+        <content textType="caption" fontSize="12.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>建设背景、定位目标、功能全景与成果规模</p>
+        </content>
+      </shape>
+      <line id="bxk" startX="70" startY="196" endX="896.0006053266545" endY="196">
+        <border color="rgba(20, 42, 73, 0.08)" width="1"/>
+      </line>
+      <shape width="70" height="48" topLeftX="70" topLeftY="208" type="text" id="bxC">
+        <content textType="headline" fontSize="26" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>02</p>
+        </content>
+      </shape>
+      <shape width="300" height="30" topLeftX="150" topLeftY="210" type="text" id="bxu">
+        <content fontSize="19" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>项目技术栈</p>
+        </content>
+      </shape>
+      <shape width="426" height="24" topLeftX="470" topLeftY="215" type="text" id="bxE">
+        <content textType="caption" fontSize="12.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>前后端技术选型、数据存储与关键组件</p>
+        </content>
+      </shape>
+      <line id="bxT" startX="70" startY="266" endX="896.0006053266545" endY="266">
+        <border color="rgba(20, 42, 73, 0.08)" width="1"/>
+      </line>
+      <shape width="70" height="48" topLeftX="70" topLeftY="278" type="text" id="bxm">
+        <content textType="headline" fontSize="26" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>03</p>
+        </content>
+      </shape>
+      <shape width="300" height="30" topLeftX="150" topLeftY="280" type="text" id="bxq">
+        <content fontSize="19" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>项目实现思路</p>
+        </content>
+      </shape>
+      <shape width="426" height="24" topLeftX="470" topLeftY="285" type="text" id="bxA">
+        <content textType="caption" fontSize="12.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>总体架构、分层链路、数据模型与核心业务流程</p>
+        </content>
+      </shape>
+      <line id="bxg" startX="70" startY="336" endX="896.0006053266545" endY="336">
+        <border color="rgba(20, 42, 73, 0.08)" width="1"/>
+      </line>
+      <shape width="70" height="48" topLeftX="70" topLeftY="348" type="text" id="bxJ">
+        <content textType="headline" fontSize="26" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>04</p>
+        </content>
+      </shape>
+      <shape width="300" height="30" topLeftX="150" topLeftY="350" type="text" id="bxr">
+        <content fontSize="19" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>问题及解决方案</p>
+        </content>
+      </shape>
+      <shape width="426" height="24" topLeftX="470" topLeftY="355" type="text" id="bxe">
+        <content textType="caption" fontSize="12.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>数据一致性、权限模型、缓存降级与现场评审难题</p>
+        </content>
+      </shape>
+      <line id="bxy" startX="70" startY="406" endX="896.0006053266545" endY="406">
+        <border color="rgba(20, 42, 73, 0.08)" width="1"/>
+      </line>
+      <shape width="70" height="48" topLeftX="70" topLeftY="418" type="text" id="bxz">
+        <content textType="headline" fontSize="26" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>05</p>
+        </content>
+      </shape>
+      <shape width="300" height="30" topLeftX="150" topLeftY="420" type="text" id="bxG">
+        <content fontSize="19" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>收获与总结</p>
+        </content>
+      </shape>
+      <shape width="426" height="24" topLeftX="470" topLeftY="425" type="text" id="bxb">
+        <content textType="caption" fontSize="12.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>能力成长、工程沉淀、不足与后续展望</p>
+        </content>
+      </shape>
+      <line id="bxa" startX="70" startY="476" endX="896.0006053266545" endY="476">
+        <border color="rgba(20, 42, 73, 0.08)" width="1"/>
+      </line>
+    </data>
+    <note id="bxo">
+      <content>
+        <p>本次汇报分为五个部分。第一部分介绍项目背景、目标和整体功能；第二部分说明用到的技术栈；第三部分是重点，讲清系统的架构设计、分层链路和核心业务是如何实现的；第四部分复盘开发中遇到的六个典型问题和我的解决办法；最后总结个人收获与后续展望。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCS">
+    <style>
+      <fill id="fCS">
+        <fillColor color="linear-gradient(120deg,rgba(15, 32, 56, 1) 0%,rgba(31, 58, 95, 1) 100%)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="320" height="160" topLeftX="64" topLeftY="150" type="text" id="bxZ">
+        <content textType="title" fontSize="120" fontFamily="思源黑体" color="rgba(201, 166, 107, 0.902)" bold="true" wrap="false">
+          <p>01</p>
+        </content>
+      </shape>
+      <line id="bxh" startX="360" startY="178" endX="360" endY="300.0040982918197">
+        <border color="rgba(255, 255, 255, 0.22)" width="1"/>
+      </line>
+      <shape width="460" height="30" topLeftX="400" topLeftY="186" type="text" id="bxD">
+        <content textType="caption" fontSize="13" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" letterSpacing="3" wrap="false">
+          <p>PROJECT OVERVIEW</p>
+        </content>
+      </shape>
+      <shape width="460" height="56" topLeftX="400" topLeftY="218" type="text" id="bxQ">
+        <content textType="title" fontSize="40" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>项目介绍</p>
+        </content>
+      </shape>
+      <shape width="466" height="48" topLeftX="400" topLeftY="286" type="text" id="bxU">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(184, 200, 220, 1)" lineSpacing="multiple:1.4">
+          <p>这是一个什么样的系统，面向谁、解决什么问题，以及目前做到了什么程度。</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bxx">
+      <content>
+        <p>首先进入第一部分，项目介绍。我会用四页篇幅说明系统的建设背景与意义、定位与目标、完整的功能模块全景，以及最终交付的代码规模。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCw">
+    <style>
+      <fill id="fCw">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bZQ">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>01　项目介绍　·　建设背景与意义</p>
+        </content>
+      </shape>
+      <shape width="720" height="38" topLeftX="64" topLeftY="62" type="text" id="bZI">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>建设背景与意义</p>
+        </content>
+      </shape>
+      <line id="bxM" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="400" height="24" topLeftX="64" topLeftY="128" type="text" id="bxK">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>建设背景</p>
+        </content>
+      </shape>
+      <line id="bxd" startX="64" startY="154" endX="104.01249804748511" endY="154">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="406" height="22" topLeftX="64" topLeftY="170" type="text" id="bZZ">
+        <content fontSize="13.5" fontFamily="思源黑体" color="rgba(31, 58, 95, 1)" bold="true" wrap="false">
+          <p>政策驱动：治理现代化的时代要求</p>
+        </content>
+      </shape>
+      <shape width="406" height="66" topLeftX="64" topLeftY="196" type="text" id="bZU">
+        <content fontSize="12" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>紧扣学校“十四五”规划中深化内部治理、推进管理数字化转型的目标，将组织人事工作纳入智慧校园“一张网、一平台、一门户”整体框架。</p>
+        </content>
+      </shape>
+      <shape width="406" height="22" topLeftX="64" topLeftY="268" type="text" id="bZO">
+        <content fontSize="13.5" fontFamily="思源黑体" color="rgba(31, 58, 95, 1)" bold="true" wrap="false">
+          <p>现实痛点：传统人事管理方式滞后</p>
+        </content>
+      </shape>
+      <shape width="406" height="66" topLeftX="64" topLeftY="294" type="text" id="bxj">
+        <content fontSize="12" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>干部档案分散维护、任免依赖纸质流转、考核监督难以留痕，跨部门数据不一致，学校选人用人缺少统一的数据支撑。</p>
+        </content>
+      </shape>
+      <shape width="406" height="22" topLeftX="64" topLeftY="366" type="text" id="bxP">
+        <content fontSize="13.5" fontFamily="思源黑体" color="rgba(31, 58, 95, 1)" bold="true" wrap="false">
+          <p>技术契机：成熟 Web 技术栈支撑</p>
+        </content>
+      </shape>
+      <shape width="406" height="66" topLeftX="64" topLeftY="392" type="text" id="bxp">
+        <content fontSize="12" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>前后端分离、MyBatis-Plus、Spring Security 与 JWT 等技术成熟稳定，使干部业务全流程线上化、全程可追溯成为可能。</p>
+        </content>
+      </shape>
+      <line id="bZh" startX="500" startY="132" endX="500.00000000000006" endY="470.0014792867036">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="368" height="24" topLeftX="528" topLeftY="128" type="text" id="bZn">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>建设意义</p>
+        </content>
+      </shape>
+      <line id="bxc" startX="528" startY="154" endX="568.0124980474851" endY="154">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="368" height="86" topLeftX="528" topLeftY="172" type="text" id="bxw">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.55">
+          <p><strong>党管干部、规范留痕：</strong>把动议、推荐、考察、决定、公示、任职全流程固化到系统，任免过程规范透明、可追溯。</p>
+        </content>
+      </shape>
+      <shape width="368" height="92" topLeftX="528" topLeftY="276" type="text" id="bxV">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.55">
+          <p><strong>一体化协同：</strong>以干部档案为核心打通组织、任免、调配、考核、监督，实现“数据一个库、业务一条链、审批一个口”。</p>
+        </content>
+      </shape>
+      <shape width="368" height="92" topLeftX="528" topLeftY="382" type="text" id="bZD">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.55">
+          <p><strong>辅助科学决策：</strong>实时结构分析与红橙黄分级预警，为学校党委选人用人和干部队伍建设提供数据支撑。</p>
+        </content>
+      </shape>
+      <line id="bZs" startX="64" startY="500" endX="896.0006009613214" endY="500">
+        <border color="rgba(20, 42, 73, 0.08)" width="1"/>
+      </line>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bxl">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bxR">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>04 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bZx">
+      <content>
+        <p>项目立项有三方面背景：政策上，学校&quot;十四五&quot;规划要求治理体系现代化；现实中，传统干部人事工作存在档案分散、流程纸质、留痕困难等痛点；技术上，成熟的前后端分离技术栈让全流程线上化成为可能。其意义在于落实党管干部原则、实现业务一体化协同，并为学校党委决策提供数据支撑。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCj">
+    <style>
+      <fill id="fCj">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bZF">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>01　项目介绍　·　定位与目标</p>
+        </content>
+      </shape>
+      <shape width="720" height="38" topLeftX="64" topLeftY="62" type="text" id="bZj">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>项目定位与建设目标</p>
+        </content>
+      </shape>
+      <line id="bZk" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="832" height="52" topLeftX="64" topLeftY="128" type="text" id="bZu">
+        <content fontSize="15.5" fontFamily="思源黑体" color="rgba(31, 58, 95, 1)">
+          <p>面向高校组织人事部门的<strong>一体化干部管理平台</strong>：以干部人事档案数据为底座，覆盖干部“选、育、管、用”全生命周期，服务高素质专业化干部队伍建设。</p>
+        </content>
+      </shape>
+      <shape width="400" height="22" topLeftX="64" topLeftY="196" type="text" id="bZT">
+        <content fontSize="13" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>建设方向：三个“一”</p>
+        </content>
+      </shape>
+      <shape width="244" height="92" topLeftX="64" topLeftY="228" presetHandlers="0" type="rect" id="bZq">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.045)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="216" height="26" topLeftX="80" topLeftY="242" type="text" id="bZg">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>数据一个库</p>
+        </content>
+      </shape>
+      <shape width="216" height="40" topLeftX="80" topLeftY="272" type="text" id="bZr">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>51 张表统一建模，干部档案作为唯一事实数据源</p>
+        </content>
+      </shape>
+      <shape width="36" height="30" topLeftX="316" topLeftY="258" type="text" id="bZe">
+        <content fontSize="22" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="244" height="92" topLeftX="358" topLeftY="228" presetHandlers="0" type="rect" id="bZz">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.045)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="216" height="26" topLeftX="374" topLeftY="242" type="text" id="bZb">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>业务一条链</p>
+        </content>
+      </shape>
+      <shape width="216" height="40" topLeftX="374" topLeftY="272" type="text" id="bZM">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>任免、调配、考核、监督业务协同、状态联动</p>
+        </content>
+      </shape>
+      <shape width="36" height="30" topLeftX="610" topLeftY="258" type="text" id="bZN">
+        <content fontSize="22" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="244" height="92" topLeftX="652" topLeftY="228" presetHandlers="0" type="rect" id="bZL">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.045)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="216" height="26" topLeftX="668" topLeftY="242" type="text" id="bZi">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>审批一个口</p>
+        </content>
+      </shape>
+      <shape width="216" height="40" topLeftX="668" topLeftY="272" type="text" id="bZP">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>自助申报统一受理、分级审批，结果自动回写</p>
+        </content>
+      </shape>
+      <shape width="500" height="22" topLeftX="64" topLeftY="352" type="text" id="bZH">
+        <content fontSize="13" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>覆盖干部“选、育、管、用”业务闭环</p>
+        </content>
+      </shape>
+      <line id="bZC" startX="64" startY="382" endX="896.0006009613214" endY="382">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="190" height="24" topLeftX="64" topLeftY="392" type="text" id="bZE">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>选 · 选拔任用</p>
+        </content>
+      </shape>
+      <shape width="190" height="56" topLeftX="64" topLeftY="420" type="text" id="bZc">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.45">
+          <p>民主推荐、干部任免全流程、后备干部库</p>
+        </content>
+      </shape>
+      <shape width="190" height="24" topLeftX="272" topLeftY="392" type="text" id="bZl">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>育 · 培养锻炼</p>
+        </content>
+      </shape>
+      <shape width="190" height="56" topLeftX="272" topLeftY="420" type="text" id="bZm">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.45">
+          <p>教育培训、挂职锻炼、后备干部培养跟踪</p>
+        </content>
+      </shape>
+      <shape width="190" height="24" topLeftX="480" topLeftY="392" type="text" id="bZy">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>管 · 考核监督</p>
+        </content>
+      </shape>
+      <shape width="190" height="56" topLeftX="480" topLeftY="420" type="text" id="bZA">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.45">
+          <p>年度考核、民主测评、平板投票、分级预警</p>
+        </content>
+      </shape>
+      <shape width="208" height="24" topLeftX="688" topLeftY="392" type="text" id="bZJ">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>用 · 调配日常</p>
+        </content>
+      </shape>
+      <shape width="208" height="56" topLeftX="688" topLeftY="420" type="text" id="bZY">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.45">
+          <p>调配、职级晋升、证照出境休假等日常事务</p>
+        </content>
+      </shape>
+      <line id="bZW" startX="64" startY="500" endX="896.0006009613214" endY="500">
+        <border color="rgba(20, 42, 73, 0.08)" width="1"/>
+      </line>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bZG">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bZa">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>05 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bZo">
+      <content>
+        <p>系统定位是面向高校组织人事部门的一体化干部管理平台。建设方向概括为&quot;三个一&quot;：数据一个库、业务一条链、审批一个口。在业务范围上完整覆盖干部&quot;选、育、管、用&quot;闭环：选是选拔任用，育是培养锻炼，管是考核监督，用是调配和日常事务，形成完整的干部管理生命周期。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCf">
+    <style>
+      <fill id="fCf">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bZp">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>01　项目介绍　·　功能模块全景</p>
+        </content>
+      </shape>
+      <shape width="800" height="38" topLeftX="64" topLeftY="62" type="text" id="bhh">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>七大功能域覆盖干部管理全业务</p>
+        </content>
+      </shape>
+      <line id="bhn" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <table id="bhS" width="832" height="364" topLeftX="64" topLeftY="126">
+        <colgroup>
+          <col span="1" width="132"/>
+          <col span="1" width="700"/>
+        </colgroup>
+        <tr height="34">
+          <td id="bhZ">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="13" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>功能域</p>
+            </content>
+          </td>
+          <td id="bhU">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="13" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="left">
+              <p>　核心功能</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="47">
+          <td id="bhO">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>干部管理</p>
+            </content>
+          </td>
+          <td id="bhB">
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.35" textAlign="left">
+              <p>　干部档案增删改查、批量导入导出、多条件筛选排序，在职 / 离退休 / 调出 / 辞职分库，后备干部入库与培养跟踪</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="47">
+          <td id="bZK">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>组织机构</p>
+            </content>
+          </td>
+          <td id="bhx">
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.35" textAlign="left">
+              <p>　机构树形管理、编制数与实有人数实时维护、班子成员任职登记、职务层次与职级统一管理</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="47">
+          <td id="bhQ">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>干部业务</p>
+            </content>
+          </td>
+          <td id="bhI">
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.35" textAlign="left">
+              <p>　任免全流程、调动转任、职级晋升、考察登记、政策法规台账，以及干部档案更正自助申报审批闭环</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="47">
+          <td id="bht">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>监督考核</p>
+            </content>
+          </td>
+          <td id="bhY">
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.35" textAlign="left">
+              <p>　年度考核、民主测评、平板评审投票与手写签字留证、廉政信访、个人事项、红橙黄分级预警</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="47">
+          <td id="bZR">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>日常事务</p>
+            </content>
+          </td>
+          <td id="bZV">
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.35" textAlign="left">
+              <p>　证照、出境记录、休假、教育培训、挂职锻炼，以及请假 / 培训 / 出国（境）等干部自助申报审批</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="47">
+          <td id="bhD">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>统计分析</p>
+            </content>
+          </td>
+          <td id="bhs">
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.35" textAlign="left">
+              <p>　年龄、性别、学历、政治面貌、职务层次结构图表分析，机构干部统计表（基于 ECharts 实现）</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bhX">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>系统管理</p>
+            </content>
+          </td>
+          <td id="bhf">
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.35" textAlign="left">
+              <p>　用户与注册审批、按账号模块授权、国标字典、操作日志与登录日志、按用户类型的数据权限</p>
+            </content>
+          </td>
+        </tr>
+      </table>
+      <shape width="500" height="18" topLeftX="64" topLeftY="498" type="text" id="bhv">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="498" type="text" id="bZd">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>06 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bZw">
+      <content>
+        <p>系统功能划分为七大功能域。干部管理和组织机构是数据底座；干部业务承载任免、调配、晋升等核心流程；监督考核覆盖年度考核、民主测评、平板投票和分级预警；日常事务处理证照、出境、休假等；统计分析提供可视化；系统管理负责用户、权限、字典和日志。各模块并非孤立，而是围绕干部档案互相关联。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCM">
+    <style>
+      <fill id="fCM">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bhr">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>01　项目介绍　·　成果规模</p>
+        </content>
+      </shape>
+      <shape width="800" height="38" topLeftX="64" topLeftY="62" type="text" id="bhR">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>成果规模：可运行的完整全栈系统</p>
+        </content>
+      </shape>
+      <line id="bhm" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="600" height="20" topLeftX="64" topLeftY="128" type="text" id="bhu">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>代码与数据规模（对项目源码与 SQL 脚本扫描统计）</p>
+        </content>
+      </shape>
+      <line id="bhT" startX="64" startY="166" endX="184.00416659433122" endY="166">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="138" height="48" topLeftX="64" topLeftY="176" type="text" id="bhw">
+        <content textType="headline" fontSize="34" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>51</p>
+        </content>
+      </shape>
+      <shape width="132" height="36" topLeftX="64" topLeftY="228" type="text" id="bhd">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" lineSpacing="multiple:1.3">
+          <p>张数据表<br/>统一建模</p>
+        </content>
+      </shape>
+      <line id="bhH" startX="203" startY="166" endX="323.0041665943312" endY="166">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="138" height="48" topLeftX="203" topLeftY="176" type="text" id="bhW">
+        <content textType="headline" fontSize="34" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>297</p>
+        </content>
+      </shape>
+      <shape width="132" height="36" topLeftX="203" topLeftY="228" type="text" id="bhF">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" lineSpacing="multiple:1.3">
+          <p>个 Java 类<br/>分层清晰</p>
+        </content>
+      </shape>
+      <line id="bhj" startX="342" startY="166" endX="462.0041665943312" endY="166">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="138" height="48" topLeftX="342" topLeftY="176" type="text" id="bhK">
+        <content textType="headline" fontSize="34" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>51</p>
+        </content>
+      </shape>
+      <shape width="132" height="36" topLeftX="342" topLeftY="228" type="text" id="bhN">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" lineSpacing="multiple:1.3">
+          <p>个 Controller<br/>REST 接口</p>
+        </content>
+      </shape>
+      <line id="bhy" startX="481" startY="166" endX="601.0041665943312" endY="166">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="138" height="48" topLeftX="481" topLeftY="176" type="text" id="bhG">
+        <content textType="headline" fontSize="34" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>34</p>
+        </content>
+      </shape>
+      <shape width="132" height="36" topLeftX="481" topLeftY="228" type="text" id="bha">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" lineSpacing="multiple:1.3">
+          <p>个 Vue 页面<br/>业务界面</p>
+        </content>
+      </shape>
+      <line id="bhe" startX="620" startY="166" endX="740.0041665943312" endY="166">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="138" height="48" topLeftX="620" topLeftY="176" type="text" id="bhA">
+        <content textType="headline" fontSize="34" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>2.57万</p>
+        </content>
+      </shape>
+      <shape width="132" height="36" topLeftX="620" topLeftY="228" type="text" id="bhJ">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" lineSpacing="multiple:1.3">
+          <p>行前后端代码<br/>手写实现</p>
+        </content>
+      </shape>
+      <line id="bhl" startX="759" startY="166" endX="896.0036495864252" endY="166">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="138" height="48" topLeftX="759" topLeftY="176" type="text" id="bhp">
+        <content textType="headline" fontSize="34" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>10</p>
+        </content>
+      </shape>
+      <shape width="132" height="36" topLeftX="759" topLeftY="228" type="text" id="bhq">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" lineSpacing="multiple:1.3">
+          <p>大业务模块<br/>协同联动</p>
+        </content>
+      </shape>
+      <line id="bhC" startX="64" startY="286" endX="896.0006009613214" endY="286">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="400" height="22" topLeftX="64" topLeftY="300" type="text" id="bhE">
+        <content fontSize="13" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>前后端代码量构成（单位：行）</p>
+        </content>
+      </shape>
+      <shape width="343" height="22" topLeftX="64" topLeftY="332" presetHandlers="0" type="rect" id="bhc">
+        <fill>
+          <fillColor color="rgba(31, 58, 95, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="489" height="22" topLeftX="407" topLeftY="332" presetHandlers="0" type="rect" id="bhk">
+        <fill>
+          <fillColor color="rgba(95, 122, 148, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="343" height="20" topLeftX="64" topLeftY="360" type="text" id="bhL">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(31, 58, 95, 1)" wrap="false">
+          <p>■ 后端 Java　10,591 行（41%）</p>
+        </content>
+      </shape>
+      <shape width="489" height="20" topLeftX="407" topLeftY="360" type="text" id="bhi">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>■ 前端 Vue / JS　15,112 行（59%）</p>
+        </content>
+      </shape>
+      <shape width="400" height="22" topLeftX="64" topLeftY="404" type="text" id="bhP">
+        <content fontSize="13" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>工程化配套与可运行性</p>
+        </content>
+      </shape>
+      <shape width="832" height="26" topLeftX="64" topLeftY="432" type="text" id="bho">
+        <content fontSize="12" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" wrap="false">
+          <p>· Knife4j 在线接口文档、统一 Result 返回与全局异常处理、Windows 一键启动脚本、内置便携 Maven</p>
+        </content>
+      </shape>
+      <shape width="832" height="26" topLeftX="64" topLeftY="462" type="text" id="bhz">
+        <content fontSize="12" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" wrap="false">
+          <p>· 提供初始化脚本与可重复演示数据（27 个机构、约 470 份干部档案），支持 Nginx 局域网平板部署</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bhb">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bhM">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>07 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bhg">
+      <content>
+        <p>这是项目最终的规模：数据库设计了 51 张表，后端有 297 个 Java 类、51 个 Controller，前端有 34 个 Vue 页面，前后端手写代码合计约 2.57 万行，划分成 10 大业务模块。工程化方面提供了接口文档、统一返回结构、一键启动脚本和演示数据，拿到新环境可以快速运行，不是一个只有页面的演示原型。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCH">
+    <style>
+      <fill id="fCH">
+        <fillColor color="linear-gradient(120deg,rgba(15, 32, 56, 1) 0%,rgba(31, 58, 95, 1) 100%)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="320" height="160" topLeftX="64" topLeftY="150" type="text" id="bZX">
+        <content textType="title" fontSize="120" fontFamily="思源黑体" color="rgba(201, 166, 107, 0.902)" bold="true" wrap="false">
+          <p>02</p>
+        </content>
+      </shape>
+      <line id="bZt" startX="360" startY="178" endX="360" endY="300.0040982918197">
+        <border color="rgba(255, 255, 255, 0.22)" width="1"/>
+      </line>
+      <shape width="460" height="30" topLeftX="400" topLeftY="186" type="text" id="bZB">
+        <content textType="caption" fontSize="13" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" letterSpacing="3" wrap="false">
+          <p>TECH STACK</p>
+        </content>
+      </shape>
+      <shape width="460" height="56" topLeftX="400" topLeftY="218" type="text" id="bZv">
+        <content textType="title" fontSize="40" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>项目技术栈</p>
+        </content>
+      </shape>
+      <shape width="466" height="48" topLeftX="400" topLeftY="286" type="text" id="bZf">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(184, 200, 220, 1)" lineSpacing="multiple:1.4">
+          <p>前后端如何选型、各组件分别承担什么职责，以及为什么这样组合。</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bZS">
+      <content>
+        <p>第二部分介绍技术栈。系统采用主流的前后端分离架构，我会先给出一张分层选型总览，再分别说明后端和前端每一项关键技术在项目中承担的职责。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCr">
+    <style>
+      <fill id="fCr">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bQB">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>02　项目技术栈　·　分层选型总览</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bQk">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>技术栈总览：前后端分离的五层结构</p>
+        </content>
+      </shape>
+      <line id="bQu" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <table id="bQQ" width="832" height="366" topLeftX="64" topLeftY="126">
+        <colgroup>
+          <col span="1" width="120"/>
+          <col span="1" width="372"/>
+          <col span="1" width="150"/>
+          <col span="1" width="190"/>
+        </colgroup>
+        <tr height="34">
+          <td id="bQL">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>分层</p>
+            </content>
+          </td>
+          <td id="bQD">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>技术选型</p>
+            </content>
+          </td>
+          <td id="bQX">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>版本</p>
+            </content>
+          </td>
+          <td id="bQe">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>承担职责</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="55">
+          <td id="bQz">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>前端展示层</p>
+            </content>
+          </td>
+          <td id="bQh">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　Vue 3 + Vite、Element Plus、Pinia、Vue Router、ECharts</p>
+            </content>
+          </td>
+          <td id="bQS">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)">
+              <p>3.4 / 5.4 / 2.7</p>
+            </content>
+          </td>
+          <td id="bQm">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　单页应用、组件化界面、状态管理、可视化</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="55">
+          <td id="bQA">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>接口接入层</p>
+            </content>
+          </td>
+          <td id="bQZ">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　Axios + Spring MVC（RESTful 接口，统一 /api 前缀）</p>
+            </content>
+          </td>
+          <td id="bQO">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)">
+              <p>HTTP / JSON</p>
+            </content>
+          </td>
+          <td id="bQH">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　Bearer 令牌注入、请求拦截、跨域处理</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="55">
+          <td id="bQC">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>后端框架层</p>
+            </content>
+          </td>
+          <td id="bQx">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　Spring Boot、Spring Security、JWT（jjwt）、Spring AOP</p>
+            </content>
+          </td>
+          <td id="bQI">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)">
+              <p>3.2.5 / 0.12.5</p>
+            </content>
+          </td>
+          <td id="bQo">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　IoC 容器、安全过滤链、无状态认证、日志切面</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="55">
+          <td id="bQW">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>持久层</p>
+            </content>
+          </td>
+          <td id="bQF">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　MyBatis-Plus、baomidou dynamic-datasource</p>
+            </content>
+          </td>
+          <td id="bQs">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)">
+              <p>3.5.5 / 4.3.1</p>
+            </content>
+          </td>
+          <td id="bQf">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　ORM、分页与逻辑删除、多数据源热切换</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="55">
+          <td id="bQY">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>数据存储</p>
+            </content>
+          </td>
+          <td id="bQy">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　MySQL 主库、Redis 缓存（可选增强）</p>
+            </content>
+          </td>
+          <td id="bQG">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)">
+              <p>8.0 / 7.0</p>
+            </content>
+          </td>
+          <td id="bDV">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　关系型数据持久化；缓存可自动降级内存</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="57">
+          <td id="bQn">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true">
+              <p>效率组件</p>
+            </content>
+          </td>
+          <td id="bQv">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　Hutool、EasyExcel + Apache POI、Knife4j（OpenAPI3）</p>
+            </content>
+          </td>
+          <td id="bQq">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)">
+              <p>5.8.25 / 3.3.3</p>
+            </content>
+          </td>
+          <td id="bQg">
+            <content fontSize="10.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.3" textAlign="left">
+              <p>　工具集、Excel 导入导出、在线接口文档</p>
+            </content>
+          </td>
+        </tr>
+      </table>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bQt">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bQN">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>09 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bQU">
+      <content>
+        <p>整体技术栈按五层组织：前端展示层用 Vue 全家桶；接入层通过 Axios 和 Spring MVC 以 REST 风格通信；后端框架层基于 Spring Boot 和 Spring Security；持久层用 MyBatis-Plus 并引入动态数据源；存储层是 MySQL，Redis 作为可选缓存；另外用 Hutool、EasyExcel、Knife4j 提升开发效率。选型全部是当前主流、社区活跃的稳定方案。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCl">
+    <style>
+      <fill id="fCl">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bDm">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>02　项目技术栈　·　后端</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bDq">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>后端关键技术：Spring Boot 生态</p>
+        </content>
+      </shape>
+      <line id="bDA" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <table id="bDs" width="832" height="372" topLeftX="64" topLeftY="124">
+        <colgroup>
+          <col span="1" width="286"/>
+          <col span="1" width="546"/>
+        </colgroup>
+        <tr height="37">
+          <td id="bDe">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>技术（版本）</p>
+            </content>
+          </td>
+          <td id="bDy">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>在项目中承担的职责</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDI">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Spring Boot 3.2.5 / Java 17</p>
+            </content>
+          </td>
+          <td id="bDt">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　后端主体框架，自动装配、内嵌 Tomcat，支撑 Controller-Service-Mapper 分层开发</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDB">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Spring Security + JWT</p>
+            </content>
+          </td>
+          <td id="bDo">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　无状态登录认证与接口鉴权，过滤器校验令牌，未登录返回 401、越权返回 403</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDN">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　MyBatis-Plus 3.5.5</p>
+            </content>
+          </td>
+          <td id="bDW">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　单表 CRUD 与分页插件、逻辑删除、MetaObjectHandler 自动填充创建人 / 时间</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDU">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　dynamic-datasource 4.3.1</p>
+            </content>
+          </td>
+          <td id="bDO">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　运行期数据源路由热切换、库表结构探测与自动对齐，对业务 Mapper 透明</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDv">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Redis + CacheStore 门面</p>
+            </content>
+          </td>
+          <td id="bDH">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　登录失败节流等缓存；探测不到 Redis 时自动降级为进程内存，无需强制部署</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDk">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　EasyExcel + Apache POI</p>
+            </content>
+          </td>
+          <td id="bDC">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　干部档案的批量导入导出与 Excel 报表，解决大数据量下的内存占用问题</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="47">
+          <td id="bDn">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Spring AOP + Hutool + Knife4j</p>
+            </content>
+          </td>
+          <td id="bDS">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　AOP 切面记录操作日志；Hutool 提供工具集；Knife4j 生成 OpenAPI3 在线接口文档</p>
+            </content>
+          </td>
+        </tr>
+      </table>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bDX">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bDY">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>10 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bDf">
+      <content>
+        <p>后端以 Spring Boot 3 为核心。安全上用 Spring Security 加 JWT 做无状态认证；持久层用 MyBatis-Plus 简化 CRUD，并引入动态数据源实现热切换；缓存通过自建的 CacheStore 门面做到 Redis 可选、自动降级；Excel 处理用 EasyExcel；同时用 AOP 做操作日志、Knife4j 输出接口文档。这些技术组合既保证了开发效率，也兼顾了部署灵活性。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCh">
+    <style>
+      <fill id="fCh">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bDg">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>02　项目技术栈　·　前端</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bDJ">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>前端关键技术：Vue 3 现代工程化</p>
+        </content>
+      </shape>
+      <line id="bDc" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <table id="bDw" width="832" height="372" topLeftX="64" topLeftY="124">
+        <colgroup>
+          <col span="1" width="286"/>
+          <col span="1" width="546"/>
+        </colgroup>
+        <tr height="37">
+          <td id="bDu">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>技术（版本）</p>
+            </content>
+          </td>
+          <td id="bDE">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 1)"/>
+            </fill>
+            <content fontSize="12" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true">
+              <p>在项目中承担的职责</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDi">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Vue 3.4（Composition API）</p>
+            </content>
+          </td>
+          <td id="bDj">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　以组合式 API 组件化构建 34 个业务页面，响应式数据驱动视图更新</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDa">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Vite 5.4</p>
+            </content>
+          </td>
+          <td id="bDM">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　极速冷启动与模块热更新的构建工具，开发环境代理 /api 到后端 8080</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDK">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Element Plus 2.7</p>
+            </content>
+          </td>
+          <td id="bDL">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　表格、表单、弹窗、菜单、日期选择等企业级 UI 组件，统一政务蓝主题</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDF">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Pinia 2.1</p>
+            </content>
+          </td>
+          <td id="bDb">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　集中管理登录用户、模块权限与菜单状态，token 与服务器地址持久化</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDr">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Vue Router 4.3</p>
+            </content>
+          </td>
+          <td id="bDR">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　路由表与全局前置守卫校验登录态，/tablet 提供平板免登录投票页</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="48">
+          <td id="bDz">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　ECharts 5.5</p>
+            </content>
+          </td>
+          <td id="bDG">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　干部年龄、性别、学历、政治面貌、职务层次等结构分析图表</p>
+            </content>
+          </td>
+        </tr>
+        <tr height="47">
+          <td id="bDT">
+            <fill>
+              <fillColor color="rgba(20, 42, 73, 0.05)"/>
+            </fill>
+            <content fontSize="11.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="left">
+              <p>　Axios / xlsx</p>
+            </content>
+          </td>
+          <td id="bDl">
+            <content fontSize="11" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" textAlign="left">
+              <p>　Axios 拦截器统一注入 Bearer、处理 401 跳登录；xlsx 在前端导出表格</p>
+            </content>
+          </td>
+        </tr>
+      </table>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bDP">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bDd">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>11 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bDp">
+      <content>
+        <p>前端采用 Vue 3 组合式 API 和 Vite 构建，Element Plus 提供企业级组件，Pinia 管理全局状态，Vue Router 做登录守卫并单独开放平板投票页，ECharts 负责统计可视化，Axios 统一处理令牌和异常。整体保持政务蓝的统一视觉，交互体验接近真实办公系统。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCc">
+    <style>
+      <fill id="fCc">
+        <fillColor color="linear-gradient(120deg,rgba(15, 32, 56, 1) 0%,rgba(31, 58, 95, 1) 100%)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="320" height="160" topLeftX="64" topLeftY="150" type="text" id="bDh">
+        <content textType="title" fontSize="120" fontFamily="思源黑体" color="rgba(201, 166, 107, 0.902)" bold="true" wrap="false">
+          <p>03</p>
+        </content>
+      </shape>
+      <line id="bDD" startX="360" startY="178" endX="360" endY="300.0040982918197">
+        <border color="rgba(255, 255, 255, 0.22)" width="1"/>
+      </line>
+      <shape width="460" height="30" topLeftX="400" topLeftY="186" type="text" id="bDQ">
+        <content textType="caption" fontSize="13" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" letterSpacing="3" wrap="false">
+          <p>DESIGN &amp; IMPLEMENTATION</p>
+        </content>
+      </shape>
+      <shape width="460" height="56" topLeftX="400" topLeftY="218" type="text" id="bhV">
+        <content textType="title" fontSize="40" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>项目实现思路</p>
+        </content>
+      </shape>
+      <shape width="466" height="48" topLeftX="400" topLeftY="286" type="text" id="bDx">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(184, 200, 220, 1)" lineSpacing="multiple:1.4">
+          <p>总体架构如何分层、数据如何建模，核心业务流程与安全机制怎样落地。</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bDZ">
+      <content>
+        <p>第三部分是本次汇报的重点。我会从总体架构、分层调用链路、数据库设计，到干部任免核心流程、认证与数据权限，再到两个特色功能，讲清楚整个系统是怎么一步步实现的。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCG">
+    <style>
+      <fill id="fCG">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bQi">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>03　项目实现思路　·　总体架构</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bQr">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>总体架构：前后端分离的六层结构</p>
+        </content>
+      </shape>
+      <line id="bQj" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <img id="bQE" src="OsBwbDsrRocA7uxG4kvcIu3MnQh" width="660" height="349" topLeftX="150" topLeftY="124">
+        <crop type="rect" leftOffset="0.4142011834319419" rightOffset="0.4142011834319419" topOffset="0" bottomOffset="0"/>
+        <border color="rgba(20, 42, 73, 0.18)" width="1"/>
+      </img>
+      <shape width="832" height="18" topLeftX="64" topLeftY="482" type="text" id="bQb">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" textAlign="center" wrap="false">
+          <p>图 1　系统总体技术架构（依据源码目录与依赖自动梳理）：终端层 → 前端层 → 接入层 → 框架层 → 业务模块层 → 数据层</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bQT">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bQa">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>13 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bQJ">
+      <content>
+        <p>这是系统的总体架构，自上而下分为六层。终端层支持桌面浏览器和平板；前端层是 Vue3 单页应用；接入层通过 Axios 以 /api 通信并携带 JWT；后端框架层负责安全、缓存、异常和数据源；业务模块层按干部业务域分包；最底层是 MySQL 和可选 Redis。各层职责单一、向下依赖，便于独立开发和维护。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCy">
+    <style>
+      <fill id="fCy">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bUY">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>03　项目实现思路　·　分层调用链路</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bUe">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>后端分层：统一的 Controller→Service→Mapper 链路</p>
+        </content>
+      </shape>
+      <line id="bUy" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <img id="bUz" src="GomMbEW4jo4VqRxumI1cA307nlc" width="197" height="358" topLeftX="64" topLeftY="126">
+        <crop type="rect" leftOffset="0" rightOffset="-2.842170943040401e-14" topOffset="0.39061224489793744" bottomOffset="0.3906122448978522"/>
+        <border color="rgba(20, 42, 73, 0.18)" width="1"/>
+      </img>
+      <shape width="197" height="16" topLeftX="64" topLeftY="488" type="text" id="bUX">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" textAlign="center" wrap="false">
+          <p>图 2　模块调用链路（节选）</p>
+        </content>
+      </shape>
+      <shape width="600" height="24" topLeftX="296" topLeftY="128" type="text" id="bUf">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>四层职责，一条固定调用方向</p>
+        </content>
+      </shape>
+      <shape width="600" height="22" topLeftX="296" topLeftY="164" type="text" id="bUm">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>Controller 控制层　51 个</p>
+        </content>
+      </shape>
+      <shape width="600" height="34" topLeftX="296" topLeftY="188" type="text" id="bUq">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>接收请求、参数校验，施加模块权限与数据范围约束，返回统一 Result。</p>
+        </content>
+      </shape>
+      <shape width="600" height="22" topLeftX="296" topLeftY="230" type="text" id="bUA">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>Service 业务层　接口 + Impl 实现</p>
+        </content>
+      </shape>
+      <shape width="600" height="34" topLeftX="296" topLeftY="254" type="text" id="bUS">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>承载业务逻辑与事务边界，跨表联动、档案状态回写都在此统一编排。</p>
+        </content>
+      </shape>
+      <shape width="600" height="22" topLeftX="296" topLeftY="296" type="text" id="bUv">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>Mapper 持久层</p>
+        </content>
+      </shape>
+      <shape width="600" height="34" topLeftX="296" topLeftY="320" type="text" id="bUH">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>继承 MyBatis-Plus BaseMapper 获得通用 CRUD，复杂统计用注解 / XML 编写 SQL。</p>
+        </content>
+      </shape>
+      <shape width="600" height="22" topLeftX="296" topLeftY="362" type="text" id="bUk">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>Entity 实体层　绑定 51 张表</p>
+        </content>
+      </shape>
+      <shape width="600" height="34" topLeftX="296" topLeftY="386" type="text" id="bUC">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>@TableName 绑定数据表，BaseEntity 统一创建人 / 时间与逻辑删除字段。</p>
+        </content>
+      </shape>
+      <line id="bUB" startX="296" startY="436" endX="896.0008333327547" endY="436">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="600" height="40" topLeftX="296" topLeftY="448" type="text" id="bUo">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.45">
+          <p>按业务域分包（cadre / organization / appointment / assessment 等 10 个模块），模块内高内聚，模块之间只通过 Service 接口协作。</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bUN">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bUW">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>14 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bUt">
+      <content>
+        <p>后端严格遵循 Controller、Service、Mapper、Entity 四层。Controller 只负责收发和权限约束；业务规则和事务集中在 Service；Mapper 借助 MyBatis-Plus 简化数据库操作；Entity 用注解绑定数据表，并通过 BaseEntity 统一审计字段。左侧是真实的模块调用链路图，所有模块都遵守同一套约定，代码结构清晰、便于定位问题。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCE">
+    <style>
+      <fill id="fCE">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bQK">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>03　项目实现思路　·　数据库设计</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bUx">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>数据库设计：以干部档案为核心的关系模型</p>
+        </content>
+      </shape>
+      <line id="bUQ" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <img id="bUI" src="K3yibEFp2oWRa2xrjqqcKSfsn5f" width="179.00000000000003" height="358" topLeftX="64" topLeftY="126">
+        <crop type="rect" leftOffset="0.04137771613500263" rightOffset="0.041377716134945786" topOffset="0" bottomOffset="-5.684341886080802e-14"/>
+        <border color="rgba(20, 42, 73, 0.18)" width="1"/>
+      </img>
+      <shape width="179" height="16" topLeftX="64" topLeftY="488" type="text" id="bQM">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" textAlign="center" wrap="false">
+          <p>图 3　数据库 ER 图（节选）</p>
+        </content>
+      </shape>
+      <shape width="600" height="24" topLeftX="296" topLeftY="128" type="text" id="bQV">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>51 张表，按 10 个业务域组织</p>
+        </content>
+      </shape>
+      <shape width="600" height="36" topLeftX="296" topLeftY="156" type="text" id="bUD">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>干部档案、组织机构、任免、考核、日常事务、监督、调配晋升、统计、系统管理等。</p>
+        </content>
+      </shape>
+      <shape width="600" height="22" topLeftX="296" topLeftY="202" type="text" id="bUs">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>设计原则一　单一事实源</p>
+        </content>
+      </shape>
+      <shape width="600" height="32" topLeftX="296" topLeftY="226" type="text" id="bQl">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>cadre_info 干部档案为核心，任免 / 调配 / 考核等业务表以 cadre_id 关联。</p>
+        </content>
+      </shape>
+      <shape width="600" height="22" topLeftX="296" topLeftY="266" type="text" id="bQR">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>设计原则二　统一审计基类</p>
+        </content>
+      </shape>
+      <shape width="600" height="32" topLeftX="296" topLeftY="290" type="text" id="bQp">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>BaseEntity 统一下发创建人 / 时间、更新人 / 时间，deleted 标记逻辑删除。</p>
+        </content>
+      </shape>
+      <shape width="600" height="22" topLeftX="296" topLeftY="330" type="text" id="bUh">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>设计原则三　字典标准化</p>
+        </content>
+      </shape>
+      <shape width="600" height="32" topLeftX="296" topLeftY="354" type="text" id="bUn">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>性别、民族、政治面貌、学历等枚举统一走 sys_dict 国标字典，避免硬编码。</p>
+        </content>
+      </shape>
+      <shape width="600" height="22" topLeftX="296" topLeftY="394" type="text" id="bQc">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>设计原则四　现状与历史分离</p>
+        </content>
+      </shape>
+      <shape width="600" height="46" topLeftX="296" topLeftY="418" type="text" id="bQw">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.4">
+          <p>任免、调配、晋升均保留独立记录表，档案只存“当前状态”，既保证查询高效，又能回溯完整履历。</p>
+        </content>
+      </shape>
+      <line id="bQd" startX="296" startY="476" endX="896.0008333327547" endY="476">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="600" height="18" topLeftX="296" topLeftY="486" type="text" id="bUZ">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>建库脚本 sql/init.sql，演示数据 sql/seed-demo.sql，可重复执行。</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bUU">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bUO">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>15 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bQP">
+      <content>
+        <p>数据库共 51 张表，按十个业务域组织。设计上坚持四条原则：一是以干部档案表为单一事实源，所有业务表通过 cadre_id 关联；二是用 BaseEntity 统一审计字段和逻辑删除；三是枚举值统一走国标字典；四是现状与历史分离，档案只存当前状态，业务过程单独留痕，既能快速查询又能回溯履历。左侧是 ER 图节选。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCU">
+    <style>
+      <fill id="fCU">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bUP">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>03　项目实现思路　·　核心业务链路</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bnZ">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>核心链路：干部任免六阶段全流程</p>
+        </content>
+      </shape>
+      <line id="bnS" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="128" height="66" topLeftX="64" topLeftY="140" presetHandlers="0" type="rect" id="bUL">
+        <fill>
+          <fillColor color="rgba(31, 58, 95, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="128" height="20" topLeftX="64" topLeftY="150" type="text" id="bUM">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" textAlign="center" wrap="false">
+          <p>STEP 1</p>
+        </content>
+      </shape>
+      <shape width="128" height="26" topLeftX="64" topLeftY="170" type="text" id="bnx">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center" wrap="false">
+          <p>动议</p>
+        </content>
+      </shape>
+      <shape width="12" height="30" topLeftX="192" topLeftY="158" type="text" id="bnO">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="128" height="66" topLeftX="204" topLeftY="140" presetHandlers="0" type="rect" id="bUb">
+        <fill>
+          <fillColor color="rgba(31, 58, 95, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="128" height="20" topLeftX="204" topLeftY="150" type="text" id="bUV">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" textAlign="center" wrap="false">
+          <p>STEP 2</p>
+        </content>
+      </shape>
+      <shape width="128" height="26" topLeftX="204" topLeftY="170" type="text" id="bns">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center" wrap="false">
+          <p>民主推荐</p>
+        </content>
+      </shape>
+      <shape width="12" height="30" topLeftX="332" topLeftY="158" type="text" id="bnI">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="128" height="66" topLeftX="344" topLeftY="140" presetHandlers="0" type="rect" id="bnY">
+        <fill>
+          <fillColor color="rgba(31, 58, 95, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="128" height="20" topLeftX="344" topLeftY="150" type="text" id="bUJ">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" textAlign="center" wrap="false">
+          <p>STEP 3</p>
+        </content>
+      </shape>
+      <shape width="128" height="26" topLeftX="344" topLeftY="170" type="text" id="bUl">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center" wrap="false">
+          <p>组织考察</p>
+        </content>
+      </shape>
+      <shape width="12" height="30" topLeftX="472" topLeftY="158" type="text" id="bUp">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="128" height="66" topLeftX="484" topLeftY="140" presetHandlers="0" type="rect" id="bnn">
+        <fill>
+          <fillColor color="rgba(31, 58, 95, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="128" height="20" topLeftX="484" topLeftY="150" type="text" id="bnf">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" textAlign="center" wrap="false">
+          <p>STEP 4</p>
+        </content>
+      </shape>
+      <shape width="128" height="26" topLeftX="484" topLeftY="170" type="text" id="bUE">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center" wrap="false">
+          <p>讨论决定</p>
+        </content>
+      </shape>
+      <shape width="12" height="30" topLeftX="612" topLeftY="158" type="text" id="bUc">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="128" height="66" topLeftX="624" topLeftY="140" presetHandlers="0" type="rect" id="bUd">
+        <fill>
+          <fillColor color="rgba(31, 58, 95, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="128" height="20" topLeftX="624" topLeftY="150" type="text" id="bnU">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" textAlign="center" wrap="false">
+          <p>STEP 5</p>
+        </content>
+      </shape>
+      <shape width="128" height="26" topLeftX="624" topLeftY="170" type="text" id="bnv">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center" wrap="false">
+          <p>任前公示</p>
+        </content>
+      </shape>
+      <shape width="12" height="30" topLeftX="752" topLeftY="158" type="text" id="bUF">
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="128" height="66" topLeftX="764" topLeftY="140" presetHandlers="0" type="rect" id="bUj">
+        <fill>
+          <fillColor color="rgba(172, 134, 74, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="128" height="20" topLeftX="764" topLeftY="150" type="text" id="bUK">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(255, 255, 255, 0.851)" textAlign="center" wrap="false">
+          <p>STEP 6</p>
+        </content>
+      </shape>
+      <shape width="128" height="26" topLeftX="764" topLeftY="170" type="text" id="bnQ">
+        <content fontSize="15" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center" wrap="false">
+          <p>任职备案</p>
+        </content>
+      </shape>
+      <shape width="832" height="22" topLeftX="64" topLeftY="232" type="text" id="bnB">
+        <content fontSize="13.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>流程闭环：前置校验 — 过程留痕 — 结果回写</p>
+        </content>
+      </shape>
+      <line id="bUG" startX="64" startY="270" endX="326.0019083899963" endY="270">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="262" height="24" topLeftX="64" topLeftY="280" type="text" id="bUr">
+        <content fontSize="13" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>① 前置资格校验</p>
+        </content>
+      </shape>
+      <shape width="262" height="150" topLeftX="64" topLeftY="308" type="text" id="bUa">
+        <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.6">
+          <p>启动任免或职级晋升前，自动核验该干部近三年年度考核结果，未达标直接拦截，把干部选拔的制度规则固化进系统。</p>
+        </content>
+      </shape>
+      <line id="bUR" startX="349" startY="270" endX="611.0019083899963" endY="270">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="262" height="24" topLeftX="349" topLeftY="280" type="text" id="bnD">
+        <content fontSize="13" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>② 全过程留痕</p>
+        </content>
+      </shape>
+      <shape width="262" height="150" topLeftX="349" topLeftY="308" type="text" id="bnt">
+        <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.6">
+          <p>六个阶段各自建表，分别保存会议票决、推荐票数、考察材料、公示内容等信息，每一步操作都可回溯、可审计。</p>
+        </content>
+      </shape>
+      <line id="bUg" startX="634" startY="270" endX="896.0019083899963" endY="270">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="262" height="24" topLeftX="634" topLeftY="280" type="text" id="bUT">
+        <content fontSize="13" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>③ 结果自动回写</p>
+        </content>
+      </shape>
+      <shape width="262" height="150" topLeftX="634" topLeftY="308" type="text" id="bUw">
+        <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.6">
+          <p>任职备案通过后自动更新干部档案现任职务、职务层次与在岗状态；调配、晋升同此机制，删除记录则按剩余记录重算状态。</p>
+        </content>
+      </shape>
+      <shape width="832" height="24" topLeftX="64" topLeftY="474" type="text" id="bnh">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(31, 58, 95, 1)" wrap="false">
+          <p>设计要点：以干部档案为单一事实源，由业务记录驱动档案状态，杜绝多处维护造成的数据不一致。</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bnX">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bUu">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>16 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bUi">
+      <content>
+        <p>以最复杂的干部任免为例，业务分为动议、民主推荐、组织考察、讨论决定、任前公示、任职备案六个阶段。设计上形成闭环：启动前先做近三年考核的资格校验；过程中六个阶段分别建表、全程留痕；任职备案后自动回写干部档案。调配和晋升也采用同样的&quot;业务记录驱动档案状态&quot;机制，保证全局数据一致。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCb">
+    <style>
+      <fill id="fCb">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bnG">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>03　项目实现思路　·　安全与权限</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bna">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>认证授权：JWT 无状态认证 + 两级权限</p>
+        </content>
+      </shape>
+      <line id="bnq" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="600" height="20" topLeftX="64" topLeftY="124" type="text" id="bng">
+        <content fontSize="12.5" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>一次请求的认证链路</p>
+        </content>
+      </shape>
+      <shape width="152" height="52" topLeftX="64" topLeftY="150" presetHandlers="0" type="rect" id="bnr">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.06)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="144" height="52" topLeftX="68" topLeftY="150" type="text" id="bnk">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="center">
+          <p>账号密码登录</p>
+        </content>
+      </shape>
+      <shape width="18" height="30" topLeftX="216" topLeftY="161" type="text" id="bnu">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="152" height="52" topLeftX="234" topLeftY="150" presetHandlers="0" type="rect" id="bnT">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.06)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="144" height="52" topLeftX="238" topLeftY="150" type="text" id="bnw">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="center">
+          <p>签发 JWT（HS256）</p>
+        </content>
+      </shape>
+      <shape width="18" height="30" topLeftX="386" topLeftY="161" type="text" id="bnN">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="152" height="52" topLeftX="404" topLeftY="150" presetHandlers="0" type="rect" id="bnL">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.06)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="144" height="52" topLeftX="408" topLeftY="150" type="text" id="bni">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="center">
+          <p>请求携带 Bearer</p>
+        </content>
+      </shape>
+      <shape width="18" height="30" topLeftX="556" topLeftY="161" type="text" id="bnP">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="152" height="52" topLeftX="574" topLeftY="150" presetHandlers="0" type="rect" id="bne">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.06)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="144" height="52" topLeftX="578" topLeftY="150" type="text" id="bnz">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" textAlign="center">
+          <p>过滤器校验令牌</p>
+        </content>
+      </shape>
+      <shape width="18" height="30" topLeftX="726" topLeftY="161" type="text" id="bnb">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" textAlign="center" wrap="false">
+          <p>→</p>
+        </content>
+      </shape>
+      <shape width="152" height="52" topLeftX="744" topLeftY="150" presetHandlers="0" type="rect" id="bnM">
+        <fill>
+          <fillColor color="rgba(172, 134, 74, 1)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="144" height="52" topLeftX="748" topLeftY="150" type="text" id="bnm">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center">
+          <p>写入上下文放行</p>
+        </content>
+      </shape>
+      <shape width="406" height="218" topLeftX="64" topLeftY="228" presetHandlers="0" type="rect" id="bnA">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.045)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <line id="bnJ" startX="64" startY="228" endX="470.0012315252258" endY="228">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="372" height="24" topLeftX="82" topLeftY="242" type="text" id="bnl">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>模块权限　功能级访问控制</p>
+        </content>
+      </shape>
+      <shape width="372" height="160" topLeftX="82" topLeftY="276" type="text" id="bnH">
+        <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.7">
+          <p>· 生效顺序：系统管理员全通 → 账号单独授权优先 → 否则回退该用户类型的内置默认模板</p>
+          <p>· 菜单对全员可见，未授权账号进入页面时即被拦截并提示</p>
+          <p>· 收敛原 sys_role 角色层，权限口径唯一，更易维护</p>
+        </content>
+      </shape>
+      <shape width="406" height="218" topLeftX="490" topLeftY="228" presetHandlers="0" type="rect" id="bnC">
+        <fill>
+          <fillColor color="rgba(20, 42, 73, 0.045)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <line id="bnE" startX="490" startY="228" endX="896.0012315252259" endY="228">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="372" height="24" topLeftX="508" topLeftY="242" type="text" id="bnc">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>数据权限　行级可见范围</p>
+        </content>
+      </shape>
+      <shape width="372" height="160" topLeftX="508" topLeftY="276" type="text" id="bno">
+        <content fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.7">
+          <p>· 按用户类型自动收敛：1~4 看全量 / 5 看本级及下级 / 6 仅本部门</p>
+          <p>· 干部档案的分页、详情、导出均实时套用数据范围</p>
+          <p>· 普通干部只收到本人相关预警与本人申报的审批结果</p>
+        </content>
+      </shape>
+      <shape width="832" height="34" topLeftX="64" topLeftY="462" type="text" id="bnW">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(31, 58, 95, 1)" lineSpacing="multiple:1.4">
+          <p>安全加固：同一账号连续输错 5 次锁定 15 分钟（计数存 Redis，无 Redis 自动落内存）；通过 AOP 切面记录操作日志与登录日志。</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bnF">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bnj">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>17 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bny">
+      <content>
+        <p>安全上采用 JWT 无状态认证：登录签发令牌，之后每次请求携带 Bearer，由过滤器校验后放行。授权分两级：模块权限控制能不能进某个功能，按&quot;管理员全通、单独授权优先、用户类型模板兜底&quot;计算；数据权限控制能看到多大范围的数据，按用户类型自动收敛。此外还有登录失败锁定和操作日志，防止暴力破解并保留审计轨迹。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCL">
+    <style>
+      <fill id="fCL">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bsQ">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>03　项目实现思路　·　特色实现</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bsn">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>两个有代表性的特色功能实现</p>
+        </content>
+      </shape>
+      <line id="bsI" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="406" height="22" topLeftX="64" topLeftY="128" type="text" id="bsS">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>特色一　平板评审投票与签字留证</p>
+        </content>
+      </shape>
+      <line id="bst" startX="64" startY="156" endX="470.0012315252258" endY="156">
+        <border color="rgba(20, 42, 73, 0.15)" width="1"/>
+      </line>
+      <shape width="406" height="300" topLeftX="64" topLeftY="168" type="text" id="bsZ">
+        <content fontSize="12" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.75">
+          <p><strong>场景：</strong>会议现场用局域网平板评审，独立 /tablet 页面免登录接入。</p>
+          <p><strong>两种票型：</strong>评分式按指标逐项打分；表决式记录赞成 / 反对 / 弃权。</p>
+          <p><strong>签字留证：</strong>手写签名生成图像，连同 MD5、设备 IP、时间戳一并入库存档。</p>
+          <p><strong>防篡改：</strong>签字确认后该票不可再修改，管理端可随时查验签字与票决结果，保证现场评审的公信力。</p>
+        </content>
+      </shape>
+      <line id="bsD" startX="479.99999999999994" startY="128" endX="479.99999999999994" endY="486.00139664532037">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="398" height="22" topLeftX="498" topLeftY="128" type="text" id="bsU">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>特色二　数据库运行时热切换与自动对齐</p>
+        </content>
+      </shape>
+      <line id="bss" startX="498" startY="156" endX="896.0012562794243" endY="156">
+        <border color="rgba(20, 42, 73, 0.15)" width="1"/>
+      </line>
+      <shape width="398" height="300" topLeftX="498" topLeftY="168" type="text" id="bsO">
+        <content fontSize="12" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)" lineSpacing="multiple:1.75">
+          <p><strong>场景：</strong>同一前端免重启连接不同 MySQL 库，便于现场演示与环境迁移。</p>
+          <p><strong>三种探测：</strong>结构一致直接切换；缺表则列出差异；库不存在则按 init.sql 自动创建 51 张表。</p>
+          <p><strong>防误操作：</strong>目标库已存在项目表时拒绝对齐，切换前强制试连，失败自动保留原库。</p>
+          <p><strong>连接记忆：</strong>切换结果写入 db-conn.json，后端重启自动恢复，基于 dynamic-datasource 对业务透明。</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bsX">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bsB">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>18 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bsh">
+      <content>
+        <p>这里挑两个最能体现工作量和思考的特色功能。第一是平板评审投票，解决会议现场投票的公信力问题，支持打分和表决两种形式，并用手写签名加 MD5、IP、时间戳留证，签字后不可改票。第二是数据库热切换，系统可以免重启连接不同的 MySQL，自动探测表结构、缺表甚至自动建库建表，同时通过&quot;有表拒绝对齐、强制试连&quot;防止误操作，体现了容错和工程化思维。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCs">
+    <style>
+      <fill id="fCs">
+        <fillColor color="linear-gradient(120deg,rgba(15, 32, 56, 1) 0%,rgba(31, 58, 95, 1) 100%)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="320" height="160" topLeftX="64" topLeftY="150" type="text" id="bnp">
+        <content textType="title" fontSize="120" fontFamily="思源黑体" color="rgba(201, 166, 107, 0.902)" bold="true" wrap="false">
+          <p>04</p>
+        </content>
+      </shape>
+      <line id="bnV" startX="360" startY="178" endX="360" endY="300.0040982918197">
+        <border color="rgba(255, 255, 255, 0.22)" width="1"/>
+      </line>
+      <shape width="460" height="30" topLeftX="400" topLeftY="186" type="text" id="bsx">
+        <content textType="caption" fontSize="13" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" letterSpacing="3" wrap="false">
+          <p>PROBLEMS &amp; SOLUTIONS</p>
+        </content>
+      </shape>
+      <shape width="460" height="56" topLeftX="400" topLeftY="218" type="text" id="bnR">
+        <content textType="title" fontSize="40" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>问题及解决方案</p>
+        </content>
+      </shape>
+      <shape width="466" height="48" topLeftX="400" topLeftY="286" type="text" id="bnK">
+        <content fontSize="14" fontFamily="思源黑体" color="rgba(184, 200, 220, 1)" lineSpacing="multiple:1.4">
+          <p>开发中真正遇到的六个工程难题，以及对应的分析过程与解决办法。</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bnd">
+      <content>
+        <p>第四部分复盘开发过程中遇到的六个典型问题，涵盖数据一致性、权限模型、缓存依赖、数据库切换、现场投票防篡改和敏感数据越权，每个问题都给出了在系统中真正落地的解决方案。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCN">
+    <style>
+      <fill id="fCN">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bsy">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>04　问题及解决方案　·　（上）</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bsz">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>典型问题与解决方案（一）</p>
+        </content>
+      </shape>
+      <line id="bsG" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <line id="bsr" startX="64" startY="124" endX="896.0006009613214" endY="124">
+        <border color="rgba(20, 42, 73, 0.1)" width="1"/>
+      </line>
+      <shape width="50" height="40" topLeftX="64" topLeftY="134" type="text" id="bsf">
+        <content textType="headline" fontSize="24" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>01</p>
+        </content>
+      </shape>
+      <shape width="320" height="18" topLeftX="120" topLeftY="134" type="text" id="bsm">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>问题　跨模块数据一致性</p>
+        </content>
+      </shape>
+      <shape width="312" height="84" topLeftX="120" topLeftY="154" type="text" id="bse">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>任免、调配、晋升都要改干部档案的现任职务、职级与状态，若分散更新极易出现档案与业务记录不一致。</p>
+        </content>
+      </shape>
+      <line id="bsL" startX="448" startY="134" endX="448" endY="236.0049018429997">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="430" height="18" topLeftX="466" topLeftY="134" type="text" id="bsF">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" wrap="false">
+          <p>解决方案　单一事实源 + 统一回写</p>
+        </content>
+      </shape>
+      <shape width="430" height="84" topLeftX="466" topLeftY="154" type="text" id="bsb">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>以干部档案为唯一事实源，业务审批通过后在 Service 层统一回写；调配记录增删改后按剩余记录重算状态；考核结果作为晋升与任免的前置校验。</p>
+        </content>
+      </shape>
+      <line id="bsa" startX="64" startY="248" endX="896.0006009613214" endY="248">
+        <border color="rgba(20, 42, 73, 0.1)" width="1"/>
+      </line>
+      <shape width="50" height="40" topLeftX="64" topLeftY="258" type="text" id="bsY">
+        <content textType="headline" fontSize="24" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>02</p>
+        </content>
+      </shape>
+      <shape width="320" height="18" topLeftX="120" topLeftY="258" type="text" id="bsN">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>问题　权限模型臃肿、口径混乱</p>
+        </content>
+      </shape>
+      <shape width="312" height="84" topLeftX="120" topLeftY="278" type="text" id="bsW">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>早期“角色 + 用户类型”双重叠加，授权口径不唯一，既难维护，也存在越权访问隐患。</p>
+        </content>
+      </shape>
+      <line id="bsE" startX="448" startY="258" endX="448" endY="360.0049018429997">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="430" height="18" topLeftX="466" topLeftY="258" type="text" id="bsi">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" wrap="false">
+          <p>解决方案　两层权限、口径收敛</p>
+        </content>
+      </shape>
+      <shape width="430" height="84" topLeftX="466" topLeftY="278" type="text" id="bso">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>收敛为“用户类型内置模板 + 按账号单独授权”，功能权限与行级数据权限两层分离；菜单可见但进入页面即校验，权限口径唯一、可解释。</p>
+        </content>
+      </shape>
+      <line id="bsC" startX="64" startY="372" endX="896.0006009613214" endY="372">
+        <border color="rgba(20, 42, 73, 0.1)" width="1"/>
+      </line>
+      <shape width="50" height="40" topLeftX="64" topLeftY="382" type="text" id="bsu">
+        <content textType="headline" fontSize="24" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>03</p>
+        </content>
+      </shape>
+      <shape width="320" height="18" topLeftX="120" topLeftY="382" type="text" id="bsA">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>问题　缓存依赖抬高部署门槛</p>
+        </content>
+      </shape>
+      <shape width="312" height="84" topLeftX="120" topLeftY="402" type="text" id="bsg">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>登录失败节流等功能依赖 Redis，而普通机房或个人电脑未必安装 Redis，系统难以即开即用。</p>
+        </content>
+      </shape>
+      <line id="bsJ" startX="448" startY="382" endX="448" endY="484.0049018429997">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="430" height="18" topLeftX="466" topLeftY="382" type="text" id="bsT">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" wrap="false">
+          <p>解决方案　缓存门面 + 自动降级</p>
+        </content>
+      </shape>
+      <shape width="430" height="84" topLeftX="466" topLeftY="402" type="text" id="bsv">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>自建 CacheStore 缓存门面，auto 模式优先使用 Redis，探测失败自动降级为进程内存，业务代码无感知，无 Redis 也能完整运行。</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bsH">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bsk">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>20 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bsq">
+      <content>
+        <p>前三个问题。第一是跨模块数据一致性，解法是把干部档案作为单一事实源、在业务层统一回写并支持状态重算。第二是权限模型臃肿，我把角色和用户类型两套体系收敛成&quot;内置模板加单独授权&quot;，并拆分功能权限和数据权限。第三是 Redis 依赖问题，通过缓存门面做到有 Redis 用 Redis、没有就自动降级到内存，保证系统即开即用。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCV">
+    <style>
+      <fill id="fCV">
+        <fillColor color="rgba(247, 246, 242, 1)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="40" type="text" id="bIZ">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" letterSpacing="1.5" wrap="false">
+          <p>04　问题及解决方案　·　（下）</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="62" type="text" id="bIU">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(20, 42, 73, 1)" bold="true" wrap="false">
+          <p>典型问题与解决方案（二）</p>
+        </content>
+      </shape>
+      <line id="bIO" startX="64" startY="110" endX="896.0006009613214" endY="110">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <line id="bIB" startX="64" startY="124" endX="896.0006009613214" endY="124">
+        <border color="rgba(20, 42, 73, 0.1)" width="1"/>
+      </line>
+      <shape width="50" height="40" topLeftX="64" topLeftY="134" type="text" id="bsc">
+        <content textType="headline" fontSize="24" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>04</p>
+        </content>
+      </shape>
+      <shape width="320" height="18" topLeftX="120" topLeftY="134" type="text" id="bsw">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>问题　多套数据库切换成本高</p>
+        </content>
+      </shape>
+      <shape width="312" height="84" topLeftX="120" topLeftY="154" type="text" id="bsV">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>演示、联调、迁移要连接不同 MySQL，改配置重启繁琐，新库还要手工创建 51 张表。</p>
+        </content>
+      </shape>
+      <line id="bIh" startX="448" startY="134" endX="448" endY="236.0049018429997">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="430" height="18" topLeftX="466" topLeftY="134" type="text" id="bIn">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" wrap="false">
+          <p>解决方案　运行时热切换 + 自动对齐</p>
+        </content>
+      </shape>
+      <shape width="430" height="84" topLeftX="466" topLeftY="154" type="text" id="bIS">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>基于 dynamic-datasource 免重启切换：先探测结构（一致 / 缺表 / 无库三态），无库时一键按 init.sql 自动建表对齐，连接持久化记忆、重启自动恢复。</p>
+        </content>
+      </shape>
+      <line id="bIv" startX="64" startY="248" endX="896.0006009613214" endY="248">
+        <border color="rgba(20, 42, 73, 0.1)" width="1"/>
+      </line>
+      <shape width="50" height="40" topLeftX="64" topLeftY="258" type="text" id="bsl">
+        <content textType="headline" fontSize="24" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>05</p>
+        </content>
+      </shape>
+      <shape width="320" height="18" topLeftX="120" topLeftY="258" type="text" id="bsR">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>问题　现场投票公信力与防篡改</p>
+        </content>
+      </shape>
+      <shape width="312" height="84" topLeftX="120" topLeftY="278" type="text" id="bID">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>纸质票统计慢，电子投票又容易被质疑代投、事后改票，评审结果的公信力难以保证。</p>
+        </content>
+      </shape>
+      <line id="bIs" startX="448" startY="258" endX="448" endY="360.0049018429997">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="430" height="18" topLeftX="466" topLeftY="258" type="text" id="bIX">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" wrap="false">
+          <p>解决方案　双模式投票 + 签字锁票留证</p>
+        </content>
+      </shape>
+      <shape width="430" height="84" topLeftX="466" topLeftY="278" type="text" id="bIf">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>平板端支持评分、表决两种票型；提交后手写签名，将签名图像、MD5、设备 IP、时间戳一并存档，签字后锁票不可更改，管理端可核验。</p>
+        </content>
+      </shape>
+      <line id="bsM" startX="64" startY="372" endX="896.0006009613214" endY="372">
+        <border color="rgba(20, 42, 73, 0.1)" width="1"/>
+      </line>
+      <shape width="50" height="40" topLeftX="64" topLeftY="382" type="text" id="bsK">
+        <content textType="headline" fontSize="24" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" bold="true" wrap="false">
+          <p>06</p>
+        </content>
+      </shape>
+      <shape width="320" height="18" topLeftX="120" topLeftY="382" type="text" id="bsd">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(95, 122, 148, 1)" wrap="false">
+          <p>问题　敏感档案的水平越权风险</p>
+        </content>
+      </shape>
+      <shape width="312" height="84" topLeftX="120" topLeftY="402" type="text" id="bIx">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>干部档案含身份证号、家庭成员等隐私信息，一旦出现水平越权，后果严重。</p>
+        </content>
+      </shape>
+      <line id="bIQ" startX="448" startY="382" endX="448" endY="484.0049018429997">
+        <border color="rgba(20, 42, 73, 0.12)" width="1"/>
+      </line>
+      <shape width="430" height="18" topLeftX="466" topLeftY="382" type="text" id="bII">
+        <content textType="caption" fontSize="10" fontFamily="思源黑体" color="rgba(172, 134, 74, 1)" wrap="false">
+          <p>解决方案　查询层自动注入数据范围</p>
+        </content>
+      </shape>
+      <shape width="430" height="84" topLeftX="466" topLeftY="402" type="text" id="bIt">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(62, 76, 92, 1)">
+          <p>用 DataScopeHelper 按用户类型在查询层自动注入可见范围（全量 / 本级及下级 / 仅本部门），分页、详情、导出统一生效，普通用户仅能看到本人数据。</p>
+        </content>
+      </shape>
+      <shape width="500" height="18" topLeftX="64" topLeftY="510" type="text" id="bsj">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" wrap="false">
+          <p>高校干部人事组织管理系统 · 答辩汇报</p>
+        </content>
+      </shape>
+      <shape width="76" height="18" topLeftX="820" topLeftY="510" type="text" id="bsP">
+        <content textType="caption" fontSize="9" fontFamily="思源黑体" color="rgba(140, 152, 166, 1)" textAlign="right" wrap="false">
+          <p>21 / 22</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bsp">
+      <content>
+        <p>后三个问题。第四是多数据库切换成本高，我用动态数据源做运行时热切换和自动建表对齐。第五是现场投票公信力，用评分加表决双模式和手写签名留证，签字即锁票。第六是敏感档案越权，通过数据权限助手在查询层自动注入可见范围，从根上避免水平越权。这些问题都不是教程里的标准题，而是在真实开发中遇到、并逐一解决的。</p>
+      </content>
+    </note>
+  </slide>
+  <slide id="pCm">
+    <style>
+      <fill id="fCm">
+        <fillColor color="linear-gradient(135deg,rgba(15, 32, 56, 1) 0%,rgba(31, 58, 95, 1) 100%)"/>
+      </fill>
+    </style>
+    <data>
+      <shape width="520" height="20" topLeftX="64" topLeftY="44" type="text" id="bIN">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" letterSpacing="1.5" wrap="false">
+          <p>05　收获与总结　·　SUMMARY</p>
+        </content>
+      </shape>
+      <shape width="820" height="38" topLeftX="64" topLeftY="66" type="text" id="bIW">
+        <content textType="title" fontSize="27" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>项目收获、不足与展望</p>
+        </content>
+      </shape>
+      <line id="bIL" startX="64" startY="112" endX="896.0006009613214" endY="112">
+        <border color="rgba(255, 255, 255, 0.16)" width="1"/>
+      </line>
+      <line id="bIF" startX="64" startY="134" endX="460.0012626242497" endY="134">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="400" height="22" topLeftX="64" topLeftY="144" type="text" id="bIY">
+        <content fontSize="13.5" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>① 全栈工程能力</p>
+        </content>
+      </shape>
+      <shape width="396" height="62" topLeftX="64" topLeftY="170" type="text" id="bIe">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(196, 208, 224, 1)">
+          <p>独立完成前后端分离系统，熟练掌握 Spring Boot 3、Vue 3、MyBatis-Plus、JWT 等主流技术与协作流程。</p>
+        </content>
+      </shape>
+      <line id="bIy" startX="496" startY="134" endX="896.0012499980469" endY="134">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="400" height="22" topLeftX="496" topLeftY="144" type="text" id="bIz">
+        <content fontSize="13.5" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>② 复杂业务建模能力</p>
+        </content>
+      </shape>
+      <shape width="400" height="62" topLeftX="496" topLeftY="170" type="text" id="bIG">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(196, 208, 224, 1)">
+          <p>把干部“选、育、管、用”制度抽象为数据模型与状态流转，真正体会到业务驱动设计的含义。</p>
+        </content>
+      </shape>
+      <line id="bIb" startX="64" startY="246" endX="460.0012626242497" endY="246">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="400" height="22" topLeftX="64" topLeftY="256" type="text" id="bIm">
+        <content fontSize="13.5" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>③ 工程化与容错思维</p>
+        </content>
+      </shape>
+      <shape width="396" height="62" topLeftX="64" topLeftY="282" type="text" id="bIq">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(196, 208, 224, 1)">
+          <p>通过单一数据源一致性、缓存降级、热切换防误操作等设计，学会为“异常情况”和长期可维护性而设计。</p>
+        </content>
+      </shape>
+      <line id="bIA" startX="496" startY="246" endX="896.0012499980469" endY="246">
+        <border color="rgba(201, 166, 107, 1)"/>
+      </line>
+      <shape width="400" height="22" topLeftX="496" topLeftY="256" type="text" id="bIg">
+        <content fontSize="13.5" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" wrap="false">
+          <p>④ 安全与规范意识</p>
+        </content>
+      </shape>
+      <shape width="400" height="62" topLeftX="496" topLeftY="282" type="text" id="bIJ">
+        <content textType="caption" fontSize="11" fontFamily="思源黑体" color="rgba(196, 208, 224, 1)">
+          <p>系统实践认证授权、行级数据权限、操作留痕与接口文档，形成了较规范的分层开发习惯。</p>
+        </content>
+      </shape>
+      <shape width="832" height="86" topLeftX="64" topLeftY="362" presetHandlers="0" type="rect" id="bIH">
+        <fill>
+          <fillColor color="rgba(255, 255, 255, 0.06)"/>
+        </fill>
+        <content fontSize="16" fontFamily="思源黑体" color="rgba(31, 35, 41, 1)"/>
+      </shape>
+      <shape width="800" height="22" topLeftX="84" topLeftY="374" type="text" id="bIk">
+        <content fontSize="13" fontFamily="思源黑体" color="rgba(201, 166, 107, 1)" bold="true" wrap="false">
+          <p>不足与后续展望</p>
+        </content>
+      </shape>
+      <shape width="792" height="40" topLeftX="84" topLeftY="402" type="text" id="bIC">
+        <content textType="caption" fontSize="11.5" fontFamily="思源黑体" color="rgba(214, 224, 236, 1)">
+          <p>审批流程仍以固定阶段为主，后续可向可配置工作流演进；并计划补充 Redis 集群、国产化数据库适配与移动端体验优化。</p>
+        </content>
+      </shape>
+      <line id="bIu" startX="64" startY="470" endX="896.0006009613214" endY="470">
+        <border color="rgba(255, 255, 255, 0.16)" width="1"/>
+      </line>
+      <shape width="832" height="34" topLeftX="64" topLeftY="484" type="text" id="bIE">
+        <content fontSize="17" fontFamily="思源黑体" color="rgba(255, 255, 255, 1)" bold="true" textAlign="center" wrap="false">
+          <p>我的汇报到此结束，恳请各位老师批评指正！</p>
+        </content>
+      </shape>
+    </data>
+    <note id="bIo">
+      <content>
+        <p>最后是收获。通过这个项目，我在四个方面有明显成长：一是全栈工程能力，二是复杂业务建模能力，三是工程化和容错思维，四是安全与规范意识。当然系统还有不足，比如审批流程可以进一步做成可配置工作流，未来还计划做国产化数据库适配和移动端优化。我的汇报到此结束，恳请各位老师批评指正，谢谢。</p>
+      </content>
+    </note>
+  </slide>
+</presentation>

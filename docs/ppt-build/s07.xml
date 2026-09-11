@@ -1,0 +1,110 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false">
+        <p>01　项目介绍　·　成果规模</p>
+      </content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="800" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false">
+        <p>成果规模：可运行的完整全栈系统</p>
+      </content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="64" topLeftY="128" width="600" height="20">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>代码与数据规模（对项目源码与 SQL 脚本扫描统计）</p></content>
+    </shape>
+
+    <line startX="64" startY="166" endX="184" endY="166"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="64" topLeftY="176" width="138" height="48">
+      <content textType="headline" fontSize="34" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>51</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="228" width="132" height="36">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" lineSpacing="multiple:1.3"><p>张数据表<br/>统一建模</p></content>
+    </shape>
+
+    <line startX="203" startY="166" endX="323" endY="166"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="203" topLeftY="176" width="138" height="48">
+      <content textType="headline" fontSize="34" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>297</p></content>
+    </shape>
+    <shape type="text" topLeftX="203" topLeftY="228" width="132" height="36">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" lineSpacing="multiple:1.3"><p>个 Java 类<br/>分层清晰</p></content>
+    </shape>
+
+    <line startX="342" startY="166" endX="462" endY="166"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="342" topLeftY="176" width="138" height="48">
+      <content textType="headline" fontSize="34" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>51</p></content>
+    </shape>
+    <shape type="text" topLeftX="342" topLeftY="228" width="132" height="36">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" lineSpacing="multiple:1.3"><p>个 Controller<br/>REST 接口</p></content>
+    </shape>
+
+    <line startX="481" startY="166" endX="601" endY="166"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="481" topLeftY="176" width="138" height="48">
+      <content textType="headline" fontSize="34" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>34</p></content>
+    </shape>
+    <shape type="text" topLeftX="481" topLeftY="228" width="132" height="36">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" lineSpacing="multiple:1.3"><p>个 Vue 页面<br/>业务界面</p></content>
+    </shape>
+
+    <line startX="620" startY="166" endX="740" endY="166"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="620" topLeftY="176" width="138" height="48">
+      <content textType="headline" fontSize="34" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>2.57万</p></content>
+    </shape>
+    <shape type="text" topLeftX="620" topLeftY="228" width="132" height="36">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" lineSpacing="multiple:1.3"><p>行前后端代码<br/>手写实现</p></content>
+    </shape>
+
+    <line startX="759" startY="166" endX="896" endY="166"><border color="rgba(201,166,107,1)" width="2"/></line>
+    <shape type="text" topLeftX="759" topLeftY="176" width="138" height="48">
+      <content textType="headline" fontSize="34" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>10</p></content>
+    </shape>
+    <shape type="text" topLeftX="759" topLeftY="228" width="132" height="36">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" lineSpacing="multiple:1.3"><p>大业务模块<br/>协同联动</p></content>
+    </shape>
+
+    <line startX="64" startY="286" endX="896" endY="286"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="64" topLeftY="300" width="400" height="22">
+      <content textType="body" fontSize="13" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>前后端代码量构成（单位：行）</p></content>
+    </shape>
+    <shape type="rect" topLeftX="64" topLeftY="332" width="343" height="22">
+      <fill><fillColor color="rgba(31,58,95,1)"/></fill>
+    </shape>
+    <shape type="rect" topLeftX="407" topLeftY="332" width="489" height="22">
+      <fill><fillColor color="rgba(95,122,148,1)"/></fill>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="360" width="343" height="20">
+      <content textType="caption" fontSize="11" color="rgba(31,58,95,1)" wrap="false"><p>■ 后端 Java　10,591 行（41%）</p></content>
+    </shape>
+    <shape type="text" topLeftX="407" topLeftY="360" width="489" height="20">
+      <content textType="caption" fontSize="11" color="rgba(95,122,148,1)" wrap="false"><p>■ 前端 Vue / JS　15,112 行（59%）</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="404" width="400" height="22">
+      <content textType="body" fontSize="13" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>工程化配套与可运行性</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="432" width="832" height="26">
+      <content textType="body" fontSize="12" color="rgba(62,76,92,1)" wrap="false"><p>· Knife4j 在线接口文档、统一 Result 返回与全局异常处理、Windows 一键启动脚本、内置便携 Maven</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="462" width="832" height="26">
+      <content textType="body" fontSize="12" color="rgba(62,76,92,1)" wrap="false"><p>· 提供初始化脚本与可重复演示数据（27 个机构、约 470 份干部档案），支持 Nginx 局域网平板部署</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>07 / 22</p></content>
+    </shape>
+  </data>
+  <note>
+    <content textType="body">
+      <p>这是项目最终的规模：数据库设计了 51 张表，后端有 297 个 Java 类、51 个 Controller，前端有 34 个 Vue 页面，前后端手写代码合计约 2.57 万行，划分成 10 大业务模块。工程化方面提供了接口文档、统一返回结构、一键启动脚本和演示数据，拿到新环境可以快速运行，不是一个只有页面的演示原型。</p>
+    </content>
+  </note>
+</slide>

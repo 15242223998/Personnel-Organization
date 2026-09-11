@@ -1,0 +1,23 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="linear-gradient(120deg,rgba(15,32,56,1) 0%,rgba(31,58,95,1) 100%)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="150" width="320" height="160">
+      <content textType="title" fontSize="120" bold="true" color="rgba(201,166,107,0.9)" wrap="false"><p>04</p></content>
+    </shape>
+    <line startX="360" startY="178" endX="360" endY="300"><border color="rgba(255,255,255,0.22)" width="1"/></line>
+    <shape type="text" topLeftX="400" topLeftY="186" width="460" height="30">
+      <content textType="caption" fontSize="13" color="rgba(201,166,107,1)" letterSpacing="3" wrap="false"><p>PROBLEMS &amp; SOLUTIONS</p></content>
+    </shape>
+    <shape type="text" topLeftX="400" topLeftY="218" width="460" height="56">
+      <content textType="title" fontSize="40" bold="true" color="rgba(255,255,255,1)" wrap="false"><p>问题及解决方案</p></content>
+    </shape>
+    <shape type="text" topLeftX="400" topLeftY="286" width="466" height="48">
+      <content textType="body" fontSize="14" color="rgba(184,200,220,1)" lineSpacing="multiple:1.4">
+        <p>开发中真正遇到的六个工程难题，以及对应的分析过程与解决办法。</p>
+      </content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>第四部分复盘开发过程中遇到的六个典型问题，涵盖数据一致性、权限模型、缓存依赖、数据库切换、现场投票防篡改和敏感数据越权，每个问题都给出了在系统中真正落地的解决方案。</p></content></note>
+</slide>

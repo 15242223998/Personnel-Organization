@@ -42,20 +42,25 @@ echo [1/3] 正在启动后端 Spring Boot (http://localhost:8080) ...
 cd /d "%~dp0personnel-backend"
 start "Personnel-Backend-8080" cmd /k ""%MVN_CMD%" spring-boot:run"
 
-rem ---------- 4. 启动前端 (5173) ----------
+rem ---------- 4. 启动前端 (5173，开放局域网供平板访问) ----------
 echo [2/3] 正在启动前端 Vite (http://localhost:5173) ...
 cd /d "%~dp0personnel-frontend"
-start "Personnel-Frontend-5173" cmd /k "npm run dev"
+start "Personnel-Frontend-5173" cmd /k "npm run dev -- --host"
 
 rem ---------- 5. 等待并打开浏览器 ----------
 echo [3/3] 等待服务启动...
 timeout /t 10 /nobreak >nul
-start "" http://localhost:5173
+start "" "http://localhost:5173/login?logout=1"
 
 echo.
 echo ============================================================
 echo  后端接口: http://localhost:8080   API文档: http://localhost:8080/doc.html
 echo  前端页面: http://localhost:5173   默认账号: admin / 123456
+rem 取本机局域网 IP，便于平板访问投票端
+set "LANIP="
+for /f "delims=" %%i in ('powershell -NoProfile -Command "(Get-NetIPAddress -AddressFamily IPv4 ^| Where-Object { $_.IPAddress -notlike ''127.*'' -and $_.IPAddress -notlike ''169.254.*'' } ^| Select-Object -First 1).IPAddress" 2^>nul') do set "LANIP=%%i"
+if not defined LANIP set "LANIP=<本机局域网IP>"
+echo  平板签字端: http://%LANIP%:5173/tablet
 echo.
 echo  提示：关闭对应黑色窗口即可停止服务。此窗口可按任意键关闭。
 echo ============================================================

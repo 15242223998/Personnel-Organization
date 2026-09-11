@@ -1,0 +1,50 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>03　项目实现思路　·　特色实现</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>两个有代表性的特色功能实现</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="64" topLeftY="128" width="406" height="22">
+      <content textType="body" fontSize="14" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>特色一　平板评审投票与签字留证</p></content>
+    </shape>
+    <line startX="64" startY="156" endX="470" endY="156"><border color="rgba(20,42,73,0.15)" width="1"/></line>
+    <shape type="text" topLeftX="64" topLeftY="168" width="406" height="300">
+      <content textType="body" fontSize="12" color="rgba(62,76,92,1)" lineSpacing="multiple:1.75">
+        <p><strong>场景：</strong>会议现场用局域网平板评审，独立 /tablet 页面免登录接入。</p>
+        <p><strong>两种票型：</strong>评分式按指标逐项打分；表决式记录赞成 / 反对 / 弃权。</p>
+        <p><strong>签字留证：</strong>手写签名生成图像，连同 MD5、设备 IP、时间戳一并入库存档。</p>
+        <p><strong>防篡改：</strong>签字确认后该票不可再修改，管理端可随时查验签字与票决结果，保证现场评审的公信力。</p>
+      </content>
+    </shape>
+
+    <line startX="480" startY="128" endX="480" endY="486"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <shape type="text" topLeftX="498" topLeftY="128" width="398" height="22">
+      <content textType="body" fontSize="14" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>特色二　数据库运行时热切换与自动对齐</p></content>
+    </shape>
+    <line startX="498" startY="156" endX="896" endY="156"><border color="rgba(20,42,73,0.15)" width="1"/></line>
+    <shape type="text" topLeftX="498" topLeftY="168" width="398" height="300">
+      <content textType="body" fontSize="12" color="rgba(62,76,92,1)" lineSpacing="multiple:1.75">
+        <p><strong>场景：</strong>同一前端免重启连接不同 MySQL 库，便于现场演示与环境迁移。</p>
+        <p><strong>三种探测：</strong>结构一致直接切换；缺表则列出差异；库不存在则按 init.sql 自动创建 51 张表。</p>
+        <p><strong>防误操作：</strong>目标库已存在项目表时拒绝对齐，切换前强制试连，失败自动保留原库。</p>
+        <p><strong>连接记忆：</strong>切换结果写入 db-conn.json，后端重启自动恢复，基于 dynamic-datasource 对业务透明。</p>
+      </content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>18 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>这里挑两个最能体现工作量和思考的特色功能。第一是平板评审投票，解决会议现场投票的公信力问题，支持打分和表决两种形式，并用手写签名加 MD5、IP、时间戳留证，签字后不可改票。第二是数据库热切换，系统可以免重启连接不同的 MySQL，自动探测表结构、缺表甚至自动建库建表，同时通过"有表拒绝对齐、强制试连"防止误操作，体现了容错和工程化思维。</p></content></note>
+</slide>

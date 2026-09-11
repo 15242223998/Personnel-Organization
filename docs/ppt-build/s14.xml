@@ -1,0 +1,66 @@
+<slide xmlns="https://www.larkoffice.com/sml/2.0">
+  <style>
+    <fill><fillColor color="rgba(247,246,242,1)"/></fill>
+  </style>
+  <data>
+    <shape type="text" topLeftX="64" topLeftY="40" width="520" height="20">
+      <content textType="caption" fontSize="11.5" color="rgba(95,122,148,1)" letterSpacing="1.5" wrap="false"><p>03　项目实现思路　·　分层调用链路</p></content>
+    </shape>
+    <shape type="text" topLeftX="64" topLeftY="62" width="820" height="38">
+      <content textType="title" fontSize="27" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>后端分层：统一的 Controller→Service→Mapper 链路</p></content>
+    </shape>
+    <line startX="64" startY="110" endX="896" endY="110"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+
+    <img src="GomMbEW4jo4VqRxumI1cA307nlc" topLeftX="64" topLeftY="126" width="197" height="358">
+      <border color="rgba(20,42,73,0.18)" width="1"/>
+    </img>
+    <shape type="text" topLeftX="64" topLeftY="488" width="197" height="16">
+      <content textType="caption" fontSize="9" color="rgba(95,122,148,1)" textAlign="center" wrap="false"><p>图 2　模块调用链路（节选）</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="128" width="600" height="24">
+      <content textType="body" fontSize="14" bold="true" color="rgba(20,42,73,1)" wrap="false"><p>四层职责，一条固定调用方向</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="164" width="600" height="22">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>Controller 控制层　51 个</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="188" width="600" height="34">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>接收请求、参数校验，施加模块权限与数据范围约束，返回统一 Result。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="230" width="600" height="22">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>Service 业务层　接口 + Impl 实现</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="254" width="600" height="34">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>承载业务逻辑与事务边界，跨表联动、档案状态回写都在此统一编排。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="296" width="600" height="22">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>Mapper 持久层</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="320" width="600" height="34">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>继承 MyBatis-Plus BaseMapper 获得通用 CRUD，复杂统计用注解 / XML 编写 SQL。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="296" topLeftY="362" width="600" height="22">
+      <content textType="body" fontSize="12.5" bold="true" color="rgba(172,134,74,1)" wrap="false"><p>Entity 实体层　绑定 51 张表</p></content>
+    </shape>
+    <shape type="text" topLeftX="296" topLeftY="386" width="600" height="34">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.4"><p>@TableName 绑定数据表，BaseEntity 统一创建人 / 时间与逻辑删除字段。</p></content>
+    </shape>
+
+    <line startX="296" startY="436" endX="896" endY="436"><border color="rgba(20,42,73,0.12)" width="1"/></line>
+    <shape type="text" topLeftX="296" topLeftY="448" width="600" height="40">
+      <content textType="caption" fontSize="11.5" color="rgba(62,76,92,1)" lineSpacing="multiple:1.45"><p>按业务域分包（cadre / organization / appointment / assessment 等 10 个模块），模块内高内聚，模块之间只通过 Service 接口协作。</p></content>
+    </shape>
+
+    <shape type="text" topLeftX="64" topLeftY="510" width="500" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" wrap="false"><p>高校干部人事组织管理系统 · 答辩汇报</p></content>
+    </shape>
+    <shape type="text" topLeftX="820" topLeftY="510" width="76" height="18">
+      <content textType="caption" fontSize="9" color="rgba(140,152,166,1)" textAlign="right" wrap="false"><p>14 / 22</p></content>
+    </shape>
+  </data>
+  <note><content textType="body"><p>后端严格遵循 Controller、Service、Mapper、Entity 四层。Controller 只负责收发和权限约束；业务规则和事务集中在 Service；Mapper 借助 MyBatis-Plus 简化数据库操作；Entity 用注解绑定数据表，并通过 BaseEntity 统一审计字段。左侧是真实的模块调用链路图，所有模块都遵守同一套约定，代码结构清晰、便于定位问题。</p></content></note>
+</slide>

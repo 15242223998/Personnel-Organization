@@ -33,6 +33,7 @@ public class SecurityConfig {
                     "/api/user/register",
                     "/api/db/probe",
                     "/api/db/current",
+                    "/api/qr-login/**",
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html",

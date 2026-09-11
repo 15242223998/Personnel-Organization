@@ -15,6 +15,12 @@ const routes = [
     meta: { title: '平板投票' }
   },
   {
+    path: '/qr-login',
+    name: 'QrLogin',
+    component: () => import('../views/QrLogin.vue'),
+    meta: { title: '扫码登录确认', noAuth: true }
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
@@ -66,6 +72,12 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  // 带 logout=1 访问登录页：先清除本地登录态，强制显示登录界面（供启动脚本每次打开登录页）
+  if (to.path === '/login' && to.query.logout === '1') {
+    localStorage.removeItem('token')
+    next()
+    return
+  }
   const token = localStorage.getItem('token')
   if (!to.meta.noAuth && !token) {
     next('/login')
